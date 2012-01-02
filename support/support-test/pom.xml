@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>support-root</artifactId>
+    <version>1</version>
+  </parent>
+  <groupId>org.deephacks.tools4j</groupId>
+  <artifactId>support-test</artifactId>
+  <name>Tools4j Support Test</name>
+  <version>0.0.x</version>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-jse</artifactId>
+      <version>0.0.x</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

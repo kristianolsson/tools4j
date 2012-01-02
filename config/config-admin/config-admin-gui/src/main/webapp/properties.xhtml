@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+  <h:form id="adminSchemaProperties">
+    <p:dataTable var="property" value="#{adminTree.selectedAdminBean.properties}">
+      <f:facet name="header">
+        <h:outputText value="Edit #{adminTree.selectedAdminBean.schema.name}"/>
+      </f:facet>
+      <p:column style="width:10px">
+        <p:rowToggler />
+      </p:column>
+      <p:column headerText="Name">
+        <h:outputText value="#{property.name}" />
+      </p:column>
+      <p:column headerText="Type">
+        <h:outputText value="#{property.typeDisplay}" />
+      </p:column>
+      <p:column headerText="Value">
+        <!-- IdProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'IdProperty'}">
+          <p:inputText  value="#{property.value.value}" rendered="#{property.simpleClassname == 'IdProperty'}"/>
+        </h:panelGroup>
+
+        <!-- BasicProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'BasicProperty'}">
+          <p:inputText value="#{property.value.value}" rendered="#{!property.value.isDefaultValue}"/>
+          <i>
+            <p:inplace label="#{property.value.schemaDefaultValue}" rendered="#{property.value.isDefaultValue}">
+              <p:inputText value="#{property.value.value}"/>
+            </p:inplace>
+          </i>
+        </h:panelGroup>
+
+        <!-- BasicListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'BasicPropertyList'}">
+          <p:selectOneMenu  effect="fade" value="#{property.listValues.menuItemValue}"
+                            style="width: 250px"
+                            rendered="#{!property.listValues.isDefaultValue}">
+            <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+          </p:selectOneMenu>
+          <i>
+            <p:inplace label="#{property.listValues.schemaDefaultValues}" rendered="#{property.listValues.isDefaultValue}">
+              <p:selectOneMenu effect="fade" value="#{property.listValues.menuItemValue}" style="width: 250px"
+                               rendered="#{property.listValues.isDefaultValue}">
+                <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+              </p:selectOneMenu>
+            </p:inplace>
+          </i>
+        </h:panelGroup>
+
+        <!-- EnumProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'EnumProperty'}">
+          <p:inputText value="#{property.value.value}" rendered="#{!property.value.isDefaultValue}"/>
+          <i>
+            <p:inplace label="#{property.value.schemaDefaultValue}" rendered="#{property.value.isDefaultValue}">
+              <p:inputText value="#{property.value.value}"/>
+            </p:inplace>
+          </i>
+        </h:panelGroup>
+
+        <!-- EnumListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'EnumPropertyList'}">
+          <p:selectOneMenu  effect="fade" value="#{property.listValues.menuItemValue}"
+                            style="width: 250px"
+                            rendered="#{!property.listValues.isDefaultValue}">
+            <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+          </p:selectOneMenu>
+          <i>
+            <p:inplace label="#{property.listValues.schemaDefaultValues}" rendered="#{property.listValues.isDefaultValue}">
+              <p:selectOneMenu effect="fade" value="#{property.listValues.menuItemValue}" style="width: 250px"
+                               rendered="#{property.listValues.isDefaultValue}">
+                <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+              </p:selectOneMenu>
+            </p:inplace>
+          </i>
+        </h:panelGroup>
+
+
+        <!-- RefProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'RefProperty'}">
+          <p:inputText value="#{property.value.value}" rendered="#{!property.value.isDefaultValue}"/>
+          <i>
+            <p:inplace label="#{property.value.schemaDefaultValue}" rendered="#{property.value.isDefaultValue}">
+              <p:inputText value="#{property.value.value}"/>
+            </p:inplace>
+          </i>
+        </h:panelGroup>
+
+        <!-- RefListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyList'}">
+          <p:selectOneMenu effect="fade" value="#{property.listValues.menuItemValue}" style="width: 250px">
+            <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+          </p:selectOneMenu>
+        </h:panelGroup>
+      </p:column>
+
+      <p:column headerText="Action">
+
+        <!-- IdProperty: No action available -->
+
+        <!-- BasicProperty -->
+        <p:commandButton  rendered="#{property.simpleClassname == 'BasicProperty'}"
+                          value="Reset to default"
+                          actionListener="#{property.resetToDefault}"
+                          update="adminSchemaProperties"/>
+
+        <!-- BasicListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'BasicPropertyList'}">
+          <p:menuButton value="Action">
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem icon="ui-icon ui-icon-close"
+                        actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
+            <p:menuitem value="Reset to default" update="adminSchemaProperties"
+                        actionListener="#{property.listValues.resetToDefault}"
+                        icon="ui-icon ui-icon-arrowrefresh-1-w"/>
+          </p:menuButton>
+          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+            <p:inputText value="#{property.listValues.inputTextValue}" />
+            <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
+          </p:dialog>
+        </h:panelGroup>
+
+        <!-- EnumProperty -->
+        <p:commandButton value="Reset to default" rendered="#{property.simpleClassname == 'EnumProperty'}"
+                         actionListener="#{property.resetToDefault}"
+                         update="adminSchemaProperties"/>
+
+        <!-- EnumListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'EnumPropertyList'}">
+          <p:menuButton value="Action">
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem icon="ui-icon ui-icon-close"
+                        actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
+            <p:menuitem value="Reset to default" update="adminSchemaProperties"
+                        actionListener="#{property.listValues.resetToDefault}"
+                        icon="ui-icon ui-icon-arrowrefresh-1-w"/>
+          </p:menuButton>
+          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+            <p:inputText value="#{property.listValues.inputTextValue}" />
+            <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
+          </p:dialog>
+        </h:panelGroup>
+
+
+        <!-- RefProperty -->
+        <p:commandButton value="Reset to default" rendered="#{property.simpleClassname == 'RefProperty'}"
+                         actionListener="#{property.value.resetToDefault}"
+                         update="adminSchemaProperties"/>
+
+        <!-- RefListProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyList'}">
+          <p:menuButton value="Action">
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem icon="ui-icon ui-icon-close"
+                        actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
+          </p:menuButton>
+          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+            <p:inputText value="#{property.listValues.inputTextValue}" />
+            <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
+          </p:dialog>
+        </h:panelGroup>
+      </p:column>
+
+
+      <p:rowExpansion>
+        <h:outputText value="#{property.desc}"/><br/>
+      </p:rowExpansion>
+
+    </p:dataTable>
+    <p:commandButton value="Save" actionListener="#{adminTree.selectedAdminBean.onClickSave}" ajax="false"/>
+
+  </h:form>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>config-admin-root</artifactId>
+    <version>1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>config-admin-rest</artifactId>
+  <name>Tools4j Config Admin REST</name>
+  <description>REST of Tools4j Config Admin</description>
+  <version>${version.tools4j.config}</version>
+  <packaging>war</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>cli-root</artifactId>
+    <version>1</version>
+  </parent>
+  <artifactId>cli-api</artifactId>
+  <name>Tools4j Cli API</name>
+  <description></description>
+  <version>${version.tools4j.cli}</version>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>cli-bootstrap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-jse</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>log</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
+  </dependencies>
+</project>

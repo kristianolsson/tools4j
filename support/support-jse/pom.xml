@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>support-root</artifactId>
+    <version>1</version>
+  </parent>
+  <artifactId>support-jse</artifactId>
+  <version>0.0.x</version>
+  <packaging>jar</packaging>
+  <name>Tools4j Support Java SE</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${version.compiler-plugin}</version>
+        <configuration>
+          <compilerArgument>-proc:none</compilerArgument>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+  </dependencies>
+</project>

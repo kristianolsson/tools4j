@@ -1,0 +1,72 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.deephacks.tools4j.config;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * <p>
+ * A specification of a particular configuration type that express the  
+ * structure, constraints and conditions under which instances can exist to 
+ * fulfill their intended purpose.
+ * </p>
+ * <p>
+ * Each configuration should contain properties that are conceptually cohesive in 
+ * context to a domain specific aspects. 
+ * </p>
+ * <p>
+ * This annotation is used to mark a class as configurable. Fields that are to be 
+ * configurable must be annotated with {@link Property}. Instances of configurable 
+ * classes must always be unique with respect to {@link Id}.
+ * </p>
+ * @author Kristoffer Sjogren
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Inherited
+public @interface Config {
+    /**
+     * <p>
+     * An informative name that clearly identifies the configuration in the system.    
+     * Good names are those which describe domain specific aspects already established 
+     * in the system architecture.
+     * </p>
+     * <p>
+     * Names must be unique within the system.
+     * </p>
+     * <p>
+     * Names will be displayed to administrative users. 
+     * </p>
+     * @return Name of the configurable class.
+     */
+    String name();
+
+    /**
+     * An informative description that justify the existence of the configuration,
+     * putting it into context for how it relates to high-level system concepts and
+     * ouline what it is used for and how changes affect the behaviour of 
+     * the system.
+     * <p>
+     * Descriptions will be displayed to administrative users. 
+     * </p>
+     * @return A description.
+     */
+    String desc();
+
+    Multiplicity multiplicity();
+}

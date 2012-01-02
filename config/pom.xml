@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>root</artifactId>
+    <version>1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>config-root</artifactId>
+  <version>1</version>
+  <packaging>pom</packaging>
+  <name>Tools4j Config Root</name>
+  <url>http://tools4j-config.deephacks.org</url>
+  <description>Tools4j Config</description>
+
+  <modules>
+    <module>config-model-api</module>
+    <module>config-runtime-api</module>
+    <module>config-admin</module>
+    <module>config-provider</module>
+    <module>config-core</module>
+    <module>config-tck</module>
+    <module>config-docbkx</module>
+  </modules>
+
+  <properties>
+    <version.tools4j.config>0.0.x</version.tools4j.config>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+          <tarLongFileMode>gnu</tarLongFileMode>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>support-jse</artifactId>
+        <scope>compile</scope>
+        <version>0.0.x</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>support-test</artifactId>
+        <scope>compile</scope>
+        <version>0.0.x</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-model-api</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-runtime-api</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-admin-api</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-core</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-provider-jpa</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-provider-api</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.deephacks.tools4j</groupId>
+        <artifactId>config-tck</artifactId>
+        <version>${version.tools4j.config}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

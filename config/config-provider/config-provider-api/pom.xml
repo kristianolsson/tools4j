@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>config-provider-root</artifactId>
+    <version>1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>config-provider-api</artifactId>
+  <name>Tools4j Config Provider API</name>
+  <version>${version.tools4j.config}</version>
+  <description>Service Providers for Tools4j Config</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-model-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+  </dependencies>
+</project>

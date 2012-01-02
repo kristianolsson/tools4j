@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>config-provider-root</artifactId>
+    <version>1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>config-provider-jpa</artifactId>
+  <name>Tools4j Config Provider JPA</name>
+  <version>${version.tools4j.config}</version>
+  <description>JPA Configuration Provider</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-jse</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-model-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-tck</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <version>1.0.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.0.0.CR6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+      <version>2.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.18</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>9.1-901.jdbc4</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

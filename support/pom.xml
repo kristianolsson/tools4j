@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+vi:ts=2:sw=2:expandtab:
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>root</artifactId>
+    <version>1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>support-root</artifactId>
+  <packaging>pom</packaging>
+  <name>Tools4j Support Root</name>
+  <url>http://tools4j-config.deephacks.org</url>
+  <description>Various Support Utilities</description>
+
+  <modules>
+    <module>support-jse</module>
+    <module>support-test</module>
+  </modules>
+
+  <properties>
+    <version.javax.enterprise.cdi-api>1.0</version.javax.enterprise.cdi-api>
+    <version.javaee_api>6.0</version.javaee_api>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+</project>

@@ -1,0 +1,51 @@
+Event- 
+     |- Fault, is an event that has a negative significance caused by malfunction in the system.
+     |- Error, is an event that is expected
+     |- Success, a request was received, understood, accepted and processed successfully.
+     |- Log, an informational event that is used for 
+
+
+
+A fault is an event that has a negative significance.
+
+The goal of fault management is to recognize, isolate, correct and log faults that occur in the network.
+
+Furthermore, it uses trend analysis to predict errors so that the network is always available. This can be established by monitoring different things for abnormal behavior.
+
+Severities
+
+CRITICAL: Critical production issue affecting all users, including system unavailability and data integrity issues with no workaround available.
+
+- Service is down or unavailable.
+- A critical part of the infrastructure is unavailable or inaccessible, resulting in total disruption of work or critical business impact.
+- Service crashes or hangs indefinitely causing unacceptable or indefinite delays for resources or response.
+- Data corrupted or lost and must restore from backup.
+- A critical documented feature / function is not available.
+
+MAJOR: Major functionality is impacted or significant performance degradation is experienced. Issue is persistent and affects many users and/or major functionality. No reasonable workaround available.
+
+
+- Service is operational but highly degraded performance to the point of major impact on usage.
+- Important features of the Software as a Service offering are unavailable with no acceptable workaround; however, operations can continue in a restricted fashion.
+- Access to a particular third-party application or service provider deemed noncritical is impacted
+
+MINOR: Partial, non-critical loss of functionality of the software
+
+System performance issue or bug affecting some but not all users. Short-term workaround is available, but not scalable.
+
+
+- Service is operational but partially degraded for some or all customers, and an acceptable workaround or solution exists.
+- Problem with non-critical feature or functionality
+
+WARNING:
+
+Indicates a potential problem or a current problem that is not serious.  The alert should be investigated and acted on quickly to prevent the underlying issue from becoming critical.
+
+
+Oracle: http://download.oracle.com/docs/cd/A91202_01/901_doc/server.901/a90202/intro.htm
+HTTP: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+Alarm MIB: http://tools.ietf.org/html/rfc3877
+FCAPS: http://en.wikipedia.org/wiki/FCAPS
+X.733: 
+
+

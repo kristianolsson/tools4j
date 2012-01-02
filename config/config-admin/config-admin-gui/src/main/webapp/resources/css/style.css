@@ -1,0 +1,53 @@
+.ui-widget, .ui-widget .ui-widget {
+font-size: 10px !important;
+}
+.ui-growl {
+        position:fixed;
+        top:20px;
+        right:20px;
+        width:600px;
+        z-index:9999;
+}
+.ui-growl-item-container {
+        position:relative;
+        margin:0 0 10px 0;
+}
+.ui-growl-item {
+        display:block;
+        padding:10px 15px;
+}
+.ui-growl-item p {
+        padding:0;
+        margin:0;
+}
+.ui-growl-icon-close {
+        position:absolute;
+        top:5px;
+        left:3px;
+        cursor:pointer;
+}
+.ui-growl-title {
+        font-weight:bold;
+        padding:0 0 7px 0;
+        display:block;
+}
+.ui-growl-image {
+        width:32px;
+        height:32px;
+        float:left;
+}
+.ui-growl-message {
+        padding:0 0 5px 0;
+        width:600px;
+        float:left;
+}
+
+.ui-growl-message p {
+        font-weight: normal;
+}
+
+.noborder  .ui-panelgrid-data td, .ui-datatable .ui-datatable-data-empty td {
+    border:none;
+}
+
+table table td { border: 0; }

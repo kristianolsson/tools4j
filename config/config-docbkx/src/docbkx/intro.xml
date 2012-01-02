@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This document was created with Syntext Serna Free. -->
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" []>
+<chapter id="intro">
+  <title>Introduction</title>
+  <para>
+  </para>
+  <section id="mission">
+    <title>Mission statement and motivation</title>
+    <para>
+      Open Config...
+    </para>
+    <para>
+      Features: 
+      <itemizedlist>
+        <listitem>
+          <para>..</para>
+        </listitem>
+        <listitem>
+          <para>..</para>
+        </listitem>
+        <listitem>
+          <para>..</para>
+        </listitem>
+        <listitem>
+          <para>..</para>
+        </listitem>
+        <listitem>
+          <para>..</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </section>
+  <section id="overview">
+    <title>Overview</title>
+    <para>
+        ....
+    </para>
+    <mediaobject>
+      <imageobject role="fo">
+        <imagedata align="center" fileref="resources/images/architecture.jpg" format="JPG"/>
+      </imageobject>
+      <imageobject role="html">
+        <imagedata align="center" fileref="images/architecture.jpg" format="JPG"/>
+      </imageobject>
+      <caption>
+        <para>High Level Architecture</para>
+      </caption>
+    </mediaobject>
+    <para>
+     ...
+   </para>
+  </section>
+  <section id="features">
+    <title>Features</title>
+    <programlisting role="JAVA">
+<![CDATA[import javax.ejb.EJB;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(Arquillian.class)
+public class InjectionTestCase {
+   @Deployment
+   public static JavaArchive createTestArchive() {
+      return ShrinkWrap.create(JavaArchive.class, "test.jar")
+         .addClasses(GreetingManager.class, GreetingManagerBean.class);
+   }
+
+   @EJB
+   private GreetingManager greetingManager;
+
+   @Test
+   public void shouldBeAbleToInjectEJB() throws Exception {
+      String userName = "Earthlings";
+      Assert.assertEquals(Hello " + userName, greetingManager.greet(userName));
+   }
+}]]>
+    </programlisting>
+  </section>
+  <section>
+    <title>Terminology</title>
+    <para>TODO</para>
+  </section>
+</chapter>
