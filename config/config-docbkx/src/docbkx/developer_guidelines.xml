@@ -4,7 +4,7 @@
   <title>Developer Guidelines</title>
   <section>
     <title>Overview</title>
-    <para>Open Config is a true open-source project under the Apache License, Version 2.0. Developers interested in building better Configuration Management for Java are more than welcome to participate.</para>
+    <para>Tools4j Config is a true open-source project under the Apache License, Version 2.0. Developers interested in building better Configuration Management for Java are more than welcome to participate.</para>
     <para>There are many ways to join the project. The most efficient and appreciated way to contribute is through code, bug fixes and documentation, but there are other ways. Get familiar with full contributors, give useful feedback, feature suggestions, donate graphics/look-n-feel  and more.  </para>
     <para><para>The most important rule is &quot;<emphasis role="bold">Do No Harm</emphasis>&quot; and can be summarized as follows:</para><itemizedlist>
         <listitem>
@@ -99,7 +99,11 @@
           </listitem>
           <listitem>
             <para>Syntext Serna Free 4.3.x (optional)</para>
-            <para><emphasis role="italic">Make DocBook editing *alot* easier.</emphasis></para>
+            <para><emphasis role="italic">Make DocBook editing a lot easier.</emphasis></para>
+          </listitem>
+          <listitem>
+            <para>yEd 3.8 (optional)</para>
+            <para><emphasis role="italic">Used for making architectural illustrations.</emphasis></para>
           </listitem>
         </itemizedlist>
       </section>
@@ -146,8 +150,8 @@
       <para>TODO</para>
     </section>
   </section>
-  <xi:include href="commits_bugs_issues.xml"/>
-  <xi:include href="coding_conventions.xml"/>
-  <xi:include href="packaging_releases.xml"/>
-  <xi:include href="governance.xml"/>
+  <xi:include href="commits_bugs_issues.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="coding_conventions.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="packaging_releases.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="governance.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 </chapter>

@@ -316,7 +316,7 @@ org.deephacks.openconfig.spi.validation.properties</programlisting></para>
   </section>
   <section>
     <title>Third party library dependencies</title>
-    <para>There is a chance that external clients loads same library dependency with a different version (for a different purpose) in same class loader as Open Config. The external client will likely prefer their version of this dependency which may cause incompatibilities internally for Open Config. </para>
+    <para>There is a chance that external clients loads same library dependency with a different version (for a different purpose) in same class loader as the application. The external client will likely prefer their version of this dependency which may cause incompatibilities internally for Open Config. </para>
     <para>Third party library dependencies should therefore be clearly documented and  kept at minimum to avoid these problems. </para>
     <para>This rule does not apply for tests. </para>
     <para>Current third party library dependencies.</para>
