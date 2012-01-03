@@ -20,7 +20,7 @@
       <para><ulink url="http://www.eng.auburn.edu/~hendrix/comp6710/readings/Forgotten_Fundamentals_IEEE_Software_May_2001.pdf">Frequently Forgotten Fundamental Facts about Software Engineering</ulink> </para>
     </emphasis>
     <para>In some sense maintenance can be seen as a measure for preventing unintended change and defects through preventive measures and repairs. </para>
-    <para>One aspect of successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity suddenly become painfully obvious.   </para>
+    <para>One aspect of successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity suddenly become painfully obvious when trying to change applications.   </para>
   </section>
   <section id="features">
     <title>Features</title>
