@@ -33,7 +33,7 @@
         <listitem><para>Predictability and Clarity</para>It is possible to declaratively express the intents and rules under which configuration is valid. Violations are handled in a consistent and predictable way that does not affect application behaviour. Changes are applied and exposed to applications reliably.</listitem>
         <listitem>
           <para>Extendability and Portability</para>
-          <para>A diversity of  applications  in different shapes and sizes  running different platforms and technologies are anticipated to be supported.  Applications will have the freedom and flexibility to locally extend and customize a variety aspects if default behaviour is not suitable and still be able to manage configuration in a central and unified way.</para>
+          <para>A diversity of  applications  in different shapes and sizes  running different platforms and technologies are anticipated to be supported.  Applications will have the freedom and flexibility to locally extend and customize a variety aspects and still be able to manage configuration in a central and unified way.</para>
         </listitem>
         <listitem>
           <para>Performance and Scalability</para>
