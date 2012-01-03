@@ -70,7 +70,7 @@
                   <include name="**/*.jpg" />
                 </fileset>
               </copy>
-              <move file="target/site/pdf/index.pdf" tofile="target/site/pdf/openconfig-documentation.pdf" failonerror="false" />
+              <move file="target/site/pdf/index.pdf" tofile="target/site/pdf/tools4j-config-documentation.pdf" failonerror="false" />
             </postProcess>
           </configuration>
         </plugin>

@@ -14,27 +14,23 @@
           </includes>
         </fileSet>
         <fileSet>
-          <directory>docbkx/target/site</directory>
+          <directory>config-docbkx/target/site</directory>
           <outputDirectory></outputDirectory>
           <includes>
             <include>index.html</include>
           </includes>
         </fileSet>
         <fileSet>
-          <directory>docbkx/target/site/pdf</directory>
+          <directory>config-docbkx/target/site/pdf</directory>
           <outputDirectory>pdf</outputDirectory>
         </fileSet>
         <fileSet>
-          <directory>docbkx/target/site/html</directory>
+          <directory>config-docbkx/target/site/html</directory>
           <outputDirectory>html</outputDirectory>
         </fileSet>
         <fileSet>
-          <directory>api/target/site/apidocs</directory>
+          <directory>target/site/apidocs</directory>
           <outputDirectory>api-javadoc</outputDirectory>
-        </fileSet>
-        <fileSet>
-          <directory>spi/target/site/apidocs</directory>
-          <outputDirectory>spi-javadoc</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>
