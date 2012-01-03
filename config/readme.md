@@ -37,11 +37,11 @@ This distribution, as a whole, is licensed under the terms of the Apache License
 
 ## Documentation
 
-API JavaDoc can be generated from this directory using the following command:
+Javadoc for the public API can be generated from this directory using the following command:
 
     mvn javadoc:aggregate
 
-DocBook documentation can be generate into html and pdf from the condig-docbkx directoring using the following commands:
+DocBook documentation can be generated into html and pdf format from the config-docbkx directoring using the following commands:
 
     mvn docbkx:generate-pdf
     mvn docbkx:generate-html
