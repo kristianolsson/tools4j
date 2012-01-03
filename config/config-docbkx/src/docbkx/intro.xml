@@ -10,53 +10,53 @@
     <para>A key goal is to maximise developer and operator productivity by   unifying the way configuration is used and managed for Java-based enterprise applications.</para>
     <para>Applications are not required to run  Java SE, EE, OSGi, Spring, CDI or 
  any other runtime environment, programming model or framework. The aim is to integrate seamlessly with all of those without affecting  application interfaces.</para>
-    <para>
-      Features: 
-      <itemizedlist>
-        <listitem>
-          <para>..</para>
-        </listitem>
-        <listitem>
-          <para>..</para>
-        </listitem>
-        <listitem>
-          <para>..</para>
-        </listitem>
-        <listitem>
-          <para>..</para>
-        </listitem>
-        <listitem>
-          <para>..</para>
-        </listitem>
-      </itemizedlist>
-    </para>
   </section>
   <section id="overview">
     <title>Overview</title>
-    <para>
-        ....
+    <emphasis role="italic">
+      <para>&quot;Maintenance typically consumes about 40 to 80 percent (60 percent average) of software costs. Therefore, it is probably the most important life cycle phase.&quot;
+
     </para>
-    <mediaobject>
-      <imageobject role="fo">
-        <imagedata align="center" fileref="resources/images/design.png" format="PNG"/>
-      </imageobject>
-      <imageobject role="html">
-        <imagedata align="center" fileref="images/design.png" format="PNG"/>
-      </imageobject>
-      <caption>
-        <para>High Level Architecture</para>
-      </caption>
-    </mediaobject>
-    <para>
-     ...
-   </para>
+      <para><ulink url="http://www.eng.auburn.edu/~hendrix/comp6710/readings/Forgotten_Fundamentals_IEEE_Software_May_2001.pdf">Frequently Forgotten Fundamental Facts about Software Engineering</ulink> </para>
+    </emphasis>
+    <para>In some sense maintenance can be seen as a measure for preventing unintended change and defects through preventive measures and repairs. </para>
+    <para>One aspect of successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity suddenly become painfully obvious.   </para>
   </section>
   <section id="features">
     <title>Features</title>
-    <para>To be able to meet the goals</para>
+    <para>To fill a relevant need in the community and dynamically be able to manage configuration we believe that the following goals should be pursued. </para>
+    <para><itemizedlist>
+        <listitem>
+          <para>Productivity and Simplicity</para>
+          <para>Introducing and managing configuration must be non-intrusive and support developer productivity.  </para>
+        </listitem>
+        <listitem><para>Predictability and Clarity</para>It is possible to declaratively express the intents and rules under which configuration is valid. Violations are handled in a consistent and predictable way that does not affect application behaviour. Changes are applied and exposed to applications reliably.</listitem>
+        <listitem>
+          <para>Extendability and Portability</para>
+          <para>A diversity of  applications  in different shapes and sizes  running different platforms and technologies are anticipated to be supported.  Applications will have the freedom and flexibility to locally extend and customize a variety aspects if default behaviour is not suitable and still be able to manage configuration in a central and unified way.</para>
+        </listitem>
+        <listitem>
+          <para>Performance and Scalability</para>
+          <para>Configuration must be quickly accessible to be able to meet service-level agreements in environments of  scale.</para>
+        </listitem>
+      </itemizedlist></para>
   </section>
   <section>
     <title>Terminology</title>
     <para>TODO</para>
+  </section>
+  <section>
+    <title>Design</title>
+    <para><mediaobject>
+        <imageobject role="fo">
+          <imagedata align="center" fileref="resources/images/design.png" format="PNG"/>
+        </imageobject>
+        <imageobject role="html">
+          <imagedata align="center" fileref="images/design.png" format="PNG"/>
+        </imageobject>
+        <caption>
+          <para>High Level Architecture</para>
+        </caption>
+      </mediaobject></para>
   </section>
 </chapter>
