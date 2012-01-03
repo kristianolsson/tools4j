@@ -34,3 +34,15 @@ Issue Tracker   : https://github.com/deephacks/tools4j/issues
 ## Licensing
 
 This distribution, as a whole, is licensed under the terms of the Apache License, Version 2.0 (see license.txt).
+
+## Documentation
+
+API JavaDoc can be generated from this directory using the following command:
+
+    mvn javadoc:aggregate
+
+DocBook documentation can be generate into html and pdf from the condig-docbkx directoring using the following commands:
+
+    mvn docbkx:generate-pdf
+    mvn docbkx:generate-html
+`
