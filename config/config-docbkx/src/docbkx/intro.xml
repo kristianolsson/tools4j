@@ -6,9 +6,10 @@
   </para>
   <section id="mission">
     <title>Mission statement and motivation</title>
-    <para>
-      Tools4j Config...
-    </para>
+    <para>The mission of the project  is to  minimize the complexity around being able to dynamically  manage change   of behaviour for highly-available and long running server-side applications in a reliable and predictable way. </para>
+    <para>A key goal is to maximise developer and operator productivity by   unifying the way configuration is used and managed for Java-based enterprise applications.</para>
+    <para>Applications are not required to run  Java SE, EE, OSGi, Spring, CDI or 
+ any other runtime environment, programming model or framework. The aim is to integrate seamlessly with all of those without affecting  application interfaces.</para>
     <para>
       Features: 
       <itemizedlist>
@@ -52,34 +53,7 @@
   </section>
   <section id="features">
     <title>Features</title>
-    <programlisting role="JAVA">
-<![CDATA[import javax.ejb.EJB;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(Arquillian.class)
-public class InjectionTestCase {
-   @Deployment
-   public static JavaArchive createTestArchive() {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
-         .addClasses(GreetingManager.class, GreetingManagerBean.class);
-   }
-
-   @EJB
-   private GreetingManager greetingManager;
-
-   @Test
-   public void shouldBeAbleToInjectEJB() throws Exception {
-      String userName = "Earthlings";
-      Assert.assertEquals(Hello " + userName, greetingManager.greet(userName));
-   }
-}]]>
-    </programlisting>
+    <para>To be able to meet the goals</para>
   </section>
   <section>
     <title>Terminology</title>
