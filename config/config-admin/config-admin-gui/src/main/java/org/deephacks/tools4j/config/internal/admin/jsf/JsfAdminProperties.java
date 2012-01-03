@@ -11,17 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.internal.admin.jsf;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRef;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 
 public abstract class JsfAdminProperties implements Comparable<JsfAdminProperties> {
     public String getSimpleClassname() {

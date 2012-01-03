@@ -13,8 +13,8 @@
  */
 package org.deephacks.tools4j.config.internal.core.runtime;
 
-import static org.deephacks.tools4j.config.Events.CFG102_NOT_CONFIGURABLE;
-import static org.deephacks.tools4j.config.Events.CFG103_NO_ID;
+import static org.deephacks.tools4j.config.model.Events.CFG102_NOT_CONFIGURABLE;
+import static org.deephacks.tools4j.config.model.Events.CFG103_NO_ID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,9 +23,9 @@ import java.util.List;
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.Property;
-import org.deephacks.tools4j.config.Schema;
-import org.deephacks.tools4j.config.Schema.AbstractSchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaId;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaId;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.Converter;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;

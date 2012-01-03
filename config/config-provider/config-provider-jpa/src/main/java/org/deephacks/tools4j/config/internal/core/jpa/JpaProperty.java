@@ -28,7 +28,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 
 import com.google.common.base.Objects;
 

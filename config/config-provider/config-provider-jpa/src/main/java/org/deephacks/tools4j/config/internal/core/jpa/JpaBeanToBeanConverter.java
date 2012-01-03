@@ -13,8 +13,8 @@
  */
 package org.deephacks.tools4j.config.internal.core.jpa;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.Converter;
 

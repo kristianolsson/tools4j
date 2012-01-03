@@ -11,20 +11,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.model;
 
-import javax.annotation.ManagedBean;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.Collection;
+import java.util.Map;
 
-@Path("/confg-admin-rest")
-@ManagedBean
-public class RestEndpoint {
-    @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public void execute() {
+import org.deephacks.tools4j.config.model.Bean.BeanId;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
+public class BeanUtils {
+    public static final Map<BeanId, Bean> uniqueIndex(Collection<Bean> beans) {
+        return Maps.uniqueIndex(beans, new Function<Bean, BeanId>() {
+
+            @Override
+            public BeanId apply(Bean input) {
+                return input.getId();
+            }
+
+        });
 
     }
 }

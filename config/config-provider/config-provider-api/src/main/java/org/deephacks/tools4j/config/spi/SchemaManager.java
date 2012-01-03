@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-import org.deephacks.tools4j.config.Schema;
+import org.deephacks.tools4j.config.model.Schema;
 
 /**
  * SchemaManager is responsible for management of schemas.

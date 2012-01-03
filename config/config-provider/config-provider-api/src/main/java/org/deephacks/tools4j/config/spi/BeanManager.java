@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 /**
@@ -67,7 +67,7 @@ public abstract class BeanManager implements Serializable {
      * @param bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void create(Bean bean) throws AbortRuntimeException;
 
@@ -78,7 +78,7 @@ public abstract class BeanManager implements Serializable {
      * @param bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void create(Collection<Bean> beans) throws AbortRuntimeException;
 
@@ -98,7 +98,7 @@ public abstract class BeanManager implements Serializable {
      * 
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void set(Bean bean);
 
@@ -109,7 +109,7 @@ public abstract class BeanManager implements Serializable {
      * @param bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void set(Collection<Bean> bean) throws AbortRuntimeException;
 
@@ -134,7 +134,7 @@ public abstract class BeanManager implements Serializable {
      *            provided with it.
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void merge(Bean bean) throws AbortRuntimeException;
 
@@ -145,7 +145,7 @@ public abstract class BeanManager implements Serializable {
      * @param bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void merge(Collection<Bean> bean) throws AbortRuntimeException;
 
@@ -163,7 +163,7 @@ public abstract class BeanManager implements Serializable {
      * @return A set of beans
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract Bean get(BeanId id) throws AbortRuntimeException;
 
@@ -180,7 +180,7 @@ public abstract class BeanManager implements Serializable {
      * @return A set of beans.
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract Map<BeanId, Bean> list(String schemaName) throws AbortRuntimeException;
 
@@ -200,7 +200,7 @@ public abstract class BeanManager implements Serializable {
      * @param id delete this bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.  
+     * {@link org.deephacks.tools4j.config.model.Events}.  
      */
     public abstract void delete(BeanId id) throws AbortRuntimeException;
 
@@ -211,7 +211,7 @@ public abstract class BeanManager implements Serializable {
      * @param bean
      * @exception AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}. 
+     * {@link org.deephacks.tools4j.config.model.Events}. 
      */
     public abstract void delete(String schmaName, Collection<String> instanceId)
             throws AbortRuntimeException;

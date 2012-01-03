@@ -13,9 +13,9 @@
  */
 package org.deephacks.tools4j.config.internal.core.xml;
 
-import static org.deephacks.tools4j.config.Events.CFG101_SCHEMA_NOT_EXIST;
-import static org.deephacks.tools4j.config.Events.CFG201_XML_STORAGE_PROP_MISSING;
-import static org.deephacks.tools4j.config.Events.CFG202_XML_SCHEMA_FILE_MISSING;
+import static org.deephacks.tools4j.config.model.Events.CFG101_SCHEMA_NOT_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG201_XML_STORAGE_PROP_MISSING;
+import static org.deephacks.tools4j.config.model.Events.CFG202_XML_SCHEMA_FILE_MISSING;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,8 +33,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
-import org.deephacks.tools4j.config.Schema;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaAdapter.XmlSchemas;
+import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;

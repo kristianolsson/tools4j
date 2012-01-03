@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.test;
 
 import java.io.File;
 import java.net.URL;
@@ -22,7 +22,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
+import org.deephacks.tools4j.config.Multiplicity;
+import org.deephacks.tools4j.config.Property;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.types.DateTime;
 import org.deephacks.tools4j.support.types.DurationTime;
 

@@ -13,14 +13,14 @@
  */
 package org.deephacks.tools4j.config.internal.core.jpa;
 
-import org.deephacks.tools4j.config.ConfigTestData.Child;
-import org.deephacks.tools4j.config.ConfigTestData.Grandfather;
-import org.deephacks.tools4j.config.ConfigTestData.Parent;
 import org.deephacks.tools4j.config.RuntimeContext;
-import org.deephacks.tools4j.config.XmlStorageHelper;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
+import org.deephacks.tools4j.config.test.ConfigTestData.Child;
+import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
+import org.deephacks.tools4j.config.test.ConfigTestData.Parent;
 import org.deephacks.tools4j.support.lookup.MockLookup;
 import org.junit.Before;
 import org.junit.Test;

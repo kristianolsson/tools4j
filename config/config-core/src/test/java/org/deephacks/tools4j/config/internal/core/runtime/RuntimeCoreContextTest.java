@@ -18,13 +18,13 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 import java.util.Arrays;
 import java.util.List;
 
-import org.deephacks.tools4j.config.ConfigDefaultSetup;
-import org.deephacks.tools4j.config.ConfigTestData.Grandfather;
-import org.deephacks.tools4j.config.XmlStorageHelper;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.test.ConfigDefaultSetup;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
+import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
 import org.deephacks.tools4j.support.lookup.MockLookup;
 import org.junit.Before;
 import org.junit.Test;

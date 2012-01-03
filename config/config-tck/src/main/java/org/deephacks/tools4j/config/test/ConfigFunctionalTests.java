@@ -11,16 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.test;
 
-import static org.deephacks.tools4j.config.BeanUnitils.toBean;
-import static org.deephacks.tools4j.config.BeanUnitils.toBeans;
-import static org.deephacks.tools4j.config.Events.CFG101;
-import static org.deephacks.tools4j.config.Events.CFG105;
-import static org.deephacks.tools4j.config.Events.CFG106;
-import static org.deephacks.tools4j.config.Events.CFG301;
-import static org.deephacks.tools4j.config.Events.CFG302;
-import static org.deephacks.tools4j.config.Events.CFG304;
+import static org.deephacks.tools4j.config.model.Events.CFG101;
+import static org.deephacks.tools4j.config.model.Events.CFG105;
+import static org.deephacks.tools4j.config.model.Events.CFG106;
+import static org.deephacks.tools4j.config.model.Events.CFG301;
+import static org.deephacks.tools4j.config.model.Events.CFG302;
+import static org.deephacks.tools4j.config.model.Events.CFG304;
+import static org.deephacks.tools4j.config.test.BeanUnitils.toBean;
+import static org.deephacks.tools4j.config.test.BeanUnitils.toBeans;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -34,8 +34,9 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.AssertionFailedError;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.ConfigTestData.Grandfather;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.junit.Before;
 import org.junit.Test;

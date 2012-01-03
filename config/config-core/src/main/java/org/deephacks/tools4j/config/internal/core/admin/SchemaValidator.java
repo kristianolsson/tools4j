@@ -18,11 +18,11 @@ import static org.deephacks.tools4j.support.reflections.Reflections.forName;
 import java.util.Collection;
 import java.util.List;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Events;
-import org.deephacks.tools4j.config.Schema;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Events;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.support.conversion.Conversion;
 
 public class SchemaValidator {

@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.deephacks.tools4j.config.Events;
-import org.deephacks.tools4j.config.Schema;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaId;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
-import org.deephacks.tools4j.config.XmlStorageHelper;
+import org.deephacks.tools4j.config.model.Events;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.SchemaId;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.junit.Before;
 import org.junit.Test;

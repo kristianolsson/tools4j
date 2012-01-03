@@ -11,13 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.admin;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 /**
@@ -63,26 +65,12 @@ public abstract class AdminContext {
     }
 
     /**
-     * Return the admin context.
-     * 
-     * @param user
-     *            This user is not intended to be used for authentication, but
-     *            for access control. User identification can also be used
-     *            to monitor changes.
-     * 
-     * @return
-     */
-    public AdminContext getManager(AdminConfigUser user) {
-        return null;
-    }
-
-    /**
      * Get a single bean as identified by the id. 
      *
      * @param beanId
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract Bean get(BeanId beanId) throws AbortRuntimeException;
 
@@ -93,7 +81,7 @@ public abstract class AdminContext {
      * @return bean of matching type.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract List<Bean> list(String schemaName) throws AbortRuntimeException;
 
@@ -105,7 +93,7 @@ public abstract class AdminContext {
      * @return bean of matching type.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract List<Bean> list(String schemaName, Collection<String> instanceIds)
             throws AbortRuntimeException;
@@ -115,7 +103,7 @@ public abstract class AdminContext {
      * @param adminBean
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void create(Bean adminBean) throws AbortRuntimeException;
 
@@ -124,7 +112,7 @@ public abstract class AdminContext {
      * @param adminBeans
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void create(Collection<Bean> adminBeans) throws AbortRuntimeException;
 
@@ -140,7 +128,7 @@ public abstract class AdminContext {
      * @param bean A bean with the values to be written.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void set(Bean bean) throws AbortRuntimeException;
 
@@ -152,7 +140,7 @@ public abstract class AdminContext {
      * </p>
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void set(Collection<Bean> beans) throws AbortRuntimeException;
 
@@ -173,7 +161,7 @@ public abstract class AdminContext {
      * @param bean The bean to be merged.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void merge(Bean bean) throws AbortRuntimeException;
 
@@ -187,7 +175,7 @@ public abstract class AdminContext {
      *  
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void merge(Collection<Bean> beans) throws AbortRuntimeException;
 
@@ -205,7 +193,7 @@ public abstract class AdminContext {
      * @param bean to be deleted
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void delete(BeanId bean) throws AbortRuntimeException;
 
@@ -216,7 +204,7 @@ public abstract class AdminContext {
      * @param instanceIds instance ids to be deleted.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
      */
     public abstract void delete(String schemaName, Collection<String> instanceIds)
             throws AbortRuntimeException;
@@ -228,7 +216,7 @@ public abstract class AdminContext {
       *@return a map of schemas indexed on schema name.
      * @throws AbortRuntimeException is thrown when the system itself cannot 
      * recover from a certain event and must therefore abort execution, see 
-     * {@link org.deephacks.tools4j.config.Events}.
+     * {@link org.deephacks.tools4j.config.model.Events}.
       */
     public abstract Map<String, Schema> getSchemas();
 

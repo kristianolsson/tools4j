@@ -13,12 +13,12 @@
  */
 package org.deephacks.tools4j.config.internal.core.xml;
 
-import static org.deephacks.tools4j.config.Events.CFG201_XML_STORAGE_PROP_MISSING;
-import static org.deephacks.tools4j.config.Events.CFG202_XML_SCHEMA_FILE_MISSING;
-import static org.deephacks.tools4j.config.Events.CFG301_MISSING_RUNTIME_REF;
-import static org.deephacks.tools4j.config.Events.CFG302_CANNOT_DELETE_BEAN;
-import static org.deephacks.tools4j.config.Events.CFG303_BEAN_ALREADY_EXIST;
-import static org.deephacks.tools4j.config.Events.CFG304_BEAN_DOESNT_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG201_XML_STORAGE_PROP_MISSING;
+import static org.deephacks.tools4j.config.model.Events.CFG202_XML_SCHEMA_FILE_MISSING;
+import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
+import static org.deephacks.tools4j.config.model.Events.CFG302_CANNOT_DELETE_BEAN;
+import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,10 +38,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.Events;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanAdapter.XmlBeans;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Events;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;

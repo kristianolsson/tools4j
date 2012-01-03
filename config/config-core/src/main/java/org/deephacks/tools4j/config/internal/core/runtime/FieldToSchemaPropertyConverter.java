@@ -13,7 +13,7 @@
  */
 package org.deephacks.tools4j.config.internal.core.runtime;
 
-import static org.deephacks.tools4j.config.Events.CFG104_UNSUPPORTED_PROPERTY;
+import static org.deephacks.tools4j.config.model.Events.CFG104_UNSUPPORTED_PROPERTY;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Property;
-import org.deephacks.tools4j.config.Schema.AbstractSchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRef;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.ConversionException;
 import org.deephacks.tools4j.support.conversion.Converter;

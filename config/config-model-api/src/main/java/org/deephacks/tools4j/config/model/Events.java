@@ -11,13 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.model;
 
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Collection;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.deephacks.tools4j.support.event.Event;
 import org.deephacks.tools4j.support.event.EventDoc;

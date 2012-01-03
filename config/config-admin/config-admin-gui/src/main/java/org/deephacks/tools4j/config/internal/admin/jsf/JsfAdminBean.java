@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.internal.admin.jsf;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,18 +20,21 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.JsfAdminProperties.BasicProperty;
-import org.deephacks.tools4j.config.JsfAdminProperties.BasicPropertyList;
-import org.deephacks.tools4j.config.JsfAdminProperties.EnumProperty;
-import org.deephacks.tools4j.config.JsfAdminProperties.EnumPropertyList;
-import org.deephacks.tools4j.config.JsfAdminProperties.IdProperty;
-import org.deephacks.tools4j.config.JsfAdminProperties.RefProperty;
-import org.deephacks.tools4j.config.JsfAdminProperties.RefPropertyList;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRef;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.admin.AdminContext;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.BasicProperty;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.BasicPropertyList;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.EnumProperty;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.EnumPropertyList;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.IdProperty;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.RefProperty;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.RefPropertyList;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

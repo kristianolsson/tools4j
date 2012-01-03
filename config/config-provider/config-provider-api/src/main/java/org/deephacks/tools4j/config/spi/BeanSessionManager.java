@@ -20,8 +20,8 @@ import java.util.Properties;
 
 import javax.naming.Name;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 
 /**
  * Maintains a list of Beans affected by operations and coordinates

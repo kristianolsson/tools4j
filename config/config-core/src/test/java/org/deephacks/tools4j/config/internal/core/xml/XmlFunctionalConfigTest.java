@@ -13,10 +13,10 @@
  */
 package org.deephacks.tools4j.config.internal.core.xml;
 
-import org.deephacks.tools4j.config.ConfigFunctionalTests;
-import org.deephacks.tools4j.config.XmlStorageHelper;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.test.ConfigFunctionalTests;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.deephacks.tools4j.support.lookup.MockLookup;
 
 public class XmlFunctionalConfigTest extends ConfigFunctionalTests {

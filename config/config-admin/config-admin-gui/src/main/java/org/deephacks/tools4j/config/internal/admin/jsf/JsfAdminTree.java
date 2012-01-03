@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.internal.admin.jsf;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +21,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import org.deephacks.tools4j.config.admin.AdminContext;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;

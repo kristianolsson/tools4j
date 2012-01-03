@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.XmlStorageHelper;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.junit.Before;
 import org.junit.Test;
 

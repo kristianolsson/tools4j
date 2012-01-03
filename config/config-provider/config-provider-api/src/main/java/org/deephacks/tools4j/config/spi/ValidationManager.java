@@ -15,7 +15,7 @@ package org.deephacks.tools4j.config.spi;
 
 import java.util.Collection;
 
-import org.deephacks.tools4j.config.Bean;
+import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 /**

@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
-import org.deephacks.tools4j.config.ConfigFunctionalTests;
-import org.deephacks.tools4j.config.XmlStorageHelper;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.test.ConfigFunctionalTests;
+import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.io.FileUtils;
 import org.deephacks.tools4j.support.lookup.MockLookup;

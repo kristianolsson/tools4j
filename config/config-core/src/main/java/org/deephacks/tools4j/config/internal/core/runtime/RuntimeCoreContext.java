@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
 import org.deephacks.tools4j.config.Config;
-import org.deephacks.tools4j.config.Events;
 import org.deephacks.tools4j.config.RuntimeContext;
-import org.deephacks.tools4j.config.Schema;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Events;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.conversion.Conversion;

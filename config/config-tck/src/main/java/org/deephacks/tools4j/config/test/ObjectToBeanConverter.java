@@ -11,13 +11,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.test;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
+import org.deephacks.tools4j.config.Property;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.Converter;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;

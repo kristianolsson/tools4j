@@ -18,8 +18,8 @@ import java.util.Collection;
 
 import javax.persistence.PersistenceException;
 
-import org.deephacks.tools4j.config.Bean.BeanId;
-import org.deephacks.tools4j.config.Events;
+import org.deephacks.tools4j.config.model.Events;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.eclipse.persistence.exceptions.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -13,10 +13,6 @@
  */
 package org.deephacks.tools4j.config.internal.core.jpa;
 
-import static org.deephacks.tools4j.config.BeanUtils.uniqueIndex;
-import static org.deephacks.tools4j.config.Events.CFG301_MISSING_RUNTIME_REF;
-import static org.deephacks.tools4j.config.Events.CFG303_BEAN_ALREADY_EXIST;
-import static org.deephacks.tools4j.config.Events.CFG304_BEAN_DOESNT_EXIST;
 import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator.translateDelete;
 import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator.translateMerge;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.deleteJpaBean;
@@ -29,6 +25,10 @@ import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteP
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperty;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReference;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReferences;
+import static org.deephacks.tools4j.config.model.BeanUtils.uniqueIndex;
+import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
+import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,8 +37,8 @@ import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
-import org.deephacks.tools4j.config.Bean;
-import org.deephacks.tools4j.config.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.conversion.Conversion;

@@ -11,10 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.test;
 
 import java.util.Collection;
 
+import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.support.conversion.Conversion;
 
 import com.google.common.collect.Lists;

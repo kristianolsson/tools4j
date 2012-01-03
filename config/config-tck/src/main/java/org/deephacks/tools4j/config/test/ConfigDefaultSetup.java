@@ -11,15 +11,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.config;
+package org.deephacks.tools4j.config.test;
 
-import static org.deephacks.tools4j.config.BeanUnitils.toBeans;
+import static org.deephacks.tools4j.config.test.BeanUnitils.toBeans;
 
 import java.util.Collection;
 
-import org.deephacks.tools4j.config.ConfigTestData.Child;
-import org.deephacks.tools4j.config.ConfigTestData.Grandfather;
-import org.deephacks.tools4j.config.ConfigTestData.Parent;
+import org.deephacks.tools4j.config.RuntimeContext;
+import org.deephacks.tools4j.config.admin.AdminContext;
+import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.test.ConfigTestData.Child;
+import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
+import org.deephacks.tools4j.config.test.ConfigTestData.Parent;
 
 import com.google.common.collect.ImmutableList;
 

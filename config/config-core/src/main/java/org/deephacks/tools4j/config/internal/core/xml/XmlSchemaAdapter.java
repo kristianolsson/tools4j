@@ -22,12 +22,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.deephacks.tools4j.config.Schema;
-import org.deephacks.tools4j.config.Schema.SchemaProperty;
-import org.deephacks.tools4j.config.Schema.SchemaId;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyList;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRef;
-import org.deephacks.tools4j.config.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.SchemaId;
+import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 
 public class XmlSchemaAdapter {
     @XmlRootElement(name = "schema-xml")
