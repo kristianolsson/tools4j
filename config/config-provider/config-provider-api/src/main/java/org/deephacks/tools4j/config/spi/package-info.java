@@ -6,6 +6,7 @@
 * <p>
 * Providers are free to implement any SPI. Such third-party services can be registered 
 * and automatically bind to the core functionality at when the application is loaded.
+* The mechanism used for this purpose is the standard {@link java.util.ServiceLoader}.
 * <p>
 * A Test Compability Kit (TCK) is available for providers to verify that their 
 * implementation behaves correctly.
