@@ -72,7 +72,6 @@ public class JpaBeanManager extends BeanManager {
             rollback();
             throw e;
         }
-
     }
 
     @Override
@@ -91,209 +90,6 @@ public class JpaBeanManager extends BeanManager {
             rollback();
             throw e;
         }
-    }
-
-    @Override
-    public void delete(BeanId id) {
-        try {
-            begin();
-            deleteJpaBean(id);
-            commit();
-        } catch (PersistenceException e) {
-            rollback();
-            translateDelete(Arrays.asList(id), e);
-        } catch (DatabaseException e) {
-            rollback();
-            translateDelete(Arrays.asList(id), e);
-
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-    }
-
-    @Override
-    public void delete(String schemaName, Collection<String> ids) {
-        try {
-            begin();
-            for (String id : ids) {
-                deleteJpaBean(BeanId.create(id, schemaName));
-            }
-            commit();
-        } catch (PersistenceException e) {
-            rollback();
-            translateDelete(ids, schemaName, e);
-        } catch (DatabaseException e) {
-            rollback();
-            translateDelete(ids, schemaName, e);
-
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-    }
-
-    @Override
-    public Bean get(BeanId id) {
-        try {
-            begin();
-            JpaBean bean = findJpaBean(id);
-            if (bean == null) {
-                throw CFG304_BEAN_DOESNT_EXIST(id);
-            }
-            commit();
-            return conversion.convert(bean, Bean.class);
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-    }
-
-    @Override
-    public Map<BeanId, Bean> list(String schemaName) {
-        try {
-            begin();
-            List<JpaBean> beans = findJpaBeans(schemaName);
-            Map<BeanId, Bean> map = toBeans(beans);
-            commit();
-            return map;
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-    }
-
-    @Override
-    public void merge(Bean bean) {
-        try {
-            begin();
-            JpaBean stored = findJpaBean(bean.getId());
-            if (stored == null) {
-                throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
-            }
-            getEm().detach(stored);
-            for (String name : bean.getPropertyNames()) {
-                deleteProperty(stored.getId(), name);
-                List<String> values = bean.getValues(name);
-                if (values == null) {
-                    continue;
-                }
-                for (String value : values) {
-                    getEm().persist(new JpaProperty(stored.getId(), name, value));
-                }
-            }
-
-            for (String name : bean.getReferenceNames()) {
-                deleteReference(stored.getId(), name);
-                List<BeanId> refs = bean.getReference(name);
-                if (refs == null) {
-                    continue;
-                }
-                for (BeanId beanId : refs) {
-                    JpaBean target = findJpaBean(beanId);
-                    if (target == null) {
-                        throw CFG301_MISSING_RUNTIME_REF(bean.getId(), beanId);
-                    }
-                    getEm().persist(new JpaRef(bean.getId(), target.getId(), name));
-                }
-            }
-            commit();
-        } catch (PersistenceException e) {
-            rollback();
-            log.debug("Merge failed.", e);
-            translateMerge(bean.getId(), e);
-        } catch (Throwable e) {
-            rollback();
-            log.debug("Merge failed.", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public void merge(Collection<Bean> beans) {
-        try {
-            begin();
-            for (Bean bean : beans) {
-                JpaBean stored = findJpaBean(bean.getId());
-                if (stored == null) {
-                    throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
-                }
-                getEm().detach(stored);
-                for (String name : bean.getPropertyNames()) {
-                    deleteProperty(stored.getId(), name);
-                    List<String> values = bean.getValues(name);
-                    if (values == null) {
-                        continue;
-                    }
-                    for (String v : values) {
-                        getEm().persist(new JpaProperty(stored.getId(), name, v));
-                    }
-                }
-
-                for (String name : bean.getReferenceNames()) {
-                    deleteReference(stored.getId(), name);
-                    List<BeanId> refs = bean.getReference(name);
-                    if (refs == null) {
-                        continue;
-                    }
-                    for (BeanId beanId : refs) {
-                        getEm().persist(new JpaRef(bean.getId(), beanId, name));
-                    }
-                }
-                getEm().merge(stored);
-
-            }
-            commit();
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-
-    }
-
-    @Override
-    public void set(Bean bean) {
-        try {
-            begin();
-            JpaBean stored = findJpaBean(bean.getId());
-            if (stored == null) {
-                throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
-            }
-            deleteProperties(bean.getId());
-            deleteReferences(bean.getId());
-            createJpaProperties(bean);
-            createJpaRefs(bean);
-            commit();
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-
-    }
-
-    @Override
-    public void set(Collection<Bean> beans) {
-        try {
-            begin();
-            for (Bean bean : beans) {
-                JpaBean stored = findJpaBean(bean.getId());
-                if (stored == null) {
-                    throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
-                }
-                deleteProperties(bean.getId());
-                deleteReferences(bean.getId());
-                createJpaProperties(bean);
-                createJpaRefs(bean);
-            }
-            commit();
-        } catch (Throwable e) {
-            rollback();
-            throw e;
-        }
-    }
-
-    private Map<BeanId, Bean> toBeans(List<JpaBean> jpabeans) {
-        return uniqueIndex(conversion.convert(jpabeans, Bean.class));
     }
 
     private JpaBean createJpaBean(Bean bean) {
@@ -334,4 +130,187 @@ public class JpaBeanManager extends BeanManager {
             }
         }
     }
+
+    @Override
+    public void delete(BeanId id) {
+        try {
+            begin();
+            deleteJpaBean(id);
+            commit();
+        } catch (PersistenceException e) {
+            rollback();
+            translateDelete(Arrays.asList(id), e);
+        } catch (DatabaseException e) {
+            rollback();
+            translateDelete(Arrays.asList(id), e);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public void delete(String schemaName, Collection<String> ids) {
+        try {
+            begin();
+            for (String id : ids) {
+                deleteJpaBean(BeanId.create(id, schemaName));
+            }
+            commit();
+        } catch (PersistenceException e) {
+            rollback();
+            translateDelete(ids, schemaName, e);
+        } catch (DatabaseException e) {
+            rollback();
+            translateDelete(ids, schemaName, e);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public Bean get(BeanId id) {
+        try {
+            begin();
+            JpaBean bean = findJpaBean(id);
+            if (bean == null) {
+                throw CFG304_BEAN_DOESNT_EXIST(id);
+            }
+            commit();
+            return conversion.convert(bean, Bean.class);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public Map<BeanId, Bean> list(String schemaName) {
+        try {
+            begin();
+            List<JpaBean> beans = findJpaBeans(schemaName);
+            Map<BeanId, Bean> map = toBeans(beans);
+            commit();
+            return map;
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public void merge(Bean bean) {
+        try {
+            begin();
+            mergeJpaBean(bean);
+            commit();
+        } catch (PersistenceException e) {
+            rollback();
+            log.debug("Merge failed.", e);
+            translateMerge(bean.getId(), e);
+        } catch (Throwable e) {
+            rollback();
+            log.debug("Merge failed.", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void merge(Collection<Bean> beans) {
+        try {
+            begin();
+            for (Bean bean : beans) {
+                mergeJpaBean(bean);
+            }
+            commit();
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+
+    }
+
+    private void mergeJpaBean(Bean bean) {
+        JpaBean stored = findJpaBean(bean.getId());
+        if (stored == null) {
+            throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
+        }
+        getEm().detach(stored);
+        mergeProperties(bean, stored);
+        mergeReferences(bean, stored);
+    }
+
+    private void mergeReferences(Bean bean, JpaBean stored) {
+        for (String name : bean.getReferenceNames()) {
+            deleteReference(stored.getId(), name);
+            List<BeanId> refs = bean.getReference(name);
+            if (refs == null) {
+                continue;
+            }
+            for (BeanId beanId : refs) {
+                JpaBean target = findJpaBean(beanId);
+                if (target == null) {
+                    throw CFG301_MISSING_RUNTIME_REF(bean.getId(), beanId);
+                }
+                getEm().persist(new JpaRef(bean.getId(), target.getId(), name));
+            }
+        }
+    }
+
+    private void mergeProperties(Bean bean, JpaBean stored) {
+        for (String name : bean.getPropertyNames()) {
+            deleteProperty(stored.getId(), name);
+            List<String> values = bean.getValues(name);
+            if (values == null) {
+                continue;
+            }
+            for (String value : values) {
+                getEm().persist(new JpaProperty(stored.getId(), name, value));
+            }
+        }
+    }
+
+    @Override
+    public void set(Bean bean) {
+        try {
+            begin();
+            setJpaBean(bean);
+            commit();
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+
+    }
+
+    @Override
+    public void set(Collection<Bean> beans) {
+        try {
+            begin();
+            for (Bean bean : beans) {
+                setJpaBean(bean);
+            }
+            commit();
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    private void setJpaBean(Bean bean) {
+        JpaBean stored = findJpaBean(bean.getId());
+        if (stored == null) {
+            throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
+        }
+        deleteProperties(bean.getId());
+        deleteReferences(bean.getId());
+        createJpaProperties(bean);
+        createJpaRefs(bean);
+    }
+
+    private Map<BeanId, Bean> toBeans(List<JpaBean> jpabeans) {
+        return uniqueIndex(conversion.convert(jpabeans, Bean.class));
+    }
+
 }
