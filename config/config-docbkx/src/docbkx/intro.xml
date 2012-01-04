@@ -28,7 +28,8 @@
     <para><itemizedlist>
         <listitem>
           <para>Productivity and Simplicity</para>
-          <para>Introducing and managing configuration must be non-intrusive and support developer productivity.  </para>
+          <para>Introducing and managing configuration must be intuitive and non-intrusive in order to support developer productivity.  </para>
+          <para>Developers can reuse configuration not caring where and how it is stored, if it is valid, how to cache and keep it consistent. Configuration is strongly-typed and loosely coupled.</para>
         </listitem>
         <listitem><para>Predictability and Clarity</para>It is possible to declaratively express the intents and rules under which configuration is valid. Violations are handled in a consistent and predictable way that does not affect application behaviour. Changes are applied and exposed to applications reliably.</listitem>
         <listitem>
@@ -43,7 +44,19 @@
   </section>
   <section>
     <title>Terminology</title>
-    <para>TODO</para>
+    <para>Configuration is a very general term that may have different meaning depending on who  you ask and there is little meaning   in trying to categorize the ambiguity  between configuration and provisioning data.</para>
+    <para>It is however useful to agree on a set of principles and constraints that this data have, which  we broadly call  configuration, in order to put things in perspective.</para>
+    <itemizedlist>
+      <listitem>
+        <para>Configuration is considered read-mostly data. Changes are made by human application operators/administrators having different roles in the organization that provide the application. </para>
+      </listitem>
+      <listitem>
+        <para>Configuration never change from  events triggered by machine-to-machine communication or end-users/customers interaction with the application.</para>
+      </listitem>
+      <listitem>
+        <para>Configuration is considered read-only from an application developer perspective.</para>
+      </listitem>
+    </itemizedlist>
   </section>
   <section>
     <title>Design</title>
