@@ -49,6 +49,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JpaBeanManager is responsible for driving transactions, joining/starting and rolling them back.
+ * 
+ * At the moment this Bean Manager is compatible with EclipseLink+Hibernate and MySQL+Postgresql and can
+ * be configured to run in any such combination.
+ * 
+ *  TODO: Mention container-managed vs standalone deployment. Datasource integration and JTA setups.
  */
 @ServiceProvider(service = BeanManager.class)
 public class JpaBeanManager extends BeanManager {
