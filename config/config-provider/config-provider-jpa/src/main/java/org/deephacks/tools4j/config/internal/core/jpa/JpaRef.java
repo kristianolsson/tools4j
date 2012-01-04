@@ -14,7 +14,7 @@
 package org.deephacks.tools4j.config.internal.core.jpa;
 
 import static com.google.common.base.Objects.equal;
-import static org.deephacks.tools4j.config.internal.core.jpa.JpaContextUtils.getEm;
+import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.getEm;
 
 import java.io.Serializable;
 import java.util.List;

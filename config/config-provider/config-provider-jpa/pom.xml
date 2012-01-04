@@ -32,6 +32,10 @@
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
       <artifactId>config-tck</artifactId>
     </dependency>
     <dependency>
@@ -46,7 +50,6 @@
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
-      <version>1.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>

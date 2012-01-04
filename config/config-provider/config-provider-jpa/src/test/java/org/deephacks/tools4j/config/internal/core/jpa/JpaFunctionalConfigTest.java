@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
@@ -33,6 +35,8 @@ import org.deephacks.tools4j.support.io.FileUtils;
 import org.deephacks.tools4j.support.lookup.MockLookup;
 import org.deephacks.tools4j.support.test.EclipseParameterized;
 import org.deephacks.tools4j.support.test.JUnitUtils;
+import org.deephacks.tools4j.support.web.jpa.EntityManagerFactoryCreator;
+import org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -49,6 +53,7 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(value = EclipseParameterized.class)
 public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
+    public static final String UNIT_NAME = "tools4j-config-jpa-unit";
     /**
      * Database providers
      */
@@ -74,10 +79,15 @@ public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
     public static final String OPENJPA = "openjpa";
     public static final String DATANUCLEUS = "datanucleus";
     public static final String OBJECTDB = "objectdb";
+    private EntityManagerFactory factory;
 
     public JpaFunctionalConfigTest(ProviderCombination parameter) {
         if (!parameter.equals(CURRENT_COMBO)) {
-            JpaContextUtils.closeFactory();
+            if (factory != null) {
+                ThreadLocalEntityManager.close();
+                factory.close();
+                factory = null;
+            }
         }
         CURRENT_COMBO = parameter;
         this.parameter = parameter;
@@ -97,8 +107,13 @@ public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
         File targetDir = JUnitUtils.getMavenProjectChildFile(JpaBeanManager.class, "target");
         File jpaProperties = new File(targetDir, "jpa.properties");
         parameter.jpaProvider.write(jpaProperties);
-        System.setProperty(JpaContextUtils.JPA_PROPERTIES_FILE, jpaProperties.getAbsolutePath());
+        System.setProperty(EntityManagerFactoryCreator.JPA_PROPERTIES_FILE,
+                jpaProperties.getAbsolutePath());
         parameter.database.initalize();
+        if (factory == null) {
+            factory = EntityManagerFactoryCreator.createFactory(UNIT_NAME);
+            ThreadLocalEntityManager.createEm(factory);
+        }
     }
 
     // Unique jpa/database provider combination for a specifci test execution.

@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>support-root</artifactId>
+    <version>1</version>
+  </parent>
+  <artifactId>support-web</artifactId>
+  <version>0.0.x</version>
+  <packaging>jar</packaging>
+  <name>Tools4j Support Java Web</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-jse</artifactId>
+      <version>0.0.x</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>

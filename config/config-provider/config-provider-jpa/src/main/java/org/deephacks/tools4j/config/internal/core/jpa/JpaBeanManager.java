@@ -18,9 +18,6 @@ import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.deleteJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBeans;
-import static org.deephacks.tools4j.config.internal.core.jpa.JpaContextUtils.commit;
-import static org.deephacks.tools4j.config.internal.core.jpa.JpaContextUtils.getEm;
-import static org.deephacks.tools4j.config.internal.core.jpa.JpaContextUtils.rollback;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperties;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperty;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReference;
@@ -29,6 +26,10 @@ import static org.deephacks.tools4j.config.model.BeanUtils.uniqueIndex;
 import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
 import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
 import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
+import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.begin;
+import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.commit;
+import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.getEm;
+import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.rollback;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,6 +64,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void create(Bean bean) {
         try {
+            begin();
             createJpaBean(bean);
             createJpaRefs(bean);
             commit();
@@ -73,48 +75,10 @@ public class JpaBeanManager extends BeanManager {
 
     }
 
-    private JpaBean createJpaBean(Bean bean) {
-        JpaBean jpaBean = findJpaBean(bean.getId());
-        if (jpaBean != null) {
-            throw CFG303_BEAN_ALREADY_EXIST(bean.getId());
-        }
-        jpaBean = new JpaBean(bean);
-        getEm().persist(jpaBean);
-        createJpaProperties(bean);
-        return jpaBean;
-    }
-
-    private void createJpaRefs(Bean bean) {
-        for (String name : bean.getReferenceNames()) {
-            List<BeanId> refs = bean.getReference(name);
-            if (refs == null) {
-                continue;
-            }
-            for (BeanId id : refs) {
-                JpaBean target = findJpaBean(id);
-                if (target == null) {
-                    throw CFG301_MISSING_RUNTIME_REF(bean.getId(), id);
-                }
-                getEm().persist(new JpaRef(bean.getId(), target.getId(), name));
-            }
-        }
-    }
-
-    private void createJpaProperties(Bean bean) {
-        for (String name : bean.getPropertyNames()) {
-            List<String> values = bean.getValues(name);
-            if (values == null) {
-                continue;
-            }
-            for (String value : values) {
-                getEm().persist(new JpaProperty(bean.getId(), name, value));
-            }
-        }
-    }
-
     @Override
     public void create(Collection<Bean> beans) {
         try {
+            begin();
             for (Bean bean : beans) {
                 createJpaBean(bean);
             }
@@ -132,6 +96,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void delete(BeanId id) {
         try {
+            begin();
             deleteJpaBean(id);
             commit();
         } catch (PersistenceException e) {
@@ -142,6 +107,7 @@ public class JpaBeanManager extends BeanManager {
             translateDelete(Arrays.asList(id), e);
 
         } catch (Throwable e) {
+            rollback();
             throw e;
         }
     }
@@ -149,11 +115,11 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void delete(String schemaName, Collection<String> ids) {
         try {
+            begin();
             for (String id : ids) {
                 deleteJpaBean(BeanId.create(id, schemaName));
             }
             commit();
-            rollback();
         } catch (PersistenceException e) {
             rollback();
             translateDelete(ids, schemaName, e);
@@ -162,6 +128,7 @@ public class JpaBeanManager extends BeanManager {
             translateDelete(ids, schemaName, e);
 
         } catch (Throwable e) {
+            rollback();
             throw e;
         }
     }
@@ -169,6 +136,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public Bean get(BeanId id) {
         try {
+            begin();
             JpaBean bean = findJpaBean(id);
             if (bean == null) {
                 throw CFG304_BEAN_DOESNT_EXIST(id);
@@ -184,6 +152,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public Map<BeanId, Bean> list(String schemaName) {
         try {
+            begin();
             List<JpaBean> beans = findJpaBeans(schemaName);
             Map<BeanId, Bean> map = toBeans(beans);
             commit();
@@ -197,6 +166,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void merge(Bean bean) {
         try {
+            begin();
             JpaBean stored = findJpaBean(bean.getId());
             if (stored == null) {
                 throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
@@ -242,6 +212,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void merge(Collection<Bean> beans) {
         try {
+            begin();
             for (Bean bean : beans) {
                 JpaBean stored = findJpaBean(bean.getId());
                 if (stored == null) {
@@ -283,6 +254,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void set(Bean bean) {
         try {
+            begin();
             JpaBean stored = findJpaBean(bean.getId());
             if (stored == null) {
                 throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
@@ -302,6 +274,7 @@ public class JpaBeanManager extends BeanManager {
     @Override
     public void set(Collection<Bean> beans) {
         try {
+            begin();
             for (Bean bean : beans) {
                 JpaBean stored = findJpaBean(bean.getId());
                 if (stored == null) {
@@ -321,5 +294,44 @@ public class JpaBeanManager extends BeanManager {
 
     private Map<BeanId, Bean> toBeans(List<JpaBean> jpabeans) {
         return uniqueIndex(conversion.convert(jpabeans, Bean.class));
+    }
+
+    private JpaBean createJpaBean(Bean bean) {
+        JpaBean jpaBean = findJpaBean(bean.getId());
+        if (jpaBean != null) {
+            throw CFG303_BEAN_ALREADY_EXIST(bean.getId());
+        }
+        jpaBean = new JpaBean(bean);
+        getEm().persist(jpaBean);
+        createJpaProperties(bean);
+        return jpaBean;
+    }
+
+    private void createJpaRefs(Bean bean) {
+        for (String name : bean.getReferenceNames()) {
+            List<BeanId> refs = bean.getReference(name);
+            if (refs == null) {
+                continue;
+            }
+            for (BeanId id : refs) {
+                JpaBean target = findJpaBean(id);
+                if (target == null) {
+                    throw CFG301_MISSING_RUNTIME_REF(bean.getId(), id);
+                }
+                getEm().persist(new JpaRef(bean.getId(), target.getId(), name));
+            }
+        }
+    }
+
+    private void createJpaProperties(Bean bean) {
+        for (String name : bean.getPropertyNames()) {
+            List<String> values = bean.getValues(name);
+            if (values == null) {
+                continue;
+            }
+            for (String value : values) {
+                getEm().persist(new JpaProperty(bean.getId(), name, value));
+            }
+        }
     }
 }
