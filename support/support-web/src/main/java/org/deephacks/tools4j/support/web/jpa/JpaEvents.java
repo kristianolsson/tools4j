@@ -23,7 +23,7 @@ public class JpaEvents {
     /**
      * Unique identifier of this module: {@value} 
      */
-    public static final String MODULE_NAME = "tools4j.config.jpa";
+    public static final String MODULE_NAME = "tools4j.support-web";
     /**
      * {@value} - Success. 
      */
@@ -53,7 +53,7 @@ public class JpaEvents {
     public static final int JPA202 = 202;
     private static final String JPA202_MSG = "An Entity Manager was not found with the current thread local.";
 
-    @EventDoc(module = MODULE_NAME, code = JPA202, desc = JPA201_MSG)
+    @EventDoc(module = MODULE_NAME, code = JPA202, desc = JPA202_MSG)
     public static AbortRuntimeException JPA202_MISSING_THREAD_EM() {
         Event event = new Event(MODULE_NAME, JPA202, JPA202_MSG);
         throw new AbortRuntimeException(event);
