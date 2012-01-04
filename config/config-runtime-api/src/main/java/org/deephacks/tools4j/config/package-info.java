@@ -1,8 +1,6 @@
 /**
-* <h2>Purpose</h2>
-*
-* <h2>Concepts</h2>
-*
+* Used by application developers to define, register and load their application configuration needs.
+*  
 * <h2>Usage</h2>
 *
 */

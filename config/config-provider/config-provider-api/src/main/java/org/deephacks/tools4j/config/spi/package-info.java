@@ -1,9 +1,8 @@
 /**
-* This package provides a set of modular service interfaces each dealing 
-* with a separate concern within the architecture. These interfaces are also called SPI. 
-* Each SPI are orthogonal in relation to each other and should not have need direct dependency 
-* between each other directly. It is the task of the core to glue/mediate interaction 
-* between services.
+* Provides a set of modular service interfaces each dealing with a separate concern within the 
+* architecture. These interfaces are also called SPI. Each SPI are orthogonal in relation to 
+* each other and should not have need direct dependency between each other directly. It is 
+* the task of the core to glue/mediate interactionbetween services.
 * <p>
 * Providers are free to implement any SPI. Such third-party services can be registered 
 * and automatically bind to the core functionality at when the application is loaded.
