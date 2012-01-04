@@ -45,7 +45,7 @@
   <section>
     <title>Terminology</title>
     <para>Configuration is a very general term that may have different meaning depending on who  you ask and there is little meaning   in trying to categorize the ambiguity  between configuration and provisioning data.</para>
-    <para>It is however useful to agree on a set of principles and constraints that this data have, which  we broadly call  configuration, in order to put things in perspective.</para>
+    <para>It is however useful to agree on a set of principles and constraints  in order to put the data which  we broadly call  configuration in perspective.</para>
     <itemizedlist>
       <listitem>
         <para>Configuration is considered read-mostly data. Changes are made by human application operators/administrators having different roles in the organization that provide the application. </para>
