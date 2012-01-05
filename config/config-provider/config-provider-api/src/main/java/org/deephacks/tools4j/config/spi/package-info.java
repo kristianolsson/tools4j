@@ -2,7 +2,8 @@
 * A set of service provider interfaces (SPI) each dealing with a separate concern within the 
 * architecture. Each SPI is orthogonal and should not need direct dependency or interaction with 
 * other SPI. It is the responsibility of the core to glue/mediate such communication in a 
-* decoupled fashion.
+* decoupled fashion. This enbles services to be developed in parallel by distributed teams
+* under a common and well-defined contract.
 * <p>
 * Providers are free to implement any SPI. Such third-party services can be registered 
 * and automatically bound to core functionality when the application is loaded.
