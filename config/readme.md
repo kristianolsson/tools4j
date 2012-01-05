@@ -2,26 +2,26 @@
 
 ## Mission and purpose
 
-The mission of the project is to minimize the complexity around being able to dynamically manage change of behaviour for highly-available and long running server-side applications in a reliable and predictable way. 
+The mission of the project is to support long-running enterprise Java applications with a framework for handling configuration changes without restarting themselves.
 
-A key goal is to maximise developer and operator productivity by unifying the way configuration is used and managed for Java-based enterprise applications.
+The framework also aid developing applications that are decoupled from knowing how and where to store, retrieve and validate configuration.
 
-Applications are not required to run  Java SE, EE, OSGi, Spring, CDI or any other runtime environment, programming model or framework. The aim is to integrate seamlessly with all of those without affecting  application interfaces.
+The aim is liberate applications to use configuration seamlessly on the terms of their particular environment without constraining  them    to Java SE,  EE, OSGi, Spring, CDI or  any other programming model or framework.
 
 ## Goals  
-To fill a relevant need in the community and dynamically be able to manage configuration we believe that the following goals should be pursued. 
+To fill a relevant need in the Java community  and support building highly-available applications we believe that the following goals should be pursued. 
 
 * Productivity and Simplicity  
-Introducing and managing configuration must be non-intrusive and support developer productivity.
+Using configuration must be intuitive and non-intrusive; managed in a unified way to support developer productivity. Configuration is published and discovered automatically when it become available and is also reusable in different contexts without burdening applications with portability issues.
 
 * Predictability and Clarity  
-It is possible to declaratively express the intents and rules under which configuration is valid. Violations are handled in a consistent and predictable way that does not affect application behaviour. Changes are applied and exposed to applications reliably.
+Configuration is strongly-typed and give the capability to declaratively express the intents and rules under which circumstances the application can promise correct behaviour. Violations are handled reliably and does not disturb application behaviour. Valid changes are applied and exposed to applications in a consistent way.
 
 * Extendability and Portability  
-A diversity of  applications  in different shapes and sizes  running different platforms and technologies are anticipated to be supported. Applications will have the freedom and flexibility to locally extend and customize a variety aspects and still be able to manage configuration in a central and unified way.
+As applications are developed in different shapes and sizes; configuration should enable, not limit, a diversity of platforms and technologies.  Applications are supported with the flexibility to  extend and customize a variety aspects locally and still be able to manage configuration in a central and unified way.
 
 * Performance and Scalability  
-Configuration must be quickly accessible to be able to meet service-level agreements in environments of scale.
+Configuration should not be a limiting factor  to application performance.  It is quickly accessible to be able to meet service-level agreements in environments of scale.
 
 ## Tools4j Config URLs
 
