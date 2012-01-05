@@ -27,8 +27,8 @@ Configuration should not be a limiting factor  to application performance.  It i
 
 
 Website         : http://tools4j.deephacks.org  
-Users           : tools4j-user@googlegroups.com [link](groups.google.com/group/tools4j-user)  
-Developers      : tools4j-dev@googlegroups.com [link](groups.google.com/group/tools4j-dev)  
+Users           : tools4j-user@googlegroups.com ([link](http://groups.google.com/group/tools4j-user))  
+Developers      : tools4j-dev@googlegroups.com ([link](http://groups.google.com/group/tools4j-dev))  
 Source Code     : git@github.com:deephacks/tools4j.git  
 Issue Tracker   : https://github.com/deephacks/tools4j/issues  
 
