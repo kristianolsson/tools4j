@@ -6,55 +6,48 @@
   </para>
   <section id="mission">
     <title>Mission statement and motivation</title>
-    <para>The mission of the project  is to  minimize the complexity around being able to dynamically  manage change   of behaviour for highly-available and long running server-side applications in a reliable and predictable way. </para>
-    <para>A key goal is to maximise developer and operator productivity by   unifying the way configuration is used and managed for Java-based enterprise applications.</para>
-    <para>Applications are not required to run  Java SE, EE, OSGi, Spring, CDI or 
- any other runtime environment, programming model or framework. The aim is to integrate seamlessly with all of those without affecting  application interfaces.</para>
+    <para>The mission of the project  is to  support long-running enterprise Java applications with a framework for handling  configuration changes without restarting themselves.</para>
+    <para>The framework also aid  developing applications that are decoupled from knowing how and where to store, retrieve and validate configuration.  </para>
+    <para>The aim is liberate applications to use configuration seamlessly on the terms of their particular environment without constraining  them    to Java SE,  EE, OSGi, Spring, CDI or 
+ any other programming model or framework. </para>
   </section>
   <section id="overview">
     <title>Overview</title>
-    <emphasis role="italic">
-      <para>&quot;Maintenance typically consumes about 40 to 80 percent (60 percent average) of software costs. Therefore, it is probably the most important life cycle phase.&quot;
-
-    </para>
-      <para><ulink url="http://www.eng.auburn.edu/~hendrix/comp6710/readings/Forgotten_Fundamentals_IEEE_Software_May_2001.pdf">Frequently Forgotten Fundamental Facts about Software Engineering</ulink> </para>
-    </emphasis>
-    <para>In some sense maintenance can be seen as a measure for preventing unintended change and defects through preventive measures and repairs. </para>
-    <para>One aspect of successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity suddenly become painfully obvious when trying to change applications.   </para>
+    <para>One aspect of building a successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity can be become painfully obvious  trying to change and adapt applications.   </para>
+    <para>Configuration plays a crucial part for enabling business agility and predictability.</para>
   </section>
   <section id="features">
     <title>Features</title>
-    <para>To fill a relevant need in the community and dynamically be able to manage configuration we believe that the following goals should be pursued. </para>
+    <para>To fill a relevant need in the Java community  and support building highly-available applications we believe that the following goals should be pursued. </para>
     <para><itemizedlist>
         <listitem>
           <para>Productivity and Simplicity</para>
-          <para>Introducing and managing configuration must be intuitive and non-intrusive in order to support developer productivity.  </para>
-          <para>Developers can reuse configuration not caring where and how it is stored, if it is valid, how to cache and keep it consistent. Configuration is strongly-typed and loosely coupled.</para>
+          <para>Using configuration must be intuitive and non-intrusive; managed in a unified way to support developer productivity.  Configuration is published and discovered automatically when it become available and is also reusable in different contexts without burdening applications with portability issues.</para>
         </listitem>
-        <listitem><para>Predictability and Clarity</para>It is possible to declaratively express the intents and rules under which configuration is valid. Violations are handled in a consistent and predictable way that does not affect application behaviour. Changes are applied and exposed to applications reliably.</listitem>
+        <listitem><para>Predictability and Clarity</para>Configuration is strongly-typed and give the capability to declaratively express the intents and rules under which circumstances the application can promise correct behaviour. Violations are handled reliably and does not disturb application behaviour. Valid changes are applied and exposed to applications in a consistent way.</listitem>
         <listitem>
           <para>Extendability and Portability</para>
-          <para>A diversity of  applications  in different shapes and sizes  running different platforms and technologies are anticipated to be supported.  Applications will have the freedom and flexibility to locally extend and customize a variety aspects and still be able to manage configuration in a central and unified way.</para>
+          <para>As applications  are developed in different shapes and sizes;  configuration should enable, not limit, a diversity  of platforms and technologies.  Applications are supported with the flexibility to  extend and customize a variety aspects locally and still be able to manage configuration in a central and unified way.</para>
         </listitem>
         <listitem>
           <para>Performance and Scalability</para>
-          <para>Configuration must be quickly accessible to be able to meet service-level agreements in environments of  scale.</para>
+          <para>Configuration should not be a limiting factor  to application performance.  It is quickly accessible to be able to meet service-level agreements in environments of  scale.</para>
         </listitem>
       </itemizedlist></para>
   </section>
   <section>
     <title>Terminology</title>
-    <para>Configuration is a very general term that may have different meaning depending on who  you ask and there is little meaning   in trying to categorize the ambiguity  between configuration and provisioning data.</para>
-    <para>It is however useful to agree on a set of principles and constraints  in order to put the data which  we broadly call  configuration in perspective.</para>
+    <para>Configuration is a  general term that may have different meanings in different contexts. There is little meaning   trying to categorize  any ambiguity  between, for example, traditional configuration and provisioning data.</para>
+    <para>It is however useful to agree on a set of principles and constraints  in order to put the data which  we broadly call  configuration into application perspective.</para>
     <itemizedlist>
       <listitem>
-        <para>Configuration is considered read-mostly data. Changes are made by human application operators/administrators having different roles in the organization that provide the application. </para>
+        <para>Configuration is considered read-mostly to human application operators/administrators   in the organization. This perspective  is referred to as the <emphasis role="bold">admin context</emphasis>.  </para>
       </listitem>
       <listitem>
-        <para>Configuration never change from  events triggered by machine-to-machine communication or end-users/customers interaction with the application.</para>
+        <para>Configuration is considered read-only to   application developers. This  perspective is referred to as the <emphasis role="bold">runtime context</emphasis>.</para>
       </listitem>
       <listitem>
-        <para>Configuration is considered read-only from an application developer perspective.</para>
+        <para>Configuration never change from  events triggered by machine-to-machine communication or direct end-users/customers interaction with the application.</para>
       </listitem>
     </itemizedlist>
   </section>
