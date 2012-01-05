@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * A funcational TCK for both runtime and admin external interfaces.
+ * A funcational set of end-to-end tests for running compatibility tests.
  * 
  * Theses tests are intended to be easily reused as a test suite for simplifying
  * testing compatibility of many different combinations of service providers 
@@ -52,7 +52,7 @@ import org.junit.Test;
  * service providers and their behaviour.
  * 
  */
-public abstract class ConfigFunctionalTests extends ConfigDefaultSetup {
+public abstract class ConfigTckTests extends ConfigDefaultSetup {
     /**
      * This method can be used to do initalize tests in the subclass 
      * before the superclass.

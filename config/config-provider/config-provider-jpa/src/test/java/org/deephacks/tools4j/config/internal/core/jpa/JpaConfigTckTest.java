@@ -28,7 +28,7 @@ import org.apache.tools.ant.taskdefs.SQLExec;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
-import org.deephacks.tools4j.config.test.ConfigFunctionalTests;
+import org.deephacks.tools4j.config.test.ConfigTckTests;
 import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.io.FileUtils;
@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Generates a set of test fixtures combinations, each consisting of unique 
- * database and jpa provider configuration for running functional tests targeted 
+ * database and jpa provider configuration for running tck tests targeted 
  * at the JpaBeanManager.
  * 
  * Most tests assume that the database is already installed with a
@@ -52,7 +52,7 @@ import org.junit.runners.Parameterized.Parameters;
  * 
  */
 @RunWith(value = EclipseParameterized.class)
-public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
+public class JpaConfigTckTest extends ConfigTckTests {
     public static final String UNIT_NAME = "tools4j-config-jpa-unit";
     /**
      * Database providers
@@ -81,7 +81,7 @@ public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
     public static final String OBJECTDB = "objectdb";
     private EntityManagerFactory factory;
 
-    public JpaFunctionalConfigTest(ProviderCombination parameter) {
+    public JpaConfigTckTest(ProviderCombination parameter) {
         if (!parameter.equals(CURRENT_COMBO)) {
             if (factory != null) {
                 ThreadLocalEntityManager.close();
@@ -101,7 +101,7 @@ public class JpaFunctionalConfigTest extends ConfigFunctionalTests {
      * database and EntityManagerFactory pair. 
      */
     public void before() {
-        XmlStorageHelper.clearAndInit(JpaFunctionalConfigTest.class);
+        XmlStorageHelper.clearAndInit(JpaConfigTckTest.class);
         MockLookup.setMockInstances(BeanManager.class, new JpaBeanManager());
         MockLookup.addMockInstances(SchemaManager.class, new XmlSchemaManager());
         File targetDir = JUnitUtils.getMavenProjectChildFile(JpaBeanManager.class, "target");
