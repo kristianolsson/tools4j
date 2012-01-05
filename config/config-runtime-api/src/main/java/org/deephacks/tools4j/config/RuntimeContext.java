@@ -71,6 +71,8 @@ public abstract class RuntimeContext {
      */
     public abstract void register(Class<?> configurable);
 
+    public abstract void unregister(Class<?> configurable);
+
     public abstract <T> T singleton(Class<T> clazz);
 
     public abstract <T> List<T> all(Class<T> clazz);

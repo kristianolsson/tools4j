@@ -21,9 +21,9 @@ import java.util.Map;
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.RuntimeContext;
 import org.deephacks.tools4j.config.model.Bean;
+import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema;
-import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.conversion.Conversion;
@@ -37,25 +37,33 @@ import com.google.common.collect.Lists;
  */
 public class RuntimeCoreContext extends RuntimeContext {
     private Conversion conversion = Conversion.get();
+    private SchemaManager schemaManager;
+    private BeanManager beanManager;
 
     public RuntimeCoreContext() {
         conversion.register(new ClassToSchemaConverter());
         conversion.register(new FieldToSchemaPropertyConverter());
         conversion.register(new BeanToObjectConverter());
+        schemaManager = Lookup.get().lookup(SchemaManager.class);
+        beanManager = Lookup.get().lookup(BeanManager.class);
     }
 
     @Override
     public void register(Class<?> configurable) {
         Schema schema = conversion.convert(configurable, Schema.class);
-        SchemaManager manager = Lookup.get().lookup(SchemaManager.class);
         ArrayList<Schema> schemas = new ArrayList<Schema>(Arrays.asList(schema));
-        manager.addSchemas(schemas);
+        schemaManager.addSchemas(schemas);
+    }
+
+    @Override
+    public void unregister(Class<?> configurable) {
+        Schema schema = conversion.convert(configurable, Schema.class);
+        schemaManager.removeSchema(schema.getName());
     }
 
     @Override
     public <T> T singleton(Class<T> clazz) {
-        BeanManager manager = Lookup.get().lookup(BeanManager.class);
-        Bean bean = manager.get(BeanId.create(clazz.getName(), clazz.getName()));
+        Bean bean = beanManager.get(BeanId.create(clazz.getName(), clazz.getName()));
         SchemaManager schemaManager = Lookup.get().lookup(SchemaManager.class);
         Map<String, Schema> schemas = schemaManager.schemaMap();
         setSchema(bean, schemas);
@@ -64,23 +72,19 @@ public class RuntimeCoreContext extends RuntimeContext {
 
     @Override
     public <T> List<T> all(Class<T> clazz) {
-        SchemaManager schemaManager = Lookup.get().lookup(SchemaManager.class);
         Schema s = schemaManager.getSchema(clazz.getAnnotation(Config.class).name());
         Map<String, Schema> schemas = schemaManager.schemaMap();
-        BeanManager manager = Lookup.get().lookup(BeanManager.class);
-        Map<BeanId, Bean> beans = manager.list(s.getName());
+        Map<BeanId, Bean> beans = beanManager.list(s.getName());
         setSchema(beans, schemas);
         return Lists.newArrayList(conversion.convert(beans.values(), clazz));
     }
 
     @Override
     public <T> T get(String id, Class<T> clazz) {
-        BeanManager manager = Lookup.get().lookup(BeanManager.class);
-        SchemaManager schemaManager = Lookup.get().lookup(SchemaManager.class);
         Schema s = schemaManager.getSchema(clazz.getAnnotation(Config.class).name());
         Map<String, Schema> schemas = schemaManager.schemaMap();
         BeanId beanId = BeanId.create(id, s.getName());
-        Bean bean = manager.get(beanId);
+        Bean bean = beanManager.get(beanId);
         if (bean == null) {
             throw Events.CFG304_BEAN_DOESNT_EXIST(beanId);
         }
