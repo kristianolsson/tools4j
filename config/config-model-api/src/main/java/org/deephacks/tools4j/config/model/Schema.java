@@ -16,13 +16,14 @@ package org.deephacks.tools4j.config.model;
 import static com.google.common.base.Objects.equal;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 /**
@@ -45,7 +46,7 @@ public class Schema implements Serializable {
     private String type;
     private String description;
     private String multiplicity;
-    private Multimap<Class<? extends AbstractSchemaProperty>, AbstractSchemaProperty> properties = ArrayListMultimap
+    private Multimap<Class<? extends AbstractSchemaProperty>, AbstractSchemaProperty> properties = HashMultimap
             .create();
 
     private Schema(SchemaId id, String type, String name, String description, String multiplicity) {
@@ -132,8 +133,8 @@ public class Schema implements Serializable {
      * @return A list of properties that matches the clazz.
      */
     @SuppressWarnings("unchecked")
-    public <T extends AbstractSchemaProperty> Collection<T> get(Class<T> clazz) {
-        return (Collection<T>) properties.get(clazz);
+    public <T extends AbstractSchemaProperty> Set<T> get(Class<T> clazz) {
+        return (Set<T>) new HashSet<>(properties.get(clazz));
     }
 
     /**
@@ -144,7 +145,7 @@ public class Schema implements Serializable {
      * @return Matching property.
      */
     public <T extends AbstractSchemaProperty> T get(Class<T> clazz, String name) {
-        Collection<T> propertyCollection = get(clazz);
+        Set<T> propertyCollection = get(clazz);
         for (T property : propertyCollection) {
             if (property.getName().equals(name)) {
                 return property;
