@@ -51,6 +51,9 @@ public class SchemaValidator {
             if (values == null) {
                 continue;
             }
+            if (prop.isImmutable()) {
+                throw Events.CFG306_PROPERTY_IMMUTABLE(bean.getId(), prop.getName());
+            }
             if (values.size() > 1) {
                 throw Events.CFG106_WRONG_MULTIPLICITY_TYPE(bean.getId(), prop.getName());
             }

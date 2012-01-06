@@ -18,7 +18,8 @@
         <h:outputText value="#{property.name}" />
       </p:column>
       <p:column headerText="Type">
-        <h:outputText value="#{property.typeDisplay}" />
+        <h:outputText value="#{property.typeDisplay}" /> 
+        <h:outputText value="(immutable)" rendered="#{property.isImmutable}"/>
       </p:column>
       <p:column headerText="Value">
         <!-- IdProperty -->

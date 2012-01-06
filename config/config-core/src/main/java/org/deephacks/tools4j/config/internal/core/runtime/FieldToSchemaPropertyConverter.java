@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Property;
+import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
@@ -51,15 +52,18 @@ public class FieldToSchemaPropertyConverter implements
         String desc = source.getAnnotation().desc();
         String fieldName = source.getFieldName();
         Class<?> type = source.getType();
+        validateField(source);
         try {
             if (source.isCollection()) {
                 Collection<String> converted = conversion.convert(source.getDefaultValues(),
                         String.class);
                 List<String> defaultValues = new ArrayList<String>(converted);
+
                 return SchemaPropertyList.create(name, fieldName, type.getName(), desc,
-                        defaultValues, source.getCollRawType().getName());
+                        source.isFinal(), defaultValues, source.getCollRawType().getName());
             } else {
                 return SchemaProperty.create(name, fieldName, type.getName(), desc,
+                        source.isFinal(),
                         conversion.convert(source.getDefaultValue(), String.class));
             }
         } catch (ConversionException e) {
@@ -75,10 +79,22 @@ public class FieldToSchemaPropertyConverter implements
 
         if (source.isCollection()) {
             return SchemaPropertyRefList.create(name, fieldName, type.getAnnotation(Config.class)
-                    .name(), desc, source.getCollRawType().getName());
+                    .name(), desc, source.isFinal(), source.getCollRawType().getName());
         } else {
             return SchemaPropertyRef.create(name, fieldName, type.getAnnotation(Config.class)
-                    .name(), source.getAnnotation().desc());
+                    .name(), source.getAnnotation().desc(), source.isFinal());
         }
+    }
+
+    private void validateField(FieldWrap<Property> field) {
+        if (field.isStatic() && !field.isFinal()) {
+            // non-final static @Property not supported.
+            throw Events.CFG108_ILLEGAL_MODIFIERS(field.getAnnotation().name());
+        }
+        if (field.isTransient()) {
+            // transient @Property not supported.
+            throw Events.CFG108_ILLEGAL_MODIFIERS(field.getAnnotation().name());
+        }
+
     }
 }

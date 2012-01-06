@@ -194,10 +194,6 @@ public class Schema implements Serializable {
             return new SchemaId(name, desc);
         }
 
-        /**
-         * 
-         * @return
-         */
         public String getName() {
             return name;
         }
@@ -234,11 +230,18 @@ public class Schema implements Serializable {
         private String name;
         private String desc;
         private String fieldName;
+        private boolean isImmutable;
 
-        protected AbstractSchemaProperty(String name, String fieldName, String desc) {
+        protected AbstractSchemaProperty(String name, String fieldName, String desc,
+                boolean isimmutable) {
             this.name = Preconditions.checkNotNull(name);
             this.fieldName = Preconditions.checkNotNull(fieldName);
             this.desc = Preconditions.checkNotNull(desc);
+            this.isImmutable = isimmutable;
+        }
+
+        public boolean isImmutable() {
+            return isImmutable;
         }
 
         public String getName() {
@@ -255,16 +258,16 @@ public class Schema implements Serializable {
 
         ToStringHelper toStringHelper(Class<?> clazz) {
             return Objects.toStringHelper(clazz).add("name", name).add("fieldName", fieldName)
-                    .add("desc", desc);
+                    .add("desc", desc).add("immutable", isImmutable);
         }
 
         int getHashCode() {
-            return Objects.hashCode(getName(), getFieldName(), getDesc());
+            return Objects.hashCode(getName(), getFieldName(), getDesc(), isImmutable());
         }
 
         boolean equals(AbstractSchemaProperty o) {
             return equal(getName(), o.getName()) && equal(getFieldName(), o.getFieldName())
-                    && equal(getDesc(), o.getDesc());
+                    && equal(getDesc(), o.getDesc()) && equal(isImmutable(), o.isImmutable());
         }
     }
 
@@ -277,8 +280,8 @@ public class Schema implements Serializable {
         private String type;
 
         private SchemaProperty(String name, String fieldName, String type, String desc,
-                String defaultValue) {
-            super(name, fieldName, desc);
+                boolean isImmutable, String defaultValue) {
+            super(name, fieldName, desc, isImmutable);
             this.defaultValue = defaultValue;
             this.type = Preconditions.checkNotNull(type);
         }
@@ -294,8 +297,8 @@ public class Schema implements Serializable {
          * @return
          */
         public static SchemaProperty create(String name, String fieldName, String type,
-                String desc, String defaultValue) {
-            return new SchemaProperty(name, fieldName, type, desc, defaultValue);
+                String desc, boolean isImmutable, String defaultValue) {
+            return new SchemaProperty(name, fieldName, type, desc, isImmutable, defaultValue);
         }
 
         public String getType() {
@@ -337,8 +340,8 @@ public class Schema implements Serializable {
         private List<String> defaultValues;
 
         private SchemaPropertyList(String name, String fieldName, String type, String desc,
-                String collectionType, List<String> defaultValues) {
-            super(name, fieldName, desc);
+                boolean isImmutable, String collectionType, List<String> defaultValues) {
+            super(name, fieldName, desc, isImmutable);
             this.collectionType = Preconditions.checkNotNull(collectionType);
             this.type = Preconditions.checkNotNull(type);
             this.defaultValues = defaultValues;
@@ -356,8 +359,8 @@ public class Schema implements Serializable {
          * @return
          */
         public static SchemaPropertyList create(String name, String fieldName, String type,
-                String desc, List<String> defaultValues, String collectionType) {
-            return new SchemaPropertyList(name, fieldName, type, desc, collectionType,
+                String desc, boolean isImmutable, List<String> defaultValues, String collectionType) {
+            return new SchemaPropertyList(name, fieldName, type, desc, isImmutable, collectionType,
                     defaultValues);
         }
 
@@ -404,8 +407,9 @@ public class Schema implements Serializable {
         private String schemaName;
         private static final long serialVersionUID = 987642987178370676L;
 
-        protected SchemaPropertyRef(String name, String fieldName, String schemaName, String desc) {
-            super(name, fieldName, desc);
+        protected SchemaPropertyRef(String name, String fieldName, String schemaName, String desc,
+                boolean isImmutable) {
+            super(name, fieldName, desc, isImmutable);
             this.schemaName = Preconditions.checkNotNull(schemaName);
         }
 
@@ -419,8 +423,8 @@ public class Schema implements Serializable {
          * @return
          */
         public static SchemaPropertyRef create(String name, String fieldName, String schemaName,
-                String desc) {
-            return new SchemaPropertyRef(name, fieldName, schemaName, desc);
+                String desc, boolean isImmutable) {
+            return new SchemaPropertyRef(name, fieldName, schemaName, desc, isImmutable);
         }
 
         public String getSchemaName() {
@@ -459,8 +463,8 @@ public class Schema implements Serializable {
         private String schemaName;
 
         private SchemaPropertyRefList(String name, String fieldName, String schemaName,
-                String desc, String collectionType) {
-            super(name, fieldName, desc);
+                String desc, boolean isImmutable, String collectionType) {
+            super(name, fieldName, desc, isImmutable);
             this.collectionType = Preconditions.checkNotNull(collectionType);
             this.schemaName = Preconditions.checkNotNull(schemaName);
         }
@@ -476,8 +480,9 @@ public class Schema implements Serializable {
          * @return
          */
         public static SchemaPropertyRefList create(String name, String fieldName,
-                String schemaName, String desc, String collectionType) {
-            return new SchemaPropertyRefList(name, fieldName, schemaName, desc, collectionType);
+                String schemaName, String desc, boolean isImmutable, String collectionType) {
+            return new SchemaPropertyRefList(name, fieldName, schemaName, desc, isImmutable,
+                    collectionType);
         }
 
         public String getCollectionType() {

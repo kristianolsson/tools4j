@@ -141,6 +141,18 @@ public class Events {
     }
 
     /**
+     * {@value} - Bean property have illegal modifiers. 
+     */
+    public static final int CFG108 = 108;
+    private static final String CFG108_MSG = "Bean property {0} have illegal modifiers.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG108, desc = CFG108_MSG)
+    public static AbortRuntimeException CFG108_ILLEGAL_MODIFIERS(String propertyName) {
+        Event event = new Event(MODULE_NAME, CFG108, MessageFormat.format(CFG108_MSG, propertyName));
+        return new AbortRuntimeException(event);
+    }
+
+    /**
      * {@value} - XML storage directory system variable not set. 
      */
     public static final int CFG201 = 201;
@@ -242,4 +254,16 @@ public class Events {
         return new AbortRuntimeException(event);
     }
 
+    /**
+     * {@value} - Property is not mutable. 
+     */
+    public static final int CFG306 = 306;
+    private static final String CFG306_MSG = "Property {0} for bean with id {1} is not mutable.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG305, desc = "Property is not mutable.")
+    public static AbortRuntimeException CFG306_PROPERTY_IMMUTABLE(BeanId id, String propertyName) {
+        Event event = new Event(MODULE_NAME, CFG306, MessageFormat.format(CFG306_MSG, id,
+                propertyName));
+        return new AbortRuntimeException(event);
+    }
 }

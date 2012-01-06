@@ -60,8 +60,8 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
             throw CFG103_NO_ID(introspector.getTarget());
         }
         FieldWrap<Id> idField = id.get(0);
-        SchemaId schemaId = SchemaId.create(idField.getAnnotation().name(), idField
-                .getAnnotation().desc());
+        SchemaId schemaId = SchemaId.create(idField.getAnnotation().name(), idField.getAnnotation()
+                .desc());
         return schemaId;
     }
 }

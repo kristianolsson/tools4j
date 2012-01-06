@@ -49,22 +49,23 @@ public class XmlSchemaAdapter {
         public List<Schema> getSchemas() {
             ArrayList<Schema> result = new ArrayList<Schema>();
             for (XmlSchema b : schemas) {
-                Schema schema = Schema.create(SchemaId.create(b.id.name, b.id.desc),
-                        b.type, b.name, b.desc, b.multiplicity);
+                Schema schema = Schema.create(SchemaId.create(b.id.name, b.id.desc), b.type,
+                        b.name, b.desc, b.multiplicity);
                 for (XmlSchemaProperty p : b.properties) {
                     schema.add(SchemaProperty.create(p.name, p.fieldName, p.type, p.desc,
-                            p.defaultValue));
+                            p.isImmutable, p.defaultValue));
                 }
                 for (XmlSchemaCollection p : b.collection) {
                     schema.add(SchemaPropertyList.create(p.name, p.fieldName, p.parameterizedType,
-                            p.desc, p.defaultValues, p.collectionType));
+                            p.desc, p.isImmutable, p.defaultValues, p.collectionType));
                 }
                 for (XmlSchemaRef p : b.ref) {
-                    schema.add(SchemaPropertyRef.create(p.name, p.fieldName, p.schemaName, p.desc));
+                    schema.add(SchemaPropertyRef.create(p.name, p.fieldName, p.schemaName, p.desc,
+                            p.isImmutable));
                 }
                 for (XmlSchemaRefCollection p : b.refCollection) {
                     schema.add(SchemaPropertyRefList.create(p.name, p.fieldName, p.schemaName,
-                            p.desc, p.collectionType));
+                            p.desc, p.isImmutable, p.collectionType));
                 }
                 result.add(schema);
             }
@@ -98,8 +99,7 @@ public class XmlSchemaAdapter {
             }
 
             public XmlSchema(Schema bean) {
-                this.id = new XmlSchemaId(bean.getId().getName(), bean.getId()
-                        .getDesc());
+                this.id = new XmlSchemaId(bean.getId().getName(), bean.getId().getDesc());
                 this.name = bean.getName();
                 this.type = bean.getType();
                 this.multiplicity = bean.getMultiplicity();
@@ -149,6 +149,8 @@ public class XmlSchemaAdapter {
             private String type;
             @XmlAttribute
             private String desc;
+            @XmlAttribute(name = "immutable")
+            private boolean isImmutable;
             @XmlElement(name = "default")
             private String defaultValue;
 
@@ -162,6 +164,7 @@ public class XmlSchemaAdapter {
                 this.type = p.getType();
                 this.defaultValue = p.getDefaultValue();
                 this.desc = p.getDesc();
+                this.isImmutable = p.isImmutable();
             }
         }
 
@@ -173,6 +176,8 @@ public class XmlSchemaAdapter {
             private String fieldName;
             @XmlAttribute(name = "parameterized-type")
             private String parameterizedType;
+            @XmlAttribute(name = "immutable")
+            private boolean isImmutable;
             @XmlAttribute(name = "collection-type")
             public String collectionType;
             @XmlAttribute
@@ -189,6 +194,7 @@ public class XmlSchemaAdapter {
                 this.parameterizedType = p.getType();
                 this.collectionType = p.getCollectionType();
                 this.desc = p.getDesc();
+                this.isImmutable = p.isImmutable();
                 this.defaultValues = p.getDefaultValues();
             }
         }
@@ -201,6 +207,8 @@ public class XmlSchemaAdapter {
             private String fieldName;
             @XmlAttribute(name = "schema-name")
             private String schemaName;
+            @XmlAttribute(name = "immutable")
+            private boolean isImmutable;
             @XmlAttribute
             private String desc;
 
@@ -213,6 +221,7 @@ public class XmlSchemaAdapter {
                 this.fieldName = p.getFieldName();
                 this.schemaName = p.getSchemaName();
                 this.desc = p.getDesc();
+                this.isImmutable = p.isImmutable();
             }
         }
 
@@ -226,6 +235,8 @@ public class XmlSchemaAdapter {
             private String schemaName;
             @XmlAttribute(name = "collection-type")
             private String collectionType;
+            @XmlAttribute(name = "immutable")
+            private boolean isImmutable;
             @XmlAttribute
             private String desc;
 
@@ -238,6 +249,7 @@ public class XmlSchemaAdapter {
                 this.schemaName = p.getSchemaName();
                 this.collectionType = p.getCollectionType();
                 this.desc = p.getDesc();
+                this.isImmutable = p.isImmutable();
             }
         }
 

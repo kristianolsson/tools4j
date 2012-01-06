@@ -20,6 +20,7 @@ import static org.deephacks.tools4j.support.reflections.Reflections.newInstance;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -116,6 +117,18 @@ public class ClassIntrospector {
             return isCollection;
         }
 
+        public boolean isFinal() {
+            return Modifier.isFinal(field.getModifiers());
+        }
+
+        public boolean isStatic() {
+            return Modifier.isStatic(field.getModifiers());
+        }
+
+        public boolean isTransient() {
+            return Modifier.isTransient(field.getModifiers());
+        }
+
         /**
          * Return the raw collection type
          * @return
@@ -173,6 +186,7 @@ public class ClassIntrospector {
                 throw new RuntimeException(e);
             }
         }
+
     }
 
     public <T extends Annotation> List<Field> getFieldsAnnotatedWith(Class<T> clazz) {

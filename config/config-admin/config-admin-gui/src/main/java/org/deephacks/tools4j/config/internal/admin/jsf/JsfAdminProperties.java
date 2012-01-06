@@ -39,7 +39,7 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
         private String desc;
 
         public IdProperty(String value, String name, String desc) {
-            this.value = new Value(value, null);
+            this.value = new Value(value, false, null);
             this.name = name;
             this.desc = desc;
             this.type = String.class.getName();
@@ -47,6 +47,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public Value getValue() {
             return value;
+        }
+
+        public boolean getIsImmutable() {
+            return value.isImmutable;
         }
 
         public String getTypeDisplay() {
@@ -79,7 +83,7 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
         private String desc;
 
         public BasicProperty(String value, SchemaProperty prop) {
-            this.value = new Value(value, prop.getDefaultValue());
+            this.value = new Value(value, prop.isImmutable(), prop.getDefaultValue());
             this.name = prop.getName();
             this.desc = prop.getDesc();
             this.type = prop.getType();
@@ -87,6 +91,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public Value getValue() {
             return value;
+        }
+
+        public boolean getIsImmutable() {
+            return value.isImmutable;
         }
 
         public String getTypeDisplay() {
@@ -123,7 +131,7 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
         private String desc;
 
         public BasicPropertyList(List<String> values, SchemaPropertyList prop) {
-            this.listValues = new ListValues(values, prop.getDefaultValues());
+            this.listValues = new ListValues(values, prop.isImmutable(), prop.getDefaultValues());
             this.defaultValue = prop.getDefaultValues();
             this.name = prop.getName();
             this.desc = prop.getDesc();
@@ -132,6 +140,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public ListValues getListValues() {
             return listValues;
+        }
+
+        public boolean getIsImmutable() {
+            return listValues.isImmutable;
         }
 
         public void setListValues(ListValues listValues) {
@@ -226,9 +238,9 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
             this.type = ref.getSchemaName();
             this.desc = ref.getDesc();
             if (id == null) {
-                this.value = new Value(null, null);
+                this.value = new Value(null, ref.isImmutable(), null);
             } else {
-                this.value = new Value(id.getInstanceId(), null);
+                this.value = new Value(id.getInstanceId(), ref.isImmutable(), null);
             }
 
         }
@@ -242,6 +254,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public Value getValue() {
             return value;
+        }
+
+        public boolean getIsImmutable() {
+            return value.isImmutable;
         }
 
         public void setValue(Value value) {
@@ -287,7 +303,7 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
                     instanceIds.add(beanId.getInstanceId());
                 }
             }
-            this.listValues = new ListValues(instanceIds, null);
+            this.listValues = new ListValues(instanceIds, prop.isImmutable(), null);
         }
 
         public List<BeanId> getIds() {
@@ -300,6 +316,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public ListValues getListValues() {
             return listValues;
+        }
+
+        public boolean getIsImmutable() {
+            return listValues.isImmutable;
         }
 
         public String getTypeDisplay() {
@@ -339,13 +359,15 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
     public static class Value {
         private String value;
         private String schemaDefaultValue;
+        private boolean isImmutable;
         private boolean isDirty;
         private boolean resetToDefault;
         private boolean isDefaultValue;
 
-        public Value(String value, String schemaDefaultValue) {
+        public Value(String value, boolean isImmutable, String schemaDefaultValue) {
             this.schemaDefaultValue = schemaDefaultValue;
             this.value = value;
+            this.isImmutable = isImmutable;
             // if no default value exist, display "null" instead.
             if (schemaDefaultValue == null || "".equals(schemaDefaultValue)) {
                 this.schemaDefaultValue = "null";
@@ -358,6 +380,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public String getValue() {
             return value;
+        }
+
+        public boolean getIsImmutable() {
+            return isImmutable;
         }
 
         public void setValue(String value) {
@@ -405,14 +431,16 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
     public static class ListValues {
         private List<String> values = new ArrayList<String>();
         private List<String> schemaDefaultValues = new ArrayList<String>();
+        private boolean isImmutable;
         private String inputTextValue;
         private String menuItemValue;
         private boolean isDirty = false;
         private boolean resetToDefault;
         private boolean isDefaultValue;
 
-        public ListValues(List<String> values, List<String> schemaDefaultValues) {
+        public ListValues(List<String> values, boolean isImmutable, List<String> schemaDefaultValues) {
             this.values = values;
+            this.isImmutable = isImmutable;
             this.schemaDefaultValues = schemaDefaultValues;
             // if no default value exist, display "null" instead.
             if (schemaDefaultValues == null || "".equals(schemaDefaultValues)) {
@@ -428,6 +456,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public List<String> getValues() {
             return values;
+        }
+
+        public boolean getIsImmutable() {
+            return isImmutable;
         }
 
         public void setValues(List<String> values) {
