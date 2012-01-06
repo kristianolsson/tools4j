@@ -65,18 +65,21 @@ public abstract class RuntimeContext {
         }
     }
 
-    /**
-     *  
-     * @param configurable
-     */
     public abstract void register(Class<?> configurable);
 
     public abstract void unregister(Class<?> configurable);
 
-    public abstract <T> T singleton(Class<T> clazz);
+    /**
+     * Read a singleton instance. This requires the configurable to have a 
+     * <b>static</b> <b>final</b> {@link Id} with a default value assigned.  
+     * 
+     * @param clazz A configurable class
+     * @return
+     */
+    public abstract <T> T singleton(Class<T> configurable);
 
-    public abstract <T> List<T> all(Class<T> clazz);
+    public abstract <T> List<T> all(Class<T> configurable);
 
-    public abstract <T> T get(String id, Class<T> clazz);
+    public abstract <T> T get(String id, Class<T> configurable);
 
 }

@@ -36,11 +36,13 @@ import java.lang.annotation.Target;
  * 
  * <p>
  * <ul>
- * <li>Property fields can be a single typed or any subclass of {@link java.util.Collection} type.</li>
+ * <li>Property fields can be single-valued or multi-valued using any subclass of {@link java.util.Collection} type.</li>
  * <li>Property fields can be <b>final</b> in which case it is considered immutable.</li>
  * <li>Property fields are not allowed to be <b>transient</b>.</li>
  * <li>Property fields are not allowed to be non-<b>final</b> <b>static</b>.</li>
- * <li>Property fields can reference other {@link Config} classes, single or any subclass of {@link java.util.Collection} type.</li>
+ * <li>Property fields can reference other {@link Config} classes, single or multiple using any subclass of 
+ * {@link java.util.Collection} type.</li>
+ * <li>Property fields can have default values. These are used if no values have been set.</li>
  * </p>
  * 
  * @author Kristoffer Sjogren

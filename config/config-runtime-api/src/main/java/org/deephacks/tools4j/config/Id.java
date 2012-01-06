@@ -32,6 +32,20 @@ import java.lang.annotation.Target;
  * Every configurable class must annotate one (and only one) field with this annotation so 
  * that specific instances can be addressed.  
  * </p>
+ * <p>
+ * Configurable classes can be singletons. This means only one instance with an id that cannot change and  
+ * instantiation/removal are restricted. Properties, though, are allowed to change.
+ * The instance is automatically created when the class is registered. If the id already exist, 
+ * creation will be silently ignored (i.e. no attempt merge or update). Singeltons are read preferably using
+ * {@link RuntimeContext#singleton(Class)}
+ * </p>
+ * <p>
+ * <ul>
+ * <li>Id field must only have a single value of {@link java.lang.String} type.</li>
+ * <li>Id field can be <b>final</b>, in which a default value is required. This is a singleton.</li>
+ * <li>Id field are not allowed to be non-<b>final</b> <b>static</b>.</li>
+ * </p>
+ * 
  * @author Kristoffer Sjogren
  */
 @Retention(RetentionPolicy.RUNTIME)
