@@ -68,5 +68,4 @@ public @interface Config {
      */
     String desc();
 
-    Multiplicity multiplicity();
 }

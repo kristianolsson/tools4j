@@ -45,16 +45,14 @@ public class Schema implements Serializable {
     private String name;
     private String type;
     private String description;
-    private String multiplicity;
     private Multimap<Class<? extends AbstractSchemaProperty>, AbstractSchemaProperty> properties = HashMultimap
             .create();
 
-    private Schema(SchemaId id, String type, String name, String description, String multiplicity) {
+    private Schema(SchemaId id, String type, String name, String description) {
         this.id = Preconditions.checkNotNull(id);
         this.type = Preconditions.checkNotNull(type);
         this.description = Preconditions.checkNotNull(description);
         this.name = Preconditions.checkNotNull(name);
-        this.multiplicity = Preconditions.checkNotNull(multiplicity);
     }
 
     /**
@@ -65,12 +63,11 @@ public class Schema implements Serializable {
      * @param classType classname that fully qualifies the configurable class that this schema originates from.
      * @param name of this schema as specified in meta data, names must be unique.
      * @param description purpose and useful information needed in order to manage this schema.
-     * @param multiplicity indicates how many instances that may exist of this schema. 
+
      * @return A Schema.
      */
-    public static Schema create(SchemaId id, String classType, String name, String description,
-            String multiplicity) {
-        return new Schema(id, classType, name, description, multiplicity);
+    public static Schema create(SchemaId id, String classType, String name, String description) {
+        return new Schema(id, classType, name, description);
     }
 
     /**
@@ -80,10 +77,6 @@ public class Schema implements Serializable {
      */
     public SchemaId getId() {
         return id;
-    }
-
-    public String getMultiplicity() {
-        return multiplicity;
     }
 
     /**
@@ -157,8 +150,8 @@ public class Schema implements Serializable {
     @Override
     public String toString() {
         return Objects.toStringHelper(Schema.class).add("id", id).add("name", getName())
-                .add("type", getType()).add("desc", getDesc())
-                .add("multiplicity", getMultiplicity()).add("properties", properties).toString();
+                .add("type", getType()).add("desc", getDesc()).add("properties", properties)
+                .toString();
 
     }
 

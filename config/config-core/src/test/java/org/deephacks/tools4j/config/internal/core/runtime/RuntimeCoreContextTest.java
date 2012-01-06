@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Multiplicity;
 import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
@@ -80,7 +79,7 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
      */
     @Test
     public void test_immutable() {
-        @Config(name = "immutable", desc = "", multiplicity = Multiplicity.SINGLETON)
+        @Config(name = "immutable", desc = "")
         final class ImmutableConfig {
             @Id(name = "", desc = "")
             private String id;
@@ -117,7 +116,7 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
      */
     @Test
     public void test_transient_modifier() {
-        @Config(name = "transient", desc = "", multiplicity = Multiplicity.SINGLETON)
+        @Config(name = "transient", desc = "")
         final class TransientConfig {
             @Id(name = "", desc = "")
             private String id;
@@ -147,7 +146,7 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
         }
     }
 
-    @Config(name = "transient", desc = "", multiplicity = Multiplicity.SINGLETON)
+    @Config(name = "transient", desc = "")
     final static class NonFinalStaticConfig {
         @Id(name = "", desc = "")
         private String id;

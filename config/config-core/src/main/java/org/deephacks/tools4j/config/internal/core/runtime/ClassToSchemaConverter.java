@@ -43,7 +43,7 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
         }
         SchemaId schemaId = getId(introspector);
         Schema schema = Schema.create(schemaId, introspector.getName(), config.name(),
-                config.desc(), config.multiplicity().toString());
+                config.desc());
         Collection<Object> fields = new ArrayList<Object>();
         fields.addAll(introspector.getFieldList(Property.class));
         Collection<AbstractSchemaProperty> props = conversion.convert(fields,

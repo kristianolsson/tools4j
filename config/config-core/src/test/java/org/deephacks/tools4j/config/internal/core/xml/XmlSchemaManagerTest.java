@@ -93,7 +93,7 @@ public class XmlSchemaManagerTest {
             String name = "configName" + i;
             String desc = "configDesc" + i;
             SchemaId id = SchemaId.create("configId" + i, "configDesc" + i);
-            Schema schema = Schema.create(id, type, name, desc, "configDesc");
+            Schema schema = Schema.create(id, type, name, desc);
             for (int j = 0; j < numProps; j++) {
                 String _name = "propName" + j;
                 String _fieldName = "propFieldName" + j;

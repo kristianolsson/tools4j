@@ -50,7 +50,7 @@ public class XmlSchemaAdapter {
             ArrayList<Schema> result = new ArrayList<Schema>();
             for (XmlSchema b : schemas) {
                 Schema schema = Schema.create(SchemaId.create(b.id.name, b.id.desc), b.type,
-                        b.name, b.desc, b.multiplicity);
+                        b.name, b.desc);
                 for (XmlSchemaProperty p : b.properties) {
                     schema.add(SchemaProperty.create(p.name, p.fieldName, p.type, p.desc,
                             p.isImmutable, p.defaultValue));
@@ -79,8 +79,6 @@ public class XmlSchemaAdapter {
             @XmlAttribute
             private String type;
             @XmlAttribute
-            private String multiplicity;
-            @XmlAttribute
             private String desc;
 
             private XmlSchemaId id;
@@ -102,7 +100,6 @@ public class XmlSchemaAdapter {
                 this.id = new XmlSchemaId(bean.getId().getName(), bean.getId().getDesc());
                 this.name = bean.getName();
                 this.type = bean.getType();
-                this.multiplicity = bean.getMultiplicity();
                 this.desc = bean.getDesc();
 
                 for (SchemaProperty p : bean.get(SchemaProperty.class)) {

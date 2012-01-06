@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Multiplicity;
 import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.types.DateTime;
@@ -123,8 +122,7 @@ public class ConfigTestData {
 
     public static final String GRANDFATHER_SCHEMA_NAME = "GrandfatherSchemaName";
 
-    @Config(name = GRANDFATHER_SCHEMA_NAME, desc = "a test class",
-            multiplicity = Multiplicity.SINGLETON)
+    @Config(name = GRANDFATHER_SCHEMA_NAME, desc = "a test class")
     public class Grandfather {
 
         @Id(name = "id", desc = "desc")
@@ -199,8 +197,7 @@ public class ConfigTestData {
 
     public static final String PARENT_SCHEMA_NAME = "ParentSchemaName";
 
-    @Config(name = PARENT_SCHEMA_NAME, desc = "a test class",
-            multiplicity = Multiplicity.ZERO_OR_MANY)
+    @Config(name = PARENT_SCHEMA_NAME, desc = "a test class")
     public class Parent {
 
         @Id(name = "id", desc = "desc")
@@ -285,8 +282,7 @@ public class ConfigTestData {
 
     public static final String CHILD_SCHEMA_NAME = "ChildSchemaName";
 
-    @Config(name = CHILD_SCHEMA_NAME, desc = "a test class",
-            multiplicity = Multiplicity.ZERO_OR_MANY)
+    @Config(name = CHILD_SCHEMA_NAME, desc = "a test class")
     public class Child {
 
         @Id(name = "id", desc = "desc")
