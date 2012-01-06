@@ -24,7 +24,8 @@
             <execution>
                 <goals>
                     <goal>generate-html</goal>
-                    <goal>generate-pdf</goal>
+                    <!-- uncomment when needed -->
+                    <!-- <goal>generate-pdf</goal> -->
                 </goals>
                 <phase>site</phase>
             </execution>
