@@ -25,6 +25,7 @@ import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.conversion.Conversion;
@@ -74,6 +75,7 @@ public class RuntimeCoreContext extends RuntimeContext {
         Map<String, Schema> schemas = schemaManager.schemaMap();
         Bean bean = beanManager.get(singleton);
         bean.set(schema);
+        setSingletonReferences(bean, schemas);
         return conversion.convert(bean, configurable);
     }
 
@@ -83,6 +85,9 @@ public class RuntimeCoreContext extends RuntimeContext {
         Map<String, Schema> schemas = schemaManager.schemaMap();
         Map<BeanId, Bean> beans = beanManager.list(s.getName());
         setSchema(beans, schemas);
+        for (Bean bean : beans.values()) {
+            setSingletonReferences(bean, schemas);
+        }
         return Lists.newArrayList(conversion.convert(beans.values(), clazz));
     }
 
@@ -96,6 +101,7 @@ public class RuntimeCoreContext extends RuntimeContext {
             throw Events.CFG304_BEAN_DOESNT_EXIST(beanId);
         }
         setSchema(bean, schemas);
+        setSingletonReferences(bean, schemas);
         return conversion.convert(bean, clazz);
     }
 
@@ -124,10 +130,30 @@ public class RuntimeCoreContext extends RuntimeContext {
     }
 
     private BeanId getSingletonId(Schema s, Class<?> configurable) {
-        ClassIntrospector introspector = new ClassIntrospector(configurable);
-        FieldWrap<Id> id = introspector.getFieldList(Id.class).get(0);
-        String instanceId = id.getStaticValue().toString();
-        return BeanId.createSingleton(instanceId, s.getName());
+        try {
+            ClassIntrospector introspector = new ClassIntrospector(configurable);
+            FieldWrap<Id> id = introspector.getFieldList(Id.class).get(0);
+            String instanceId = id.getStaticValue().toString();
+            return BeanId.createSingleton(instanceId, s.getName());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Configurable class [" + configurable
+                    + "] is not a singleton.", e);
+        }
     }
 
+    private void setSingletonReferences(Bean bean, Map<String, Schema> schemas) {
+        Schema s = bean.getSchema();
+        for (SchemaPropertyRef ref : s.get(SchemaPropertyRef.class)) {
+            if (ref.isSingleton()) {
+                Schema singletonSchema = schemas.get(ref.getSchemaName());
+                Bean singleton = beanManager.getSingleton(ref.getSchemaName());
+                singleton.set(singletonSchema);
+                BeanId singletonId = singleton.getId();
+                singletonId.setBean(singleton);
+                // recursive call.
+                setSingletonReferences(singleton, schemas);
+                bean.setReference(ref.getName(), singletonId);
+            }
+        }
+    }
 }

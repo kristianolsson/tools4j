@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
@@ -30,6 +31,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.ConversionException;
 import org.deephacks.tools4j.support.conversion.Converter;
+import org.deephacks.tools4j.support.reflections.ClassIntrospector;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector.FieldWrap;
 
 public class FieldToSchemaPropertyConverter implements
@@ -83,8 +85,17 @@ public class FieldToSchemaPropertyConverter implements
                     source.isFinal(), source.getCollRawType().getName());
         } else {
             return SchemaPropertyRef.create(name, fieldName, configurable.name(), source
-                    .getAnnotation().desc(), source.isFinal());
+                    .getAnnotation().desc(), source.isFinal(), isSingleton(type));
         }
+    }
+
+    private boolean isSingleton(Class<?> field) {
+        ClassIntrospector introspector = new ClassIntrospector(field);
+        FieldWrap<Id> id = introspector.getFieldList(Id.class).get(0);
+        if (id.isFinal() && id.isStatic()) {
+            return true;
+        }
+        return false;
     }
 
     private void validateField(FieldWrap<Property> field) {

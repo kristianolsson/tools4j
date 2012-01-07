@@ -16,6 +16,7 @@ package org.deephacks.tools4j.config.internal.core.runtime;
 import static org.deephacks.tools4j.config.model.Events.CFG108;
 import static org.deephacks.tools4j.config.model.Events.CFG306;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -181,6 +182,8 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
             private static final String id = "singleton";
         }
         runtime.register(SingletonConfig.class);
+        SingletonConfig singleton = runtime.singleton(SingletonConfig.class);
+        assertNotNull(singleton);
     }
 
 }

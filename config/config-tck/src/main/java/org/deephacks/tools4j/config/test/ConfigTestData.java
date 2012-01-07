@@ -121,6 +121,10 @@ public class ConfigTestData {
         }
     }
 
+    public SingletonParent getSingletonParent(String id) {
+        return new SingletonParent(id);
+    }
+
     public Singleton getSingleton() {
         return new Singleton();
     }
@@ -358,6 +362,31 @@ public class ConfigTestData {
 
         @Id(name = "id", desc = "")
         public static final String id = "singleton";
+
+        public BeanId getBeanId() {
+            return BeanId.createSingleton(id, SINGLETON_SCHEMA_NAME);
+        }
+    }
+
+    public static final String SINGLETON_PARENT_SCHEMA_NAME = "SingletonParentSchemaName";
+
+    @Config(name = SINGLETON_PARENT_SCHEMA_NAME, desc = "")
+    public class SingletonParent {
+
+        @Id(name = "id", desc = "")
+        public String id = "singletonParent";
+
+        @Property(name = "singletonReference", desc = "")
+        public Singleton singleton;
+
+        public SingletonParent(String id) {
+            this.id = id;
+        }
+
+        public SingletonParent() {
+
+        }
+
     }
 
 }

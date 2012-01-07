@@ -41,6 +41,7 @@ import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
 import org.deephacks.tools4j.config.test.ConfigTestData.Singleton;
+import org.deephacks.tools4j.config.test.ConfigTestData.SingletonParent;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,10 +143,32 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         Bean b = Bean.create(BeanId.create("somethingElse", ConfigTestData.SINGLETON_SCHEMA_NAME));
         try {
             admin.create(b);
-            fail("Should not be possible to create singleton instances.");
+            fail("Should not be possible to create additional singleton instances.");
         } catch (AbortRuntimeException e) {
             assertThat(e.getEvent().getCode(), is(CFG308));
         }
+    }
+
+    /**
+     * Test that singleton references are automatically assigned without needing to provision them 
+     * from admin context.
+     */
+    @Test
+    public void test_singleton_references() {
+        // provision a bean without the singleton reference.
+        Bean singletonParent = toBean(sp1);
+        admin.create(singletonParent);
+
+        // asert that the singleton reference is set for runtime
+        SingletonParent parent = runtime.get(singletonParent.getId().getInstanceId(),
+                SingletonParent.class);
+        assertNotNull(parent.singleton);
+
+        // assert that the singleton reference is set for admin
+        Bean result = admin.get(singletonParent.getId());
+        BeanId singletonId = result.getFirstReference("singletonReference");
+        assertThat(singletonId, is(s1.getBeanId()));
+        assertThat(singletonId.getBean(), is(toBean(s1)));
 
     }
 

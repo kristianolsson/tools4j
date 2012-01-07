@@ -26,6 +26,7 @@ import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.SystemProperties;
@@ -74,9 +75,11 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public Bean get(BeanId beanId) {
+        Map<String, Schema> schemas = schemaManager.schemaMap();
         Bean bean = beanManager.get(beanId);
-        bean.set(schemaManager.getSchema(beanId.getSchemaName()));
+        bean.set(schemas.get(beanId.getSchemaName()));
         setSchema(schemaManager.schemaMap(), bean);
+        setSingletonReferences(bean, schemas);
         return bean;
     }
 
@@ -177,7 +180,7 @@ public class AdminCoreContext extends AdminContext {
         bean.set(s);
     }
 
-    public static BeanManager lookupBeanManager() {
+    private static BeanManager lookupBeanManager() {
         Collection<BeanManager> beanManagers = Lookup.get().lookupAll(BeanManager.class);
         if (beanManagers.size() == 1) {
             return beanManagers.iterator().next();
@@ -194,4 +197,19 @@ public class AdminCoreContext extends AdminContext {
         return new XmlBeanManager();
     }
 
+    private void setSingletonReferences(Bean bean, Map<String, Schema> schemas) {
+        Schema s = bean.getSchema();
+        for (SchemaPropertyRef ref : s.get(SchemaPropertyRef.class)) {
+            if (ref.isSingleton()) {
+                Schema singletonSchema = schemas.get(ref.getSchemaName());
+                Bean singleton = beanManager.getSingleton(ref.getSchemaName());
+                singleton.set(singletonSchema);
+                BeanId singletonId = singleton.getId();
+                singletonId.setBean(singleton);
+                // recursive call.
+                setSingletonReferences(singleton, schemas);
+                bean.setReference(ref.getName(), singletonId);
+            }
+        }
+    }
 }

@@ -179,6 +179,15 @@ public abstract class BeanManager implements Serializable {
     public abstract Bean get(BeanId id) throws AbortRuntimeException;
 
     /**
+     * Get a singleton instance for a particular schema.
+     * 
+     * @param schemaName The singleton schema. 
+     * @return The singleton bean.
+     * @throws IllegalArgumentException if the schema name is not a singleton.
+     */
+    public abstract Bean getSingleton(String schemaName) throws IllegalArgumentException;
+
+    /**
      * <p>
      * List all instances of a specific schema type.
      * </p> 

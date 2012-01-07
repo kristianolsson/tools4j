@@ -94,6 +94,26 @@ public class XmlBeanManager extends BeanManager {
         return result;
     }
 
+    @Override
+    public Bean getSingleton(String schemaName) throws IllegalArgumentException {
+        List<Bean> all = readValues();
+        for (Bean bean : all) {
+            if (bean.getId().getSchemaName().equals(schemaName)) {
+                if (!bean.getId().isSingleton()) {
+                    throw new IllegalArgumentException("Schema [" + schemaName
+                            + "] is not a singleton.");
+                }
+                BeanId singletonId = bean.getId();
+                Bean singleton = getEagerly(singletonId, all);
+                if (singleton == null) {
+                    throw CFG304_BEAN_DOESNT_EXIST(singletonId);
+                }
+                return singleton;
+            }
+        }
+        return null;
+    }
+
     private Bean getBean(BeanId ref, List<Bean> all) {
         for (Bean bean : all) {
             if (ref.equals(bean.getId())) {
@@ -441,5 +461,4 @@ public class XmlBeanManager extends BeanManager {
         }
         return false;
     }
-
 }

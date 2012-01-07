@@ -237,8 +237,7 @@ public class Events {
 
     @EventDoc(module = MODULE_NAME, code = CFG304, desc = "Bean does not exist.")
     public static AbortRuntimeException CFG304_BEAN_DOESNT_EXIST(BeanId id) {
-        Event event = new Event(MODULE_NAME, CFG304, MessageFormat.format(CFG304_MSG,
-                id.getInstanceId()));
+        Event event = new Event(MODULE_NAME, CFG304, MessageFormat.format(CFG304_MSG, id));
         return new AbortRuntimeException(event);
     }
 

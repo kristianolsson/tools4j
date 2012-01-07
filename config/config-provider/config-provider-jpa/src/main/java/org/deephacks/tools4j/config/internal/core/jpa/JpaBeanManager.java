@@ -127,6 +127,31 @@ public class JpaBeanManager extends BeanManager {
         }
     }
 
+    @Override
+    public Bean getSingleton(String schemaName) throws IllegalArgumentException {
+        try {
+            begin();
+            if (!isJpaBeanSingleton(schemaName)) {
+                throw new IllegalArgumentException("Schema [" + schemaName
+                        + "] is not a singleton.");
+            }
+            List<JpaBean> singleton = findJpaBeans(schemaName);
+            if (singleton.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "There is no singleton instance, which is not allowed.");
+            }
+            if (singleton.size() > 1) {
+                throw new IllegalArgumentException(
+                        "There are several singleton instances, which is not allowed.");
+            }
+            commit();
+            return conversion.convert(singleton.get(0), Bean.class);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
     private JpaBean createJpaBean(Bean bean) {
         JpaBean jpaBean = findJpaBean(bean.getId());
         if (jpaBean != null) {

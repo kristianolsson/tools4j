@@ -62,7 +62,7 @@ public class XmlSchemaAdapter {
                 }
                 for (XmlSchemaRef p : b.ref) {
                     schema.add(SchemaPropertyRef.create(p.name, p.fieldName, p.schemaName, p.desc,
-                            p.isImmutable));
+                            p.isImmutable, p.isSingleton));
                 }
                 for (XmlSchemaRefCollection p : b.refCollection) {
                     schema.add(SchemaPropertyRefList.create(p.name, p.fieldName, p.schemaName,
@@ -210,6 +210,8 @@ public class XmlSchemaAdapter {
             private String schemaName;
             @XmlAttribute(name = "immutable")
             private boolean isImmutable;
+            @XmlAttribute(name = "singleton")
+            private boolean isSingleton;
             @XmlAttribute
             private String desc;
 
@@ -223,6 +225,7 @@ public class XmlSchemaAdapter {
                 this.schemaName = p.getSchemaName();
                 this.desc = p.getDesc();
                 this.isImmutable = p.isImmutable();
+                this.isSingleton = p.isSingleton();
             }
         }
 

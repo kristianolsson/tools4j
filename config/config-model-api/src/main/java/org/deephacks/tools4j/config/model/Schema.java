@@ -404,11 +404,13 @@ public class Schema implements Serializable {
      */
     public static class SchemaPropertyRef extends AbstractSchemaProperty {
         private String schemaName;
+        private boolean isSingleton;
         private static final long serialVersionUID = 987642987178370676L;
 
         protected SchemaPropertyRef(String name, String fieldName, String schemaName, String desc,
-                boolean isImmutable) {
+                boolean isImmutable, boolean isSingleton) {
             super(name, fieldName, desc, isImmutable);
+            this.isSingleton = isSingleton;
             this.schemaName = Preconditions.checkNotNull(schemaName);
         }
 
@@ -422,12 +424,17 @@ public class Schema implements Serializable {
          * @return
          */
         public static SchemaPropertyRef create(String name, String fieldName, String schemaName,
-                String desc, boolean isImmutable) {
-            return new SchemaPropertyRef(name, fieldName, schemaName, desc, isImmutable);
+                String desc, boolean isImmutable, boolean isSingleton) {
+            return new SchemaPropertyRef(name, fieldName, schemaName, desc, isImmutable,
+                    isSingleton);
         }
 
         public String getSchemaName() {
             return schemaName;
+        }
+
+        public boolean isSingleton() {
+            return isSingleton;
         }
 
         @Override

@@ -13,7 +13,6 @@
  */
 package org.deephacks.tools4j.config.test;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,8 +20,8 @@ import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Bean;
-import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.Converter;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;
@@ -34,7 +33,7 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
     @Override
     public Bean convert(Object source, Class<? extends Bean> specificType) {
         ClassIntrospector i = new ClassIntrospector(source.getClass());
-        Bean bean = Bean.create(BeanId.create(getId(i, source), i.get(Config.class).name()));
+        Bean bean = Bean.create(getBeanId(source));
 
         for (FieldWrap<Property> prop : i.getFieldList(Property.class)) {
             Object value = prop.getValue(source);
@@ -59,14 +58,14 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
             Collection<Object> values = (Collection<Object>) value;
             if (paramClass.isAnnotationPresent(Config.class)) {
                 for (Object object : values) {
-                    bean.addReference(property.name(), getBeanId(object));
+                    bean.addReference(property.name(), getRecursiveBeanId(object));
                 }
             } else {
                 bean.addProperty(property.name(), conversion.convert(values, String.class));
             }
         } else {
             if (value.getClass().isAnnotationPresent(Config.class)) {
-                bean.addReference(property.name(), getBeanId(value));
+                bean.addReference(property.name(), getRecursiveBeanId(value));
             } else {
                 String converted = conversion.convert(value, String.class);
                 bean.setProperty(property.name(), converted);
@@ -74,23 +73,25 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
         }
     }
 
-    private static String getId(ClassIntrospector i, Object bean) {
-        try {
-            List<Field> ids = i.getFieldsAnnotatedWith(Id.class);
-            if (ids == null || ids.size() != 1) {
-                throw new RuntimeException("Bean does not have @Id annotation " + bean);
-            }
-            Field beanIdField = ids.get(0);
-            return beanIdField.get(bean).toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private BeanId getBeanId(Object bean) {
         String schemaName = bean.getClass().getAnnotation(Config.class).name();
-        String id = getId(new ClassIntrospector(bean.getClass()), bean);
-        BeanId targetId = BeanId.create(id, schemaName);
+        ClassIntrospector i = new ClassIntrospector(bean.getClass());
+        List<FieldWrap<Id>> ids = i.getFieldList(Id.class);
+        if (ids == null || ids.size() != 1) {
+            throw new RuntimeException("Bean does not have @Id annotation " + bean);
+        }
+        FieldWrap<Id> id = ids.get(0);
+        BeanId targetId = null;
+        if (id.isFinal() && id.isStatic()) {
+            targetId = BeanId.createSingleton(id.getStaticValue().toString(), schemaName);
+        } else {
+            targetId = BeanId.create(id.getValue(bean).toString(), schemaName);
+        }
+        return targetId;
+    }
+
+    private BeanId getRecursiveBeanId(Object bean) {
+        BeanId targetId = getBeanId(bean);
         Bean targetBean = conversion.convert(bean, Bean.class);
         targetBean.set(conversion.convert(bean.getClass(), Schema.class));
         targetId.setBean(targetBean);
