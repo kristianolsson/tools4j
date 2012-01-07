@@ -2,8 +2,24 @@
 <!-- This document was created with Syntext Serna Free. --><!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" []>
 <chapter id="intro">
   <title>Introduction</title>
-  <para>
-  </para>
+  <para><emphasis role="italic">Work in progress. Trying to formulate and capture the essence of what the project tries to achieve.</emphasis></para>
+  <para><para>One aspect of building a successful business is the ability change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity can be become painfully obvious  trying to change and adapt applications.   </para><para>Good architectures allow deferring design decisions but at some point a implementation specific decisions would need to be taken. Deciding on a  persistence layer is an important decision that involves a great deal of planning  and many people of different roles to get right. </para></para>
+  <para><itemizedlist>
+      <listitem>
+        <para>Data model. </para>
+        <para>Relational or object  database, NoSQL, LDAP, XML etc.</para>
+      </listitem>
+      <listitem>
+        <para>Vendor</para>
+        <para>Microsoft, Oracle, MySQL, Postegresql, MongoDB, Neo4j etc.</para>
+      </listitem>
+      <listitem>
+        <para>Persistence framework</para>
+        <para>JPA, Hibernate, JDBC, Spring DAO, MongoDB, JDO etc.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para><para>After a decision have been taken a great deal of persistence specific code to be written.  There may a second persistence layer needed for speeding up testing.</para><para>Introducing new entities to the persistence layer also usually requires a signification deal of planning efforts. It is a challenging task to get schema, queries, caching, tests and integration right.</para></para>
+  <para>Thoughts devoted to develop a strategy for not coupling the domain tightly to  specific persistence details; a hypothetical plan for switching persistence layer in case business demands it. But replacing the persistence layer is no quick or easy task.  </para>
   <section id="mission">
     <title>Mission statement and motivation</title>
     <para>The mission of the project  is to  support long-running enterprise Java applications with a framework for handling  configuration changes without restarting themselves.</para>
@@ -13,8 +29,7 @@
   </section>
   <section id="overview">
     <title>Overview</title>
-    <para>One aspect of building a successful business is to be able change rapidly.  But change is also related to difficulties, risks,  and costs.  Clearly more so in dynamic and elastic Cloud Computing environments where scale, diversity and complexity can be become painfully obvious  trying to change and adapt applications.   </para>
-    <para>Configuration plays a crucial part for enabling business agility and predictability.</para>
+    <para>TODO</para>
   </section>
   <section id="features">
     <title>Features</title>
