@@ -139,20 +139,48 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
     public void test_non_final_static_modifier() {
 
         try {
-            runtime.register(NonFinalStaticConfig.class);
+            runtime.register(NonFinalStaticPropConfig.class);
             fail("Non final static properties should not be allowed");
         } catch (AbortRuntimeException e) {
             assertThat(e.getEvent().getCode(), is(CFG108));
         }
     }
 
-    @Config(name = "transient", desc = "")
-    final static class NonFinalStaticConfig {
+    @Config(name = "nonfinalstaticprop", desc = "")
+    final static class NonFinalStaticPropConfig {
         @Id(name = "", desc = "")
         private String id;
 
         @Property(name = "test", desc = "")
         private static String test = "test";
+    }
+
+    @Test
+    public void test_non_final_static_id() {
+
+        try {
+            runtime.register(NonFinalStaticIdConfig.class);
+            fail("Non final static properties should not be allowed");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG108));
+        }
+    }
+
+    @Config(name = "nonfinalstaticid", desc = "")
+    final static class NonFinalStaticIdConfig {
+        @Id(name = "", desc = "")
+        private static String id;
+
+    }
+
+    @Test
+    public void test_singleton() {
+        @Config(name = "singleton", desc = "")
+        final class SingletonConfig {
+            @Id(name = "", desc = "")
+            private static final String id = "singleton";
+        }
+        runtime.register(SingletonConfig.class);
     }
 
 }

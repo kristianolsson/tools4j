@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.RuntimeContext;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
@@ -28,6 +29,8 @@ import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.lookup.Lookup;
+import org.deephacks.tools4j.support.reflections.ClassIntrospector;
+import org.deephacks.tools4j.support.reflections.ClassIntrospector.FieldWrap;
 
 import com.google.common.collect.Lists;
 
@@ -53,6 +56,9 @@ public class RuntimeCoreContext extends RuntimeContext {
         Schema schema = conversion.convert(configurable, Schema.class);
         ArrayList<Schema> schemas = new ArrayList<Schema>(Arrays.asList(schema));
         schemaManager.addSchemas(schemas);
+        if (schema.getId().isSingleton()) {
+            beanManager.createSingleton(getSingletonId(schema, configurable));
+        }
     }
 
     @Override
@@ -62,12 +68,13 @@ public class RuntimeCoreContext extends RuntimeContext {
     }
 
     @Override
-    public <T> T singleton(Class<T> clazz) {
-        Bean bean = beanManager.get(BeanId.create(clazz.getName(), clazz.getName()));
-        SchemaManager schemaManager = Lookup.get().lookup(SchemaManager.class);
+    public <T> T singleton(Class<T> configurable) {
+        Schema schema = conversion.convert(configurable, Schema.class);
+        BeanId singleton = getSingletonId(schema, configurable);
         Map<String, Schema> schemas = schemaManager.schemaMap();
-        setSchema(bean, schemas);
-        return conversion.convert(bean, clazz);
+        Bean bean = beanManager.get(singleton);
+        bean.set(schema);
+        return conversion.convert(bean, configurable);
     }
 
     @Override
@@ -114,6 +121,13 @@ public class RuntimeCoreContext extends RuntimeContext {
         for (Bean b : beans.values()) {
             setSchema(b, schemas);
         }
+    }
+
+    private BeanId getSingletonId(Schema s, Class<?> configurable) {
+        ClassIntrospector introspector = new ClassIntrospector(configurable);
+        FieldWrap<Id> id = introspector.getFieldList(Id.class).get(0);
+        String instanceId = id.getStaticValue().toString();
+        return BeanId.createSingleton(instanceId, s.getName());
     }
 
 }

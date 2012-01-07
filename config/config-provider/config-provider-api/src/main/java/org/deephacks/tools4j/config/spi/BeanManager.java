@@ -83,6 +83,17 @@ public abstract class BeanManager implements Serializable {
     public abstract void create(Collection<Bean> beans) throws AbortRuntimeException;
 
     /**
+     * Create a singleton instance. This method will return silently if the instance
+     * already exist.
+     * 
+     * Bean Manager must guarantee that no other instances of this BeanId are created,
+     * nor that this singleton is removed.
+     * 
+     * @param id the singleton.
+     */
+    public abstract void createSingleton(BeanId singleton);
+
+    /**
      * Replace (set) an existing bean instance with provided data.
      * <p> 
      * Already persisted properties and bean references associated with the instance 
@@ -213,7 +224,7 @@ public abstract class BeanManager implements Serializable {
      * recover from a certain event and must therefore abort execution, see 
      * {@link org.deephacks.tools4j.config.model.Events}. 
      */
-    public abstract void delete(String schmaName, Collection<String> instanceId)
+    public abstract void delete(String schemaName, Collection<String> instanceId)
             throws AbortRuntimeException;
 
 }

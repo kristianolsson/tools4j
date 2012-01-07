@@ -49,8 +49,9 @@ public class XmlSchemaAdapter {
         public List<Schema> getSchemas() {
             ArrayList<Schema> result = new ArrayList<Schema>();
             for (XmlSchema b : schemas) {
-                Schema schema = Schema.create(SchemaId.create(b.id.name, b.id.desc), b.type,
-                        b.name, b.desc);
+                Schema schema = Schema.create(
+                        SchemaId.create(b.id.name, b.id.desc, b.id.singleton), b.type, b.name,
+                        b.desc);
                 for (XmlSchemaProperty p : b.properties) {
                     schema.add(SchemaProperty.create(p.name, p.fieldName, p.type, p.desc,
                             p.isImmutable, p.defaultValue));
@@ -97,7 +98,7 @@ public class XmlSchemaAdapter {
             }
 
             public XmlSchema(Schema bean) {
-                this.id = new XmlSchemaId(bean.getId().getName(), bean.getId().getDesc());
+                this.id = new XmlSchemaId(bean.getId());
                 this.name = bean.getName();
                 this.type = bean.getType();
                 this.desc = bean.getDesc();
@@ -124,14 +125,17 @@ public class XmlSchemaAdapter {
             private String name;
             @XmlAttribute
             private String desc;
+            @XmlAttribute
+            private boolean singleton;
 
             public XmlSchemaId() {
 
             }
 
-            public XmlSchemaId(String name, String desc) {
-                this.name = name;
-                this.desc = desc;
+            public XmlSchemaId(SchemaId id) {
+                this.name = id.getName();
+                this.desc = id.getDesc();
+                this.singleton = id.isSingleton();
             }
 
         }

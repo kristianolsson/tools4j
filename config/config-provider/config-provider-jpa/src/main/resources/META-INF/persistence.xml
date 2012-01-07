@@ -7,6 +7,7 @@
     <persistence-unit name="tools4j-config-jpa-unit">
         <class>org.deephacks.tools4j.config.internal.core.jpa.JpaProperty</class>
         <class>org.deephacks.tools4j.config.internal.core.jpa.JpaBean</class>
+        <class>org.deephacks.tools4j.config.internal.core.jpa.JpaBeanSingleton</class>
         <class>org.deephacks.tools4j.config.internal.core.jpa.JpaRef</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>

@@ -19,6 +19,8 @@ import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_R
 import static org.deephacks.tools4j.config.model.Events.CFG302_CANNOT_DELETE_BEAN;
 import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
 import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG307_SINGELTON_REMOVAL;
+import static org.deephacks.tools4j.config.model.Events.CFG308_SINGELTON_CREATION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,11 +42,12 @@ import javax.xml.bind.Unmarshaller;
 
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanAdapter.XmlBeans;
 import org.deephacks.tools4j.config.model.Bean;
-import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;
+import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 /**
  * ConfigBeanManagerDefault is responsible for storing config bean instances in 
@@ -118,6 +121,7 @@ public class XmlBeanManager extends BeanManager {
     public void create(Bean bean) {
         Map<BeanId, Bean> values = readValuesAsMap();
         checkReferencesExist(bean, values);
+        checkCreateSingleton(bean, values);
         checkUniquness(bean, values);
         values.put(bean.getId(), bean);
         writeValues(values);
@@ -129,6 +133,7 @@ public class XmlBeanManager extends BeanManager {
         // first check uniquness towards storage
         for (Bean bean : set) {
             checkUniquness(bean, beans);
+            checkCreateSingleton(bean, beans);
         }
         // TODO: check that provided beans are unique among themselves.
 
@@ -142,6 +147,20 @@ public class XmlBeanManager extends BeanManager {
         }
         writeValues(beans);
 
+    }
+
+    @Override
+    public void createSingleton(BeanId singleton) {
+        Map<BeanId, Bean> values = readValuesAsMap();
+        Bean bean = Bean.create(singleton);
+        try {
+            checkUniquness(bean, values);
+        } catch (AbortRuntimeException e) {
+            // ignore and return silently.
+            return;
+        }
+        values.put(singleton, bean);
+        writeValues(values);
     }
 
     @Override
@@ -236,6 +255,7 @@ public class XmlBeanManager extends BeanManager {
     public void delete(BeanId id) {
         Map<BeanId, Bean> beans = readValuesAsMap();
         checkNoReferencesExist(id, beans);
+        checkDeleteSingleton(beans.get(id));
         beans.remove(id);
         writeValues(beans);
     }
@@ -244,6 +264,7 @@ public class XmlBeanManager extends BeanManager {
     public void delete(String schemaName, Collection<String> instanceIds) {
         Map<BeanId, Bean> beans = readValuesAsMap();
         for (String instance : instanceIds) {
+            checkDeleteSingleton(beans.get(BeanId.create(instance, schemaName)));
             checkNoReferencesExist(BeanId.create(instance, schemaName), beans);
             beans.remove(BeanId.create(instance, schemaName));
         }
@@ -384,6 +405,25 @@ public class XmlBeanManager extends BeanManager {
             if (bean.getId().equals(existing.getId())) {
                 throw CFG303_BEAN_ALREADY_EXIST(bean.getId());
             }
+        }
+    }
+
+    private static void checkCreateSingleton(Bean bean, Map<BeanId, Bean> storage) {
+        for (Bean b : storage.values()) {
+            if (bean.getId().getSchemaName().equals(b.getId().getSchemaName())) {
+                if (b.getId().isSingleton()) {
+                    throw CFG308_SINGELTON_CREATION(bean.getId());
+                }
+            }
+        }
+    }
+
+    private static void checkDeleteSingleton(Bean bean) {
+        if (bean == null) {
+            return;
+        }
+        if (bean.getId().isSingleton()) {
+            throw CFG307_SINGELTON_REMOVAL(bean.getId());
         }
     }
 

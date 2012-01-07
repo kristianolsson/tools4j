@@ -171,6 +171,15 @@ public class ClassIntrospector {
             }
         }
 
+        public Object getStaticValue() {
+            try {
+                return field.get(null);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(
+                        "Cannot access values from fields that arent static.");
+            }
+        }
+
         @SuppressWarnings("unchecked")
         public List<Object> getDefaultValues() {
             if (!isCollection) {

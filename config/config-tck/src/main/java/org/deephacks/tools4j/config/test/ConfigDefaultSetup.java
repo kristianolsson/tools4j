@@ -23,6 +23,7 @@ import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.test.ConfigTestData.Child;
 import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
 import org.deephacks.tools4j.config.test.ConfigTestData.Parent;
+import org.deephacks.tools4j.config.test.ConfigTestData.Singleton;
 
 import com.google.common.collect.ImmutableList;
 
@@ -36,6 +37,7 @@ public abstract class ConfigDefaultSetup {
     protected Parent p2;
     protected Grandfather g1;
     protected Grandfather g2;
+    protected Singleton s1;
     protected static Collection<Bean> defaultBeans;
 
     protected void setupDefaultConfigData() {
@@ -65,9 +67,13 @@ public abstract class ConfigDefaultSetup {
         g2 = testdata.getGrandfather("g2");
         g2.add(p1, p2);
         g2.set(c2);
+
+        s1 = testdata.getSingleton();
+
         runtime.register(Grandfather.class);
         runtime.register(Parent.class);
         runtime.register(Child.class);
+        runtime.register(Singleton.class);
         if (defaultBeans == null) {
             // toBeans steals quite a bit of performance when having larger hierarchies. 
             defaultBeans = ImmutableList.copyOf(toBeans(g1, g2, p1, p2, c1, c2));

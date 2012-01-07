@@ -45,7 +45,13 @@ public class XmlBeanAdapter {
         public List<Bean> getBeans() {
             ArrayList<Bean> result = new ArrayList<Bean>();
             for (XmlBean b : beans) {
-                Bean bean = Bean.create(BeanId.create(b.id, b.name));
+                Bean bean = null;
+                if (b.singleton) {
+                    bean = Bean.create(BeanId.createSingleton(b.id, b.name));
+                } else {
+                    bean = Bean.create(BeanId.create(b.id, b.name));
+                }
+
                 for (XmlBeanPropertyList p : b.properties) {
                     if (p.values != null)
                         bean.addProperty(p.name, p.values);
@@ -66,6 +72,8 @@ public class XmlBeanAdapter {
             public String id;
             @XmlAttribute
             public String name;
+            @XmlAttribute
+            public boolean singleton;
             @XmlElement(name = "prop")
             public List<XmlBeanPropertyList> properties = new ArrayList<XmlBeanPropertyList>();
             @XmlElement(name = "ref")
@@ -78,6 +86,7 @@ public class XmlBeanAdapter {
             public XmlBean(Bean bean) {
                 this.id = bean.getId().getInstanceId();
                 this.name = bean.getId().getSchemaName();
+                this.singleton = bean.getId().isSingleton();
                 for (String name : bean.getPropertyNames()) {
                     List<String> values = bean.getValues(name);
                     if (values == null || values.size() == 0) {

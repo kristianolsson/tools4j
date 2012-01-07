@@ -19,9 +19,12 @@ import static org.deephacks.tools4j.config.model.Events.CFG106;
 import static org.deephacks.tools4j.config.model.Events.CFG301;
 import static org.deephacks.tools4j.config.model.Events.CFG302;
 import static org.deephacks.tools4j.config.model.Events.CFG304;
+import static org.deephacks.tools4j.config.model.Events.CFG307;
+import static org.deephacks.tools4j.config.model.Events.CFG308;
 import static org.deephacks.tools4j.config.test.BeanUnitils.toBean;
 import static org.deephacks.tools4j.config.test.BeanUnitils.toBeans;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -37,6 +40,7 @@ import junit.framework.AssertionFailedError;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
+import org.deephacks.tools4j.config.test.ConfigTestData.Singleton;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,6 +109,43 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         getAndAssert(g1);
         getAndAssert(g2);
         listAndAssert(g1.getId().getSchemaName(), g1, g2);
+
+    }
+
+    /**
+     * Test that singleton beans have their default instance created after registration.
+     */
+    @Test
+    public void test_register_singleton() {
+        Singleton singleton = runtime.singleton(Singleton.class);
+        assertNotNull(singleton);
+    }
+
+    /**
+     * Test that singleton beans cannot be deleted.
+     */
+    @Test
+    public void test_delete_singleton() {
+        try {
+            admin.delete(toBean(s1).getId());
+            fail("Should not be possible to delete singleton instances.");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG307));
+        }
+    }
+
+    /**
+     * Test that it is not possible to create beans of singleton type. 
+     */
+    @Test
+    public void test_create_singleton() {
+        Bean b = Bean.create(BeanId.create("somethingElse", ConfigTestData.SINGLETON_SCHEMA_NAME));
+        try {
+            admin.create(b);
+            fail("Should not be possible to create singleton instances.");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG308));
+        }
 
     }
 

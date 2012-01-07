@@ -260,10 +260,36 @@ public class Events {
     public static final int CFG306 = 306;
     private static final String CFG306_MSG = "Property {0} for bean with id {1} is not mutable.";
 
-    @EventDoc(module = MODULE_NAME, code = CFG305, desc = "Property is not mutable.")
+    @EventDoc(module = MODULE_NAME, code = CFG306, desc = "Property is not mutable.")
     public static AbortRuntimeException CFG306_PROPERTY_IMMUTABLE(BeanId id, String propertyName) {
         Event event = new Event(MODULE_NAME, CFG306, MessageFormat.format(CFG306_MSG, id,
                 propertyName));
         return new AbortRuntimeException(event);
     }
+
+    /**
+     * {@value} - Singleton beans cannot be removed. 
+     */
+    public static final int CFG307 = 307;
+    private static final String CFG307_MSG = "Singleton bean {0} cannot be removed.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG307, desc = "Singleton beans cannot be removed.")
+    public static AbortRuntimeException CFG307_SINGELTON_REMOVAL(BeanId id) {
+        Event event = new Event(MODULE_NAME, CFG307, MessageFormat.format(CFG307_MSG, id));
+        return new AbortRuntimeException(event);
+    }
+
+    /**
+     * {@value} - Only one singleton bean is allowed to exist. 
+     */
+    public static final int CFG308 = 308;
+    private static final String CFG308_MSG = "Only one singleton bean {0} is allowed to exist.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG308,
+            desc = "Only one singleton bean is allowed to exist.")
+    public static AbortRuntimeException CFG308_SINGELTON_CREATION(BeanId id) {
+        Event event = new Event(MODULE_NAME, CFG308, MessageFormat.format(CFG308_MSG, id));
+        return new AbortRuntimeException(event);
+    }
+
 }

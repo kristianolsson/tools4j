@@ -1,5 +1,6 @@
 -- CREATE TABLES
 create table CONFIG_BEAN (BEAN_ID varchar(40) not null, BEAN_SCHEMA_NAME varchar(40) not null, primary key (BEAN_ID, BEAN_SCHEMA_NAME)) ENGINE=InnoDB;
+create table CONFIG_BEAN_SINGLETON (BEAN_SCHEMA_NAME varchar(40) not null, primary key (BEAN_SCHEMA_NAME)) ENGINE=InnoDB;
 create table CONFIG_BEAN_REF (UUID varchar(40) not null, FK_BEAN_SCHEMA_NAME varchar(40) not null, FK_BEAN_ID varchar(40) not null, PROP_NAME varchar(40) not null, FK_REF_BEAN_ID varchar(40) not null, FK_REF_BEAN_SCHEMA_NAME varchar(40) not null, primary key (UUID)) ENGINE=InnoDB;
 create table CONFIG_PROPERTY (UUID varchar(40) not null, FK_BEAN_ID varchar(40) not null, PROP_NAME varchar(40) not null, FK_BEAN_SCHEMA_NAME varchar(40) not null, PROP_VALUE varchar(255), primary key (UUID)) ENGINE=InnoDB;
 

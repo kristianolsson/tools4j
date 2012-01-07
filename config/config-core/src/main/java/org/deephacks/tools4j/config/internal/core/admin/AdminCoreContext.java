@@ -24,8 +24,8 @@ import java.util.Map;
 import org.deephacks.tools4j.config.admin.AdminContext;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.model.Bean;
-import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.SystemProperties;
@@ -136,7 +136,6 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void delete(BeanId beanId) {
-        BeanManager beanManager = lookupBeanManager();
         beanManager.delete(beanId);
     }
 

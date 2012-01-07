@@ -18,6 +18,7 @@ import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.deleteJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBeans;
+import static org.deephacks.tools4j.config.internal.core.jpa.JpaBeanSingleton.isJpaBeanSingleton;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperties;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperty;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReference;
@@ -26,6 +27,8 @@ import static org.deephacks.tools4j.config.model.BeanUtils.uniqueIndex;
 import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
 import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
 import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
+import static org.deephacks.tools4j.config.model.Events.CFG307_SINGELTON_REMOVAL;
+import static org.deephacks.tools4j.config.model.Events.CFG308_SINGELTON_CREATION;
 import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.begin;
 import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.commit;
 import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.getEm;
@@ -70,6 +73,9 @@ public class JpaBeanManager extends BeanManager {
     public void create(Bean bean) {
         try {
             begin();
+            if (isJpaBeanSingleton(bean.getId().getSchemaName())) {
+                throw CFG308_SINGELTON_CREATION(bean.getId());
+            }
             createJpaBean(bean);
             createJpaRefs(bean);
             commit();
@@ -84,12 +90,36 @@ public class JpaBeanManager extends BeanManager {
         try {
             begin();
             for (Bean bean : beans) {
+                if (isJpaBeanSingleton(bean.getId().getSchemaName())) {
+                    throw CFG308_SINGELTON_CREATION(bean.getId());
+                }
                 createJpaBean(bean);
             }
             getEm().flush();
             for (Bean bean : beans) {
                 createJpaRefs(bean);
             }
+            commit();
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public void createSingleton(BeanId singleton) {
+        try {
+            begin();
+            JpaBean jpaBean = findJpaBean(singleton);
+            if (jpaBean != null) {
+                // return silently.
+                return;
+            }
+            JpaBeanSingleton jpaBeanSingleton = new JpaBeanSingleton(singleton.getSchemaName());
+            getEm().persist(jpaBeanSingleton);
+
+            jpaBean = new JpaBean(new JpaBeanPk(singleton));
+            getEm().persist(jpaBean);
             commit();
         } catch (Throwable e) {
             rollback();
@@ -140,6 +170,9 @@ public class JpaBeanManager extends BeanManager {
     public void delete(BeanId id) {
         try {
             begin();
+            if (isJpaBeanSingleton(id.getSchemaName())) {
+                throw CFG307_SINGELTON_REMOVAL(id);
+            }
             deleteJpaBean(id);
             commit();
         } catch (PersistenceException e) {
@@ -159,7 +192,11 @@ public class JpaBeanManager extends BeanManager {
         try {
             begin();
             for (String id : ids) {
-                deleteJpaBean(BeanId.create(id, schemaName));
+                BeanId beanId = BeanId.create(id, schemaName);
+                if (isJpaBeanSingleton(schemaName)) {
+                    throw CFG307_SINGELTON_REMOVAL(beanId);
+                }
+                deleteJpaBean(beanId);
             }
             commit();
         } catch (PersistenceException e) {

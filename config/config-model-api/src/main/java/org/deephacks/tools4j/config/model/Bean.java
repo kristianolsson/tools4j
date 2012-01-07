@@ -401,6 +401,7 @@ public class Bean implements Serializable {
         private static final long serialVersionUID = -9020756683867340095L;
         private String instanceId;
         private String schemaName;
+        private boolean isSingleton;
         private Bean bean;
 
         private BeanId(String instanceId, String schemaName) {
@@ -408,15 +409,32 @@ public class Bean implements Serializable {
             this.schemaName = Preconditions.checkNotNull(schemaName);
         }
 
+        private BeanId(String instanceId, String schemaName, boolean isSingleton) {
+            this.instanceId = Preconditions.checkNotNull(instanceId);
+            this.schemaName = Preconditions.checkNotNull(schemaName);
+            this.isSingleton = isSingleton;
+        }
+
         /**
          * Create a bean identification.
          * 
-         * @param id This is the instance is of the bean.
+         * @param instanceId of this bean.
          * @param schemaName The bean schema name.  
          * @return AdminBeanId
          */
         public static BeanId create(String instanceId, String schemaName) {
             return new BeanId(instanceId, schemaName);
+        }
+
+        /**
+         * This method should NOT be used by users.
+         * 
+         * @param instanceId this is the singleton id of this bean.
+         * @param schemaName schema of bean.
+         * @return a singleton id.
+         */
+        public static BeanId createSingleton(String instanceId, String schemaName) {
+            return new BeanId(instanceId, schemaName, true);
         }
 
         /**
@@ -431,6 +449,15 @@ public class Bean implements Serializable {
          */
         public String getSchemaName() {
             return schemaName;
+        }
+
+        /**
+         * Check for singleton.
+         * 
+         * @return true if singleton.
+         */
+        public boolean isSingleton() {
+            return isSingleton;
         }
 
         /**

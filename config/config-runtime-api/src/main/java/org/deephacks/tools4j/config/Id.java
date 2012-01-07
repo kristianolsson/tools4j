@@ -42,8 +42,9 @@ import java.lang.annotation.Target;
  * <p>
  * <ul>
  * <li>Id field must only have a single value of {@link java.lang.String} type.</li>
- * <li>Id field can be <b>final</b>, in which a default value is required. This is a singleton.</li>
+ * <li>Id field can be <b>static</b> <b>final</b>. This is a singleton.</li>
  * <li>Id field are not allowed to be non-<b>final</b> <b>static</b>.</li>
+ * <li>Id field are not allowed to be non-<b>static</b> <b>final</b>.</li>
  * </p>
  * 
  * @author Kristoffer Sjogren

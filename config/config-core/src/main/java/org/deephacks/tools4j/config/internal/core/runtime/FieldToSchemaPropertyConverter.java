@@ -76,13 +76,14 @@ public class FieldToSchemaPropertyConverter implements
         String desc = source.getAnnotation().desc();
         String fieldName = source.getFieldName();
         Class<?> type = source.getType();
+        Config configurable = type.getAnnotation(Config.class);
 
         if (source.isCollection()) {
-            return SchemaPropertyRefList.create(name, fieldName, type.getAnnotation(Config.class)
-                    .name(), desc, source.isFinal(), source.getCollRawType().getName());
+            return SchemaPropertyRefList.create(name, fieldName, configurable.name(), desc,
+                    source.isFinal(), source.getCollRawType().getName());
         } else {
-            return SchemaPropertyRef.create(name, fieldName, type.getAnnotation(Config.class)
-                    .name(), source.getAnnotation().desc(), source.isFinal());
+            return SchemaPropertyRef.create(name, fieldName, configurable.name(), source
+                    .getAnnotation().desc(), source.isFinal());
         }
     }
 

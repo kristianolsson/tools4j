@@ -30,6 +30,7 @@ import org.deephacks.tools4j.support.types.DateTime;
 import org.deephacks.tools4j.support.types.DurationTime;
 
 public class ConfigTestData {
+
     public ConfigTestData() {
 
     }
@@ -118,6 +119,10 @@ public class ConfigTestData {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Singleton getSingleton() {
+        return new Singleton();
     }
 
     public static final String GRANDFATHER_SCHEMA_NAME = "GrandfatherSchemaName";
@@ -344,7 +349,15 @@ public class ConfigTestData {
         public Child() {
 
         }
+    }
 
+    public static final String SINGLETON_SCHEMA_NAME = "SingletonSchemaName";
+
+    @Config(name = SINGLETON_SCHEMA_NAME, desc = "")
+    public class Singleton {
+
+        @Id(name = "id", desc = "")
+        public static final String id = "singleton";
     }
 
 }

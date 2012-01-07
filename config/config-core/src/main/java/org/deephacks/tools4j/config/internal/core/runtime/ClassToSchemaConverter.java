@@ -15,6 +15,7 @@ package org.deephacks.tools4j.config.internal.core.runtime;
 
 import static org.deephacks.tools4j.config.model.Events.CFG102_NOT_CONFIGURABLE;
 import static org.deephacks.tools4j.config.model.Events.CFG103_NO_ID;
+import static org.deephacks.tools4j.config.model.Events.CFG108_ILLEGAL_MODIFIERS;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,13 +56,20 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
     }
 
     private SchemaId getId(ClassIntrospector introspector) {
-        List<FieldWrap<Id>> id = introspector.getFieldList(Id.class);
-        if (id == null || id.size() == 0) {
+        List<FieldWrap<Id>> ids = introspector.getFieldList(Id.class);
+        if (ids == null || ids.size() == 0) {
             throw CFG103_NO_ID(introspector.getTarget());
         }
-        FieldWrap<Id> idField = id.get(0);
-        SchemaId schemaId = SchemaId.create(idField.getAnnotation().name(), idField.getAnnotation()
-                .desc());
+        FieldWrap<Id> id = ids.get(0);
+        if ((id.isStatic() && !id.isFinal()) || (id.isFinal() && !id.isStatic())) {
+            throw CFG108_ILLEGAL_MODIFIERS(id.getAnnotation().name());
+        }
+        boolean isSingleton = false;
+        if (id.isFinal()) {
+            isSingleton = true;
+        }
+        SchemaId schemaId = SchemaId.create(id.getAnnotation().name(), id.getAnnotation().desc(),
+                isSingleton);
         return schemaId;
     }
 }

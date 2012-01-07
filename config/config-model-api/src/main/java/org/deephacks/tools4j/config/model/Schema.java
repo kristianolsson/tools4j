@@ -177,14 +177,16 @@ public class Schema implements Serializable {
         private static final long serialVersionUID = 5803256931889425514L;
         private String name;
         private String desc;
+        private boolean isSingleton;
 
-        private SchemaId(String name, String desc) {
+        private SchemaId(String name, String desc, boolean isSingleton) {
             this.name = Preconditions.checkNotNull(name);
             this.desc = Preconditions.checkNotNull(desc);
+            this.isSingleton = isSingleton;
         }
 
-        public static SchemaId create(String name, String desc) {
-            return new SchemaId(name, desc);
+        public static SchemaId create(String name, String desc, boolean isSingleton) {
+            return new SchemaId(name, desc, isSingleton);
         }
 
         public String getName() {
@@ -193,6 +195,10 @@ public class Schema implements Serializable {
 
         public String getDesc() {
             return desc;
+        }
+
+        public boolean isSingleton() {
+            return isSingleton;
         }
 
         public String toString() {
