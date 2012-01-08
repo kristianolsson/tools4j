@@ -39,7 +39,7 @@ public class ClassIntrospectorTest {
         ClassIntrospector i = new ClassIntrospector(Test1.class);
         assertThat(i.getName(), is(Test1.class.getName()));
 
-        assertThat(i.get(XmlRootElement.class).name(), is("name"));
+        assertThat(i.getAnnotation(XmlRootElement.class).name(), is("name"));
         Map<String, FieldWrap<XmlElement>> fields = i.getFieldMap(XmlElement.class);
 
         FieldWrap<XmlElement> f = fields.get("var1");

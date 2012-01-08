@@ -55,7 +55,7 @@ public class ClassIntrospector {
      * @param annotation
      * @return
      */
-    public <T extends Annotation> T get(Class<T> annotation) {
+    public <T extends Annotation> T getAnnotation(Class<T> annotation) {
         return clazz.getAnnotation(annotation);
     }
 
