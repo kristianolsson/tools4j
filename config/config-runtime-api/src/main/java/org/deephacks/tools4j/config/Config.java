@@ -26,18 +26,28 @@ import java.lang.annotation.Target;
  * fulfill their intended purpose.
  * </p>
  * <p>
- * Each configuration should contain properties that are conceptually cohesive in 
- * context to a domain specific aspects. 
+ * This annotation is used to mark a classes and fields as configurable. Instances 
+ * of configurable classes must always be unique with respect to {@link Id}.
  * </p>
  * <p>
- * This annotation is used to mark a class as configurable. Fields that are to be 
- * configurable must be annotated with {@link Property}. Instances of configurable 
- * classes must always be unique with respect to {@link Id}.
+ * Changing configuration should never cause system failure or malfunctioning. Make sure 
+ * properties have proper validation rules so that administrators cannot accidentally 
+ * misconfigure the system.
+ * </p>
+ * <p>
+ * <ul>
+ * <li>Fields can be single-valued or multi-valued using any subclass of {@link java.util.Collection} type.</li>
+ * <li>Fields can be <b>final</b> in which case it is considered immutable.</li>
+ * <li>Fields are not allowed to be <b>transient</b>.</li>
+ * <li>Fields are not allowed to be non-<b>final</b> <b>static</b>.</li>
+ * <li>Fields can reference other {@link Config} classes, single or multiple using any subclass of 
+ * {@link java.util.Collection} type.</li>
+ * <li>Fields can have default values. These are used if no values have been set.</li>
  * </p>
  * @author Kristoffer Sjogren
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ ElementType.TYPE, ElementType.FIELD })
 @Inherited
 public @interface Config {
     /**
@@ -47,14 +57,14 @@ public @interface Config {
      * in the system architecture.
      * </p>
      * <p>
-     * Names must be unique within the system.
+     * Names will be displayed to administrative users and must be unique within the 
+     * system.
      * </p>
-     * <p>
-     * Names will be displayed to administrative users. 
-     * </p>
-     * @return Name of the configurable class.
+     * If no name is choosen the field or class name will picked instead.
+     *  
+     * @return Name of the configurable.
      */
-    String name();
+    String name() default "";
 
     /**
      * An informative description that justify the existence of the configuration,

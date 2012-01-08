@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaId;
@@ -38,15 +37,19 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
     @Override
     public Schema convert(Class<?> source, Class<? extends Schema> specificType) {
         ClassIntrospector introspector = new ClassIntrospector(source);
-        Config config = introspector.get(Config.class);
+        Config config = introspector.getAnnotation(Config.class);
         if (config == null) {
             throw CFG102_NOT_CONFIGURABLE(source);
         }
         SchemaId schemaId = getId(introspector);
+        String schemaName = config.name();
+        if (schemaName == null || "".equals(schemaName)) {
+            schemaName = source.getName();
+        }
         Schema schema = Schema.create(schemaId, introspector.getName(), config.name(),
                 config.desc());
         Collection<Object> fields = new ArrayList<Object>();
-        fields.addAll(introspector.getFieldList(Property.class));
+        fields.addAll(introspector.getFieldList(Config.class));
         Collection<AbstractSchemaProperty> props = conversion.convert(fields,
                 AbstractSchemaProperty.class);
         for (AbstractSchemaProperty abstractProp : props) {
@@ -67,6 +70,10 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
         boolean isSingleton = false;
         if (id.isFinal()) {
             isSingleton = true;
+        }
+        String name = id.getAnnotation().name();
+        if (name == null || "".equals(name)) {
+            name = id.getFieldName();
         }
         SchemaId schemaId = SchemaId.create(id.getAnnotation().name(), id.getAnnotation().desc(),
                 isSingleton);

@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Schema;
@@ -35,40 +34,42 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
         ClassIntrospector i = new ClassIntrospector(source.getClass());
         Bean bean = Bean.create(getBeanId(source));
 
-        for (FieldWrap<Property> prop : i.getFieldList(Property.class)) {
-            Object value = prop.getValue(source);
+        for (FieldWrap<Config> field : i.getFieldList(Config.class)) {
+            Object value = field.getValue(source);
             if (value == null) {
                 continue;
             }
-            addProperty(value, bean, prop);
-
+            addProperty(value, bean, field);
         }
 
         Schema schema = conversion.convert(source.getClass(), Schema.class);
         bean.set(schema);
-
         return bean;
     }
 
     @SuppressWarnings("unchecked")
-    private void addProperty(Object value, Bean bean, FieldWrap<Property> prop) {
-        Property property = prop.getAnnotation();
-        if (prop.isCollection()) {
-            Class<?> paramClass = prop.getType();
+    private void addProperty(Object value, Bean bean, FieldWrap<Config> fieldwrap) {
+        Config field = fieldwrap.getAnnotation();
+        String name = field.name();
+        if (name == null || "".equals(name)) {
+            name = fieldwrap.getFieldName();
+        }
+        if (fieldwrap.isCollection()) {
+            Class<?> paramClass = fieldwrap.getType();
             Collection<Object> values = (Collection<Object>) value;
             if (paramClass.isAnnotationPresent(Config.class)) {
                 for (Object object : values) {
-                    bean.addReference(property.name(), getRecursiveBeanId(object));
+                    bean.addReference(name, getRecursiveBeanId(object));
                 }
             } else {
-                bean.addProperty(property.name(), conversion.convert(values, String.class));
+                bean.addProperty(name, conversion.convert(values, String.class));
             }
         } else {
             if (value.getClass().isAnnotationPresent(Config.class)) {
-                bean.addReference(property.name(), getRecursiveBeanId(value));
+                bean.addReference(name, getRecursiveBeanId(value));
             } else {
                 String converted = conversion.convert(value, String.class);
-                bean.setProperty(property.name(), converted);
+                bean.setProperty(name, converted);
             }
         }
     }

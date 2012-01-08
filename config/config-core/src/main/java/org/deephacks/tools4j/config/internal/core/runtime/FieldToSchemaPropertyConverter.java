@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
@@ -35,11 +34,11 @@ import org.deephacks.tools4j.support.reflections.ClassIntrospector;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector.FieldWrap;
 
 public class FieldToSchemaPropertyConverter implements
-        Converter<FieldWrap<Property>, AbstractSchemaProperty> {
+        Converter<FieldWrap<Config>, AbstractSchemaProperty> {
     private Conversion conversion = Conversion.get();
 
     @Override
-    public AbstractSchemaProperty convert(FieldWrap<Property> source,
+    public AbstractSchemaProperty convert(FieldWrap<Config> source,
             Class<? extends AbstractSchemaProperty> specificType) {
         Class<?> type = source.getType();
         if (type.isAnnotationPresent(Config.class)) {
@@ -49,10 +48,13 @@ public class FieldToSchemaPropertyConverter implements
         }
     }
 
-    private AbstractSchemaProperty convertSimple(FieldWrap<Property> source) {
+    private AbstractSchemaProperty convertSimple(FieldWrap<Config> source) {
         String name = source.getAnnotation().name();
         String desc = source.getAnnotation().desc();
         String fieldName = source.getFieldName();
+        if (name == null || "".equals(name)) {
+            name = fieldName;
+        }
         Class<?> type = source.getType();
         validateField(source);
         try {
@@ -73,10 +75,13 @@ public class FieldToSchemaPropertyConverter implements
         }
     }
 
-    private AbstractSchemaProperty convertReferences(FieldWrap<Property> source) {
+    private AbstractSchemaProperty convertReferences(FieldWrap<Config> source) {
         String name = source.getAnnotation().name();
         String desc = source.getAnnotation().desc();
         String fieldName = source.getFieldName();
+        if (name == null || "".equals(name)) {
+            name = fieldName;
+        }
         Class<?> type = source.getType();
         Config configurable = type.getAnnotation(Config.class);
 
@@ -98,7 +103,7 @@ public class FieldToSchemaPropertyConverter implements
         return false;
     }
 
-    private void validateField(FieldWrap<Property> field) {
+    private void validateField(FieldWrap<Config> field) {
         if (field.isStatic() && !field.isFinal()) {
             // non-final static @Property not supported.
             throw Events.CFG108_ILLEGAL_MODIFIERS(field.getAnnotation().name());

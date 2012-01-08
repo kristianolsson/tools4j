@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.support.types.DateTime;
 import org.deephacks.tools4j.support.types.DurationTime;
@@ -136,41 +135,41 @@ public class ConfigTestData {
 
         @Id(name = "id", desc = "desc")
         public String id;
-        @Property(name = "prop1Name", desc = "prop1Desc")
+        @Config(desc = "prop1Desc")
         public String prop1 = "defaultValue";
-        @Property(name = "prop2Name", desc = "prop2Desc")
+        @Config(desc = "prop2Desc")
         public Set<String> prop2;
-        @Property(name = "prop3Name", desc = "prop3Desc")
+        @Config(desc = "prop3Desc")
         public List<Integer> prop3 = Arrays.asList(1, 2, 3);
-        @Property(name = "prop4Name", desc = "prop4Desc")
+        @Config(desc = "prop4Desc")
         public DateTime prop4;
-        @Property(name = "prop5Name", desc = "prop5Desc")
+        @Config(desc = "prop5Desc")
         public DurationTime prop5;
-        @Property(name = "prop7Name", desc = "prop7Desc")
+        @Config(desc = "prop7Desc")
         public List<Parent> prop7;
-        @Property(name = "prop8Name", desc = "prop8Desc")
+        @Config(desc = "prop8Desc")
         public Byte prop8;
-        @Property(name = "prop9Name", desc = "prop9Desc")
+        @Config(desc = "prop9Desc")
         public Long prop9;
-        @Property(name = "prop10Name", desc = "prop10Desc")
+        @Config(desc = "prop10Desc")
         public Short prop10;
-        @Property(name = "prop11Name", desc = "prop11Desc")
+        @Config(desc = "prop11Desc")
         public Float prop11;
-        @Property(name = "prop12Name", desc = "prop12Desc")
+        @Config(desc = "prop12Desc")
         public Double prop12;
-        @Property(name = "prop13Name", desc = "prop13Desc")
+        @Config(desc = "prop13Desc")
         public Boolean prop13;
-        @Property(name = "prop14Name", desc = "prop14Desc")
+        @Config(desc = "prop14Desc")
         public TimeUnit prop14 = TimeUnit.MICROSECONDS;
-        @Property(name = "prop15Name", desc = "prop15Desc")
+        @Config(desc = "prop15Desc")
         public URL prop15;
-        @Property(name = "prop16Name", desc = "prop16Desc")
+        @Config(desc = "prop16Desc")
         public File prop16;
-        @Property(name = "prop17Name", desc = "prop17Desc")
+        @Config(desc = "prop17Desc")
         public List<File> prop17;
-        @Property(name = "prop18Name", desc = "prop18Desc")
+        @Config(desc = "prop18Desc")
         public List<URL> prop18;
-        @Property(name = "prop19Name", desc = "prop19Desc")
+        @Config(desc = "prop19Desc")
         public List<TimeUnit> prop19 = Arrays.asList(TimeUnit.HOURS, TimeUnit.SECONDS);
 
         public void add(Parent... p) {
@@ -209,52 +208,52 @@ public class ConfigTestData {
     @Config(name = PARENT_SCHEMA_NAME, desc = "a test class")
     public class Parent {
 
-        @Id(name = "id", desc = "desc")
+        @Id(desc = "desc")
         private String id;
-        @Property(name = "prop1Name", desc = "prop1Desc")
+        @Config(desc = "prop1Desc")
         public String prop1 = "defaultValue";
 
-        @Property(name = "prop2Name", desc = "prop2Desc")
+        @Config(desc = "prop2Desc")
         public Set<String> prop2;
 
-        @Property(name = "prop3Name", desc = "prop3Desc")
+        @Config(desc = "prop3Desc")
         public List<Integer> prop3 = Arrays.asList(1, 2, 3);
 
-        @Property(name = "prop4Name", desc = "prop4Desc")
+        @Config(desc = "prop4Desc")
         public DateTime prop4;
 
-        @Property(name = "prop5Name", desc = "prop5Desc")
+        @Config(desc = "prop5Desc")
         public DurationTime prop5;
-        @Property(name = "prop6Name", desc = "prop6Desc")
+        @Config(desc = "prop6Desc")
         public Child prop6;
-        @Property(name = "prop7Name", desc = "prop7Desc")
+        @Config(desc = "prop7Desc")
         public List<Child> prop7;
 
-        @Property(name = "prop8Name", desc = "prop8Desc")
+        @Config(desc = "prop8Desc")
         public Byte prop8;
 
-        @Property(name = "prop9Name", desc = "prop9Desc")
+        @Config(desc = "prop9Desc")
         public Long prop9;
 
-        @Property(name = "prop10Name", desc = "prop10Desc")
+        @Config(desc = "prop10Desc")
         public Short prop10;
-        @Property(name = "prop11Name", desc = "prop11Desc")
+        @Config(desc = "prop11Desc")
         public Float prop11;
-        @Property(name = "prop12Name", desc = "prop12Desc")
+        @Config(desc = "prop12Desc")
         public Double prop12;
-        @Property(name = "prop13Name", desc = "prop13Desc")
+        @Config(desc = "prop13Desc")
         public Boolean prop13;
-        @Property(name = "prop14Name", desc = "prop14Desc")
+        @Config(desc = "prop14Desc")
         public TimeUnit prop14;
-        @Property(name = "prop15Name", desc = "prop15Desc")
+        @Config(desc = "prop15Desc")
         public URL prop15;
-        @Property(name = "prop16Name", desc = "prop16Desc")
+        @Config(desc = "prop16Desc")
         public File prop16;
-        @Property(name = "prop17Name", desc = "prop17Desc")
+        @Config(desc = "prop17Desc")
         public List<File> prop17;
-        @Property(name = "prop18Name", desc = "prop18Desc")
+        @Config(desc = "prop18Desc")
         public List<URL> prop18;
-        @Property(name = "prop19Name", desc = "prop19Desc")
+        @Config(desc = "prop19Desc")
         public List<TimeUnit> prop19;
 
         public void add(Child... c) {
@@ -294,52 +293,52 @@ public class ConfigTestData {
     @Config(name = CHILD_SCHEMA_NAME, desc = "a test class")
     public class Child {
 
-        @Id(name = "id", desc = "desc")
+        @Id(desc = "desc")
         public String id;
 
-        @Property(name = "prop2Name", desc = "prop2Desc")
+        @Config(desc = "prop2Desc")
         public Set<String> prop2;
 
-        @Property(name = "prop3Name", desc = "prop3Desc")
+        @Config(desc = "prop3Desc")
         public List<Integer> prop3 = Arrays.asList(1, 2, 3);
 
-        @Property(name = "prop4Name", desc = "prop4Desc")
+        @Config(desc = "prop4Desc")
         public DateTime prop4;
 
-        @Property(name = "prop5Name", desc = "prop5Desc")
+        @Config(desc = "prop5Desc")
         public DurationTime prop5;
 
-        @Property(name = "prop8Name", desc = "prop8Desc")
+        @Config(desc = "prop8Desc")
         public Byte prop8;
 
-        @Property(name = "prop9Name", desc = "prop9Desc")
+        @Config(desc = "prop9Desc")
         public Long prop9;
 
-        @Property(name = "prop10Name", desc = "prop10Desc")
+        @Config(desc = "prop10Desc")
         public Short prop10;
 
-        @Property(name = "prop11Name", desc = "prop11Desc")
+        @Config(desc = "prop11Desc")
         public Float prop11;
 
-        @Property(name = "prop12Name", desc = "prop12Desc")
+        @Config(desc = "prop12Desc")
         public Double prop12;
 
-        @Property(name = "prop13Name", desc = "prop13Desc")
+        @Config(desc = "prop13Desc")
         public Boolean prop13;
 
-        @Property(name = "prop15Name", desc = "prop15Desc")
+        @Config(desc = "prop15Desc")
         public URL prop15;
 
-        @Property(name = "prop16Name", desc = "prop16Desc")
+        @Config(desc = "prop16Desc")
         public File prop16;
 
-        @Property(name = "prop17Name", desc = "prop17Desc")
+        @Config(desc = "prop17Desc")
         public List<File> prop17;
 
-        @Property(name = "prop18Name", desc = "prop18Desc")
+        @Config(desc = "prop18Desc")
         public List<URL> prop18;
 
-        @Property(name = "prop19Name", desc = "prop19Desc")
+        @Config(desc = "prop19Desc")
         public List<TimeUnit> prop19;
 
         public Child(String id) {
@@ -360,7 +359,7 @@ public class ConfigTestData {
     @Config(name = SINGLETON_SCHEMA_NAME, desc = "")
     public class Singleton {
 
-        @Id(name = "id", desc = "")
+        @Id(desc = "")
         public static final String id = "singleton";
 
         public BeanId getBeanId() {
@@ -373,10 +372,10 @@ public class ConfigTestData {
     @Config(name = SINGLETON_PARENT_SCHEMA_NAME, desc = "")
     public class SingletonParent {
 
-        @Id(name = "id", desc = "")
+        @Id(desc = "")
         public String id = "singletonParent";
 
-        @Property(name = "singletonReference", desc = "")
+        @Config(desc = "")
         public Singleton singleton;
 
         public SingletonParent(String id) {

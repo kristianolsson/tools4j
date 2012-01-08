@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Schema;
@@ -94,7 +94,7 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             // do not try to inject singleton id: the field is static final
             values.put(getIdField(specificType), source.getId().getInstanceId());
         }
-        instance.injectFieldsAnnotatedWith(Property.class).withValues(values);
+        instance.injectFieldsAnnotatedWith(Config.class).withValues(values);
         instance.injectFieldsAnnotatedWith(Id.class).withValues(values);
         return instance.get();
 

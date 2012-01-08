@@ -60,7 +60,7 @@ public @interface Id {
      * Name must be unique for all configuration classes of same type.
      * </p>
      */
-    String name();
+    String name() default "";
 
     /**
      * Description can be used to inform if identification is intended to use attributes 

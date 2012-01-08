@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
-import org.deephacks.tools4j.config.Property;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.model.Bean;
@@ -82,10 +81,10 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
     public void test_immutable() {
         @Config(name = "immutable", desc = "")
         final class ImmutableConfig {
-            @Id(name = "", desc = "")
+            @Id(desc = "")
             private String id;
 
-            @Property(name = "test", desc = "")
+            @Config(desc = "")
             private final String test = "test";
         }
         runtime.register(ImmutableConfig.class);
@@ -119,10 +118,10 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
     public void test_transient_modifier() {
         @Config(name = "transient", desc = "")
         final class TransientConfig {
-            @Id(name = "", desc = "")
+            @Id(desc = "")
             private String id;
 
-            @Property(name = "test", desc = "")
+            @Config(desc = "")
             private transient String test = "test";
         }
         try {
@@ -149,10 +148,10 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
 
     @Config(name = "nonfinalstaticprop", desc = "")
     final static class NonFinalStaticPropConfig {
-        @Id(name = "", desc = "")
+        @Id(desc = "")
         private String id;
 
-        @Property(name = "test", desc = "")
+        @Config(desc = "")
         private static String test = "test";
     }
 
@@ -169,16 +168,16 @@ public class RuntimeCoreContextTest extends ConfigDefaultSetup {
 
     @Config(name = "nonfinalstaticid", desc = "")
     final static class NonFinalStaticIdConfig {
-        @Id(name = "", desc = "")
+        @Id(desc = "")
         private static String id;
 
     }
 
     @Test
     public void test_singleton() {
-        @Config(name = "singleton", desc = "")
+        @Config(desc = "")
         final class SingletonConfig {
-            @Id(name = "", desc = "")
+            @Id(desc = "")
             private static final String id = "singleton";
         }
         runtime.register(SingletonConfig.class);

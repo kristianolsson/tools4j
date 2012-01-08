@@ -166,7 +166,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
 
         // assert that the singleton reference is set for admin
         Bean result = admin.get(singletonParent.getId());
-        BeanId singletonId = result.getFirstReference("singletonReference");
+        BeanId singletonId = result.getFirstReference("singleton");
         assertThat(singletonId, is(s1.getBeanId()));
         assertThat(singletonId.getBean(), is(toBean(s1)));
 
@@ -363,7 +363,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         Bean child = Bean.create(BeanId.create("c1", ConfigTestData.CHILD_SCHEMA_NAME));
         // child merge invalid byte
         try {
-            child.setProperty("prop8Name", "100000");
+            child.setProperty("prop8", "100000");
             admin.set(child);
             fail("10000 does not fit java.lang.Byte");
         } catch (AbortRuntimeException e) {
@@ -371,7 +371,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         }
         // child merge invalid integer
         try {
-            child.addProperty("prop3Name", "2.2");
+            child.addProperty("prop3", "2.2");
             admin.merge(child);
             fail("2.2 does not fit a collection of java.lang.Integer");
         } catch (AbortRuntimeException e) {
@@ -380,7 +380,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         // parent set invalid enum value 
         Bean parent = Bean.create(BeanId.create("g1", ConfigTestData.GRANDFATHER_SCHEMA_NAME));
         try {
-            parent.setProperty("prop14Name", "not_a_enum");
+            parent.setProperty("prop14", "not_a_enum");
             admin.set(parent);
             fail("not_a_enum is not a value of TimeUnit");
         } catch (AbortRuntimeException e) {
@@ -389,7 +389,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         // parent merge invalid value to enum list
         parent = Bean.create(BeanId.create("p1", ConfigTestData.PARENT_SCHEMA_NAME));
         try {
-            parent.addProperty("prop19Name", "not_a_enum");
+            parent.addProperty("prop19", "not_a_enum");
             admin.merge(parent);
             fail("not_a_enum is not a value of TimeUnit");
         } catch (AbortRuntimeException e) {
@@ -399,7 +399,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         // grandfather merge invalid multiplicity type, i.e. single on multi value.
         Bean grandfather = Bean.create(BeanId.create("g1", ConfigTestData.GRANDFATHER_SCHEMA_NAME));
         try {
-            grandfather.addProperty("prop1Name", Arrays.asList("1", "2"));
+            grandfather.addProperty("prop1", Arrays.asList("1", "2"));
             admin.merge(grandfather);
             fail("Cannot add mutiple values to a single valued property.");
         } catch (AbortRuntimeException e) {
@@ -409,7 +409,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         // grandfather set invalid multiplicity type, multi value on single.
         grandfather = Bean.create(BeanId.create("p1", ConfigTestData.PARENT_SCHEMA_NAME));
         try {
-            grandfather.addProperty("prop11Name", "2.0");
+            grandfather.addProperty("prop11", "2.0");
             admin.set(parent);
             fail("Cannot add a value to a single typed value.");
         } catch (AbortRuntimeException e) {
