@@ -60,7 +60,6 @@ public class XmlBeanAdapter {
                     if (p.refs != null)
                         bean.addReference(p.name, p.getReferences());
                 }
-
                 result.add(bean);
             }
             return result;

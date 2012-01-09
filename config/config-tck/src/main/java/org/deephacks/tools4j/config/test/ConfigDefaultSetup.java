@@ -59,18 +59,21 @@ public abstract class ConfigDefaultSetup {
         p1 = testdata.getParent("p1");
         p1.add(c2, c1);
         p1.set(c1);
+        p1.put(c1);
+        p1.put(c2);
 
         p2 = testdata.getParent("p2");
         p2.add(c1, c2);
         p2.set(c2);
+        p2.put(c1);
+        p2.put(c2);
 
         g1 = testdata.getGrandfather("g1");
         g1.add(p1, p2);
-        g1.set(c2);
 
         g2 = testdata.getGrandfather("g2");
         g2.add(p1, p2);
-        g2.set(c2);
+        g2.put(p1);
 
         runtime.register(Grandfather.class);
         runtime.register(Parent.class);

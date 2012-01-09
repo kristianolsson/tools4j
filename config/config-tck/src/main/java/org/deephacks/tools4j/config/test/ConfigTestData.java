@@ -17,8 +17,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -172,6 +174,9 @@ public class ConfigTestData {
         @Config(desc = "prop19Desc")
         public List<TimeUnit> prop19 = Arrays.asList(TimeUnit.HOURS, TimeUnit.SECONDS);
 
+        @Config(desc = "prop20Desc")
+        public Map<String, Parent> prop20;
+
         public void add(Parent... p) {
             if (prop7 == null) {
                 prop7 = new ArrayList<Parent>();
@@ -187,7 +192,11 @@ public class ConfigTestData {
             prop7.clear();
         }
 
-        public void set(Child c) {
+        public void put(Parent p) {
+            if (prop20 == null) {
+                prop20 = new HashMap<String, Parent>();
+            }
+            prop20.put(p.id, p);
         }
 
         public Grandfather() {
@@ -255,6 +264,8 @@ public class ConfigTestData {
         public List<URL> prop18;
         @Config(desc = "prop19Desc")
         public List<TimeUnit> prop19;
+        @Config(desc = "prop20Desc")
+        public Map<String, Child> prop20;
 
         public void add(Child... c) {
             if (prop7 == null) {
@@ -277,6 +288,13 @@ public class ConfigTestData {
 
         public void set(Child c) {
             prop6 = c;
+        }
+
+        public void put(Child c) {
+            if (prop20 == null) {
+                prop20 = new HashMap<String, Child>();
+            }
+            prop20.put(c.id, c);
         }
 
         public Parent() {

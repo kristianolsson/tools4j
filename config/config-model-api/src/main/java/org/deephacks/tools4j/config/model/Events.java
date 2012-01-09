@@ -153,6 +153,19 @@ public class Events {
     }
 
     /**
+     * {@value} - Bean property have illegal map parameterization. 
+     */
+    public static final int CFG109 = 109;
+    private static final String CFG109_MSG = "Bean property {0} have illegal map parameterization.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG109,
+            desc = "Bean property have illegal map parameterization.")
+    public static AbortRuntimeException CFG109_ILLEGAL_MAP(String propertyName) {
+        Event event = new Event(MODULE_NAME, CFG109, MessageFormat.format(CFG109_MSG, propertyName));
+        return new AbortRuntimeException(event);
+    }
+
+    /**
      * {@value} - XML storage directory system variable not set. 
      */
     public static final int CFG201 = 201;

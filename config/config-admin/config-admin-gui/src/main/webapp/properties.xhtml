@@ -18,7 +18,7 @@
         <h:outputText value="#{property.name}" />
       </p:column>
       <p:column headerText="Type">
-        <h:outputText value="#{property.typeDisplay}" /> 
+        <h:outputText value="#{property.typeDisplay}" />
         <h:outputText value="(immutable)" rendered="#{property.isImmutable}"/>
       </p:column>
       <p:column headerText="Value">
@@ -98,7 +98,15 @@
             <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
           </p:selectOneMenu>
         </h:panelGroup>
+
+        <!-- RefMapProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyMap'}">
+          <p:selectOneMenu effect="fade" value="#{property.listValues.menuItemValue}" style="width: 250px">
+            <f:selectItems value="#{property.listValues.values}" var="value" itemLabel="#{value}" itemValue="#{value}"/>
+          </p:selectOneMenu>
+        </h:panelGroup>
       </p:column>
+
 
       <p:column headerText="Action">
 
@@ -165,8 +173,20 @@
             <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
           </p:dialog>
         </h:panelGroup>
-      </p:column>
 
+        <!-- RefMapProperty -->
+        <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyMap'}">
+          <p:menuButton value="Action">
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem icon="ui-icon ui-icon-close"
+                        actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
+          </p:menuButton>
+          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+            <p:inputText value="#{property.listValues.inputTextValue}" />
+            <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
+          </p:dialog>
+        </h:panelGroup>
+      </p:column>
 
       <p:rowExpansion>
         <h:outputText value="#{property.desc}"/><br/>

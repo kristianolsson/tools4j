@@ -75,8 +75,7 @@ public class ClassToSchemaConverter implements Converter<Class<?>, Schema> {
         if (name == null || "".equals(name)) {
             name = id.getFieldName();
         }
-        SchemaId schemaId = SchemaId.create(id.getAnnotation().name(), id.getAnnotation().desc(),
-                isSingleton);
+        SchemaId schemaId = SchemaId.create(name, id.getAnnotation().desc(), isSingleton);
         return schemaId;
     }
 }

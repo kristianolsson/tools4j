@@ -287,13 +287,6 @@ public class Schema implements Serializable {
 
         /**
          * Not to be used by users.
-         * 
-         * @param name
-         * @param fieldName
-         * @param type
-         * @param desc
-         * @param defaultValue
-         * @return
          */
         public static SchemaProperty create(String name, String fieldName, String type,
                 String desc, boolean isImmutable, String defaultValue) {
@@ -348,14 +341,6 @@ public class Schema implements Serializable {
 
         /**
          * Not to be used by users.
-         * 
-         * @param name
-         * @param fieldName
-         * @param type
-         * @param desc
-         * @param defaultValues
-         * @param collectionType
-         * @return
          */
         public static SchemaPropertyList create(String name, String fieldName, String type,
                 String desc, boolean isImmutable, List<String> defaultValues, String collectionType) {
@@ -416,12 +401,6 @@ public class Schema implements Serializable {
 
         /**
          * Not to be used by users.
-         * 
-         * @param name
-         * @param fieldName
-         * @param schemaName
-         * @param desc
-         * @return
          */
         public static SchemaPropertyRef create(String name, String fieldName, String schemaName,
                 String desc, boolean isImmutable, boolean isSingleton) {
@@ -477,13 +456,6 @@ public class Schema implements Serializable {
 
         /**
          * Not to be used by users.
-         * 
-         * @param name
-         * @param fieldName
-         * @param schemaName
-         * @param desc
-         * @param collectionType
-         * @return
          */
         public static SchemaPropertyRefList create(String name, String fieldName,
                 String schemaName, String desc, boolean isImmutable, String collectionType) {
@@ -520,5 +492,60 @@ public class Schema implements Serializable {
                     .add("collectionType", getCollectionType()).add("schema-name", getSchemaName())
                     .toString();
         }
+    }
+
+    /**
+     * Represent a map of references indexed on instance id.
+     */
+    public static class SchemaPropertyRefMap extends AbstractSchemaProperty {
+
+        private static final long serialVersionUID = 9128725908670921628L;
+        private String mapType;
+        private String schemaName;
+
+        private SchemaPropertyRefMap(String name, String fieldName, String schemaName, String desc,
+                boolean isImmutable, String mapType) {
+            super(name, fieldName, desc, isImmutable);
+            this.mapType = Preconditions.checkNotNull(mapType);
+            this.schemaName = Preconditions.checkNotNull(schemaName);
+        }
+
+        /**
+         * Not to be used by users.
+         */
+        public static SchemaPropertyRefMap create(String name, String fieldName, String schemaName,
+                String desc, boolean isImmutable, String mapType) {
+            return new SchemaPropertyRefMap(name, fieldName, schemaName, desc, isImmutable, mapType);
+        }
+
+        public String getMapType() {
+            return mapType;
+        }
+
+        public String getSchemaName() {
+            return schemaName;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.getHashCode() + Objects.hashCode(mapType, schemaName);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof SchemaPropertyRefMap)) {
+                return false;
+            }
+            SchemaPropertyRefMap o = (SchemaPropertyRefMap) obj;
+            return equals(o) && equal(getMapType(), o.getMapType())
+                    && equal(getSchemaName(), o.getSchemaName());
+        }
+
+        @Override
+        public String toString() {
+            return toStringHelper(SchemaPropertyRefList.class).add("mapType", getMapType())
+                    .add("schema-name", getSchemaName()).toString();
+        }
+
     }
 }

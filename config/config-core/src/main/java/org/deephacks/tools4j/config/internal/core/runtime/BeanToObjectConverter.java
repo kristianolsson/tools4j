@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
@@ -34,6 +36,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.Converter;
 import org.deephacks.tools4j.support.reflections.BeanInstance;
@@ -90,6 +93,19 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             }
             values.put(prop.getFieldName(), c);
         }
+        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
+            List<BeanId> beans = source.getReference(prop.getName());
+            if (beans == null) {
+                continue;
+            }
+            Map<Object, Object> c = newMap(forName(prop.getMapType()));
+            for (BeanId beanId : beans) {
+                Bean b = beanId.getBean();
+                Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
+                c.put(beanId.getInstanceId(), beanInstance);
+            }
+            values.put(prop.getFieldName(), c);
+        }
         if (!schema.getId().isSingleton()) {
             // do not try to inject singleton id: the field is static final
             values.put(getIdField(specificType), source.getId().getInstanceId());
@@ -123,6 +139,23 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             return new ArrayList<Object>();
         } else if (Set.class.isAssignableFrom(clazz)) {
             return new HashSet<Object>();
+        }
+        throw new UnsupportedOperationException("Class [" + clazz + "] is not supported.");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<Object, Object> newMap(Class<?> clazz) {
+        if (!clazz.isInterface()) {
+            try {
+                return (Map<Object, Object>) clazz.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (Map.class.isAssignableFrom(clazz)) {
+            return new HashMap<Object, Object>();
+        } else if (ConcurrentMap.class.isAssignableFrom(clazz)) {
+            return new ConcurrentHashMap<Object, Object>();
         }
         throw new UnsupportedOperationException("Class [" + clazz + "] is not supported.");
     }

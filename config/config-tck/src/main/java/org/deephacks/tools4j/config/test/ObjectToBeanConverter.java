@@ -15,6 +15,7 @@ package org.deephacks.tools4j.config.test;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
@@ -63,6 +64,14 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
                 }
             } else {
                 bean.addProperty(name, conversion.convert(values, String.class));
+            }
+        } else if (fieldwrap.isMap()) {
+            Class<?> paramClass = fieldwrap.getMapParamTypes().get(1);
+            Map<String, Object> values = (Map<String, Object>) value;
+            if (paramClass.isAnnotationPresent(Config.class)) {
+                for (Object object : values.values()) {
+                    bean.addReference(name, getRecursiveBeanId(object));
+                }
             }
         } else {
             if (value.getClass().isAnnotationPresent(Config.class)) {

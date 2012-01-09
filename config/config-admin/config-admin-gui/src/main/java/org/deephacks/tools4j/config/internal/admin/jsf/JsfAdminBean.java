@@ -28,13 +28,15 @@ import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.EnumPr
 import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.IdProperty;
 import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.RefProperty;
 import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.RefPropertyList;
+import org.deephacks.tools4j.config.internal.admin.jsf.JsfAdminProperties.RefPropertyMap;
 import org.deephacks.tools4j.config.model.Bean;
-import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,7 @@ public class JsfAdminBean {
     private List<EnumPropertyList> enumListProperties = new ArrayList<EnumPropertyList>();
     private List<RefProperty> refProperties = new ArrayList<RefProperty>();
     private List<RefPropertyList> refListProperties = new ArrayList<RefPropertyList>();
+    private List<RefPropertyMap> refMapProperties = new ArrayList<RefPropertyMap>();
     private JsfAdminTree currentTree;
 
     public JsfAdminBean(Bean bean, JsfAdminTree tree) {
@@ -58,8 +61,8 @@ public class JsfAdminBean {
 
         this.schema = bean.getSchema();
         this.currentTree = tree;
-        id = new IdProperty(bean.getId().getInstanceId(), schema.getId().getName(), schema
-                .getId().getDesc());
+        id = new IdProperty(bean.getId().getInstanceId(), schema.getId().getName(), schema.getId()
+                .getDesc());
         for (SchemaProperty p : schema.get(SchemaProperty.class)) {
             if (isEnum(p.getType())) {
                 enumProperties.add(new EnumProperty(bean.getSingleValue(p.getName()), p));
@@ -81,14 +84,16 @@ public class JsfAdminBean {
         for (SchemaPropertyRefList p : schema.get(SchemaPropertyRefList.class)) {
             refListProperties.add(new RefPropertyList(bean.getReference(p.getName()), p));
         }
+        for (SchemaPropertyRefMap p : schema.get(SchemaPropertyRefMap.class)) {
+            refMapProperties.add(new RefPropertyMap(bean.getReference(p.getName()), p));
+        }
 
     }
 
     public JsfAdminBean(Schema schema, JsfAdminTree tree) {
         this.schema = schema;
         this.currentTree = tree;
-        id = new IdProperty(null, schema.getId().getName(), schema.getId()
-                .getDesc());
+        id = new IdProperty(null, schema.getId().getName(), schema.getId().getDesc());
         for (SchemaProperty p : schema.get(SchemaProperty.class)) {
             if (isEnum(p.getType())) {
                 enumProperties.add(new EnumProperty(null, p));
@@ -110,7 +115,9 @@ public class JsfAdminBean {
         for (SchemaPropertyRefList p : schema.get(SchemaPropertyRefList.class)) {
             refListProperties.add(new RefPropertyList(null, p));
         }
-
+        for (SchemaPropertyRefMap p : schema.get(SchemaPropertyRefMap.class)) {
+            refMapProperties.add(new RefPropertyMap(null, p));
+        }
     }
 
     public Bean getBean() {
@@ -130,6 +137,7 @@ public class JsfAdminBean {
         list.addAll(getEnumList());
         list.addAll(getRef());
         list.addAll(getRefList());
+        list.addAll(getRefMap());
         Collections.sort(list);
         return list;
     }
@@ -156,6 +164,10 @@ public class JsfAdminBean {
 
     public List<RefPropertyList> getRefList() {
         return refListProperties;
+    }
+
+    public List<RefPropertyMap> getRefMap() {
+        return refMapProperties;
     }
 
     /**
@@ -194,6 +206,11 @@ public class JsfAdminBean {
             }
         }
         for (RefPropertyList p : refListProperties) {
+            if (p.getListValues().isDirty()) {
+                save.setReferences(p.getName(), p.getIds());
+            }
+        }
+        for (RefPropertyMap p : refMapProperties) {
             if (p.getListValues().isDirty()) {
                 save.setReferences(p.getName(), p.getIds());
             }

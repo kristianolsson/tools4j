@@ -28,6 +28,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 
 public class XmlSchemaAdapter {
     @XmlRootElement(name = "schema-xml")
@@ -68,6 +69,10 @@ public class XmlSchemaAdapter {
                     schema.add(SchemaPropertyRefList.create(p.name, p.fieldName, p.schemaName,
                             p.desc, p.isImmutable, p.collectionType));
                 }
+                for (XmlSchemaRefMap p : b.refMap) {
+                    schema.add(SchemaPropertyRefMap.create(p.name, p.fieldName, p.schemaName,
+                            p.desc, p.isImmutable, p.mapType));
+                }
                 result.add(schema);
             }
             return result;
@@ -92,6 +97,8 @@ public class XmlSchemaAdapter {
             public List<XmlSchemaRef> ref = new ArrayList<XmlSchemaRef>();
             @XmlElement(name = "ref-collection")
             public List<XmlSchemaRefCollection> refCollection = new ArrayList<XmlSchemaRefCollection>();
+            @XmlElement(name = "ref-map")
+            public List<XmlSchemaRefMap> refMap = new ArrayList<XmlSchemaRefMap>();
 
             public XmlSchema() {
 
@@ -115,7 +122,9 @@ public class XmlSchemaAdapter {
                 for (SchemaPropertyRefList p : bean.get(SchemaPropertyRefList.class)) {
                     refCollection.add(new XmlSchemaRefCollection(p));
                 }
-
+                for (SchemaPropertyRefMap p : bean.get(SchemaPropertyRefMap.class)) {
+                    refMap.add(new XmlSchemaRefMap(p));
+                }
             }
         }
 
@@ -257,6 +266,33 @@ public class XmlSchemaAdapter {
             }
         }
 
+        @XmlAccessorType(XmlAccessType.FIELD)
+        public static class XmlSchemaRefMap {
+            @XmlAttribute
+            private String name;
+            @XmlAttribute(name = "field-name")
+            private String fieldName;
+            @XmlAttribute(name = "schema-name")
+            private String schemaName;
+            @XmlAttribute(name = "map-type")
+            private String mapType;
+            @XmlAttribute(name = "immutable")
+            private boolean isImmutable;
+            @XmlAttribute
+            private String desc;
+
+            public XmlSchemaRefMap() {
+            }
+
+            public XmlSchemaRefMap(SchemaPropertyRefMap p) {
+                this.name = p.getName();
+                this.fieldName = p.getFieldName();
+                this.schemaName = p.getSchemaName();
+                this.mapType = p.getMapType();
+                this.desc = p.getDesc();
+                this.isImmutable = p.isImmutable();
+            }
+        }
     }
 
 }

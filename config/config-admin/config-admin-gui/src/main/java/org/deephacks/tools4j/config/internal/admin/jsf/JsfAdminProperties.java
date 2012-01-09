@@ -22,6 +22,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 
 public abstract class JsfAdminProperties implements Comparable<JsfAdminProperties> {
     public String getSimpleClassname() {
@@ -288,7 +289,7 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
     }
 
     public static class RefPropertyList extends JsfAdminProperties {
-        private ListValues listValues;
+        protected ListValues listValues;
         private String type;
         private String name;
         private String desc;
@@ -324,6 +325,77 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public String getTypeDisplay() {
             return "List of " + getSimpleTypeDisplay(getType());
+        }
+
+        public void setListCreator(ListValues listValues) {
+            this.listValues = listValues;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void resetToDefault() {
+            listValues.resetToDefault();
+        }
+
+        public boolean getIsDefault() {
+            return listValues.getValues() == null;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+    }
+
+    public static class RefPropertyMap extends JsfAdminProperties {
+        protected ListValues listValues;
+        private String type;
+        private String name;
+        private String desc;
+
+        public RefPropertyMap(List<BeanId> ids, SchemaPropertyRefMap prop) {
+            this.name = prop.getName();
+            this.desc = prop.getDesc();
+            this.type = prop.getSchemaName();
+            ArrayList<String> instanceIds = new ArrayList<String>();
+            if (ids != null) {
+                for (BeanId beanId : ids) {
+                    if (!instanceIds.contains(beanId.getInstanceId())) {
+                        instanceIds.add(beanId.getInstanceId());
+                    }
+                }
+            }
+            this.listValues = new ListValues(instanceIds, prop.isImmutable(), null);
+        }
+
+        public List<BeanId> getIds() {
+            List<BeanId> ids = new ArrayList<BeanId>();
+            for (String value : listValues.getValues()) {
+                ids.add(BeanId.create(value, type));
+            }
+            return ids;
+        }
+
+        public ListValues getListValues() {
+            return listValues;
+        }
+
+        public boolean getIsImmutable() {
+            return listValues.isImmutable;
+        }
+
+        public String getTypeDisplay() {
+            return "Map of " + getSimpleTypeDisplay(getType());
         }
 
         public void setListCreator(ListValues listValues) {

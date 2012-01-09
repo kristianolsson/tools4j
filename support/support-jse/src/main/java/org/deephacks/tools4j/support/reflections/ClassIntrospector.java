@@ -83,13 +83,14 @@ public class ClassIntrospector {
         private T annotation;
         private Field field;
         private boolean isCollection = false;
+        private boolean isMap = false;
         private Object defaultDeclaringInstance;
 
         public FieldWrap(Field f, T annotation) {
             this.field = f;
             this.annotation = annotation;
             this.isCollection = Collection.class.isAssignableFrom(f.getType());
-
+            this.isMap = Map.class.isAssignableFrom(f.getType());
         }
 
         public T getAnnotation() {
@@ -110,11 +111,26 @@ public class ClassIntrospector {
                         + "] does not have parameterized arguments, which is not allowed.");
             }
             return p.get(0);
+        }
 
+        public List<Class<?>> getMapParamTypes() {
+            if (!isMap) {
+                throw new UnsupportedOperationException("Field [" + field + "] is not a map.");
+            }
+            List<Class<?>> p = getParameterizedType(field);
+            if (p.size() == 0) {
+                throw new UnsupportedOperationException("Map of field [" + field
+                        + "] does not have parameterized arguments, which is not allowed.");
+            }
+            return p;
         }
 
         public boolean isCollection() {
             return isCollection;
+        }
+
+        public boolean isMap() {
+            return isMap;
         }
 
         public boolean isFinal() {
@@ -136,6 +152,17 @@ public class ClassIntrospector {
         public Class<?> getCollRawType() {
             if (!isCollection) {
                 throw new UnsupportedOperationException("This field is not a collection.");
+            }
+            return field.getType();
+        }
+
+        /**
+         * Return the raw map type
+         * @return
+         */
+        public Class<?> getMapRawType() {
+            if (!isMap) {
+                throw new UnsupportedOperationException("This field is not a map.");
             }
             return field.getType();
         }

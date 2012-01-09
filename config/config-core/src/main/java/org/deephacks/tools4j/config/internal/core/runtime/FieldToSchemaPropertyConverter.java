@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.config.internal.core.runtime;
 
 import static org.deephacks.tools4j.config.model.Events.CFG104_UNSUPPORTED_PROPERTY;
+import static org.deephacks.tools4j.config.model.Events.CFG109_ILLEGAL_MAP;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.conversion.ConversionException;
 import org.deephacks.tools4j.support.conversion.Converter;
@@ -40,6 +42,16 @@ public class FieldToSchemaPropertyConverter implements
     @Override
     public AbstractSchemaProperty convert(FieldWrap<Config> source,
             Class<? extends AbstractSchemaProperty> specificType) {
+        if (source.isMap()) {
+            List<Class<?>> types = source.getMapParamTypes();
+            if (!String.class.equals(types.get(0))) {
+                throw CFG109_ILLEGAL_MAP(source.getFieldName());
+            }
+            if (!types.get(1).isAnnotationPresent(Config.class)) {
+                throw CFG109_ILLEGAL_MAP(source.getFieldName());
+            }
+            return convertReferences(source);
+        }
         Class<?> type = source.getType();
         if (type.isAnnotationPresent(Config.class)) {
             return convertReferences(source);
@@ -88,9 +100,13 @@ public class FieldToSchemaPropertyConverter implements
         if (source.isCollection()) {
             return SchemaPropertyRefList.create(name, fieldName, configurable.name(), desc,
                     source.isFinal(), source.getCollRawType().getName());
+        } else if (source.isMap()) {
+            Config param = source.getMapParamTypes().get(1).getAnnotation(Config.class);
+            return SchemaPropertyRefMap.create(name, fieldName, param.name(), desc,
+                    source.isFinal(), source.getMapRawType().getName());
         } else {
-            return SchemaPropertyRef.create(name, fieldName, configurable.name(), source
-                    .getAnnotation().desc(), source.isFinal(), isSingleton(type));
+            return SchemaPropertyRef.create(name, fieldName, configurable.name(), desc,
+                    source.isFinal(), isSingleton(type));
         }
     }
 
