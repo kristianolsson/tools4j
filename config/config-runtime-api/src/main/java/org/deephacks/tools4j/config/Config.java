@@ -37,6 +37,8 @@ import java.lang.annotation.Target;
  * <p>
  * <ul>
  * <li>Fields can be single-valued or multi-valued using any subclass of {@link java.util.Collection} type.</li>
+ * <li>Fields can be any subclass of {@link java.util.Map} type, but this is only allowed for 
+ * referencing other {@link Config} where key is parameterized as {@link java.lang.String}.</li>
  * <li>Fields can be <b>final</b> in which case it is considered immutable.</li>
  * <li>Fields are not allowed to be <b>transient</b>.</li>
  * <li>Fields are not allowed to be non-<b>final</b> <b>static</b>.</li>
