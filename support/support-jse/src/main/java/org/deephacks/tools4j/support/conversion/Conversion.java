@@ -202,6 +202,10 @@ public class Conversion {
             superclasses.add(candidate.getSuperclass());
             while (!superclasses.isEmpty()) {
                 Class<?> candidateSuperclazz = superclasses.removeLast();
+                if (candidateSuperclazz == null) {
+                    // Object converters are absolute last resort
+                    return Integer.MAX_VALUE;
+                }
                 if (candidateSuperclazz.equals(capability)) {
                     if (capability == Object.class) {
                         // Object converters are absolute last resort

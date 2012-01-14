@@ -13,26 +13,34 @@
  */
 package org.deephacks.tools4j.internal.core.jsr303;
 
+import static org.deephacks.tools4j.config.model.Events.CFG309_VALIDATION_ERROR;
+
 import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
+import java.util.Set;
 
-import javax.validation.constraints.Size;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.spi.ValidationManager;
+import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;
+import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
+@ServiceProvider(service = ValidationManager.class)
 public class BeanValidationManager extends ValidationManager {
     public static final String JSR303_JAR_STORAGE_DIR_PROP = "config.spi.validation.jar.dir";
     private static final SystemProperties PROP = SystemProperties.createDefault();
+    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private static File GENERATED_DIR = getGenerateDir();
+    private Conversion conversion = Conversion.get();
 
     public static void main(String[] args) throws Exception {
         BeanValidationManager manager = new BeanValidationManager();
@@ -41,25 +49,17 @@ public class BeanValidationManager extends ValidationManager {
 
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
-        File generatedDir = getGenerateDir();
-        File jar = new File(generatedDir, schemaName + ".jar");
-        ConfigurableStub stub = new ConfigurableStub(clazz, Config.class, generatedDir, jar);
+        File jar = new File(GENERATED_DIR, schemaName + ".jar");
+        ConfigurableStub stub = new ConfigurableStub(clazz, Config.class, GENERATED_DIR, jar);
         stub.write();
-
-        try {
-            Class genclazz = loadJars(jar).loadClass(stub.getClassName());
-            System.out.println(genclazz);
-            for (Field f : genclazz.getDeclaredFields()) {
-                for (Annotation a : f.getAnnotations()) {
-                    System.out.println("found annotation " + a);
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    private File getGenerateDir() {
+    @Override
+    public void unregister(String name) {
+        throw new UnsupportedOperationException("FIXME");
+    }
+
+    private static File getGenerateDir() {
         File generatedDir = null;
         String confDir = PROP.get(JSR303_JAR_STORAGE_DIR_PROP);
         if (confDir == null || "".equals(confDir)) {
@@ -70,20 +70,36 @@ public class BeanValidationManager extends ValidationManager {
         return generatedDir;
     }
 
-    @Config(desc = "")
-    public static class MyConfig {
-        @Config(desc = "")
-        @FirstUpper
-        @Size(max = 1)
-        private String nammee;
+    private static File getGenerateJar(String schemaName) {
+        return new File(GENERATED_DIR, schemaName + ".jar");
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void validate(Collection<Bean> beans) throws AbortRuntimeException {
 
+        for (Bean bean : beans) {
+            File generatedJar = getGenerateJar(bean.getSchema().getName());
+            ClassLoader cl = loadJars(generatedJar);
+
+            Class genclazz;
+            String className = ConfigurableStub.getClassName(bean.getSchema().getType());
+            try {
+                genclazz = cl.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Could not load stub [" + className
+                        + "] from jar [" + generatedJar.getAbsolutePath() + "].", e);
+            }
+            Object beanToValidate = conversion.convert(bean, genclazz);
+            Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
+            for (ConstraintViolation<Object> v : violations) {
+                String msg = v.getPropertyPath() + " " + v.getMessage();
+                throw CFG309_VALIDATION_ERROR(msg);
+            }
+        }
     }
 
-    private static ClassLoader loadJars(File... jars) throws IOException {
+    private static ClassLoader loadJars(File... jars) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URLClassLoader jarExtensions = createClassLoaderFrom(jars, cl);
         return jarExtensions;
@@ -109,4 +125,5 @@ public class BeanValidationManager extends ValidationManager {
         }
         return urls;
     }
+
 }

@@ -84,7 +84,12 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
     }
 
     private BeanId getBeanId(Object bean) {
-        String schemaName = bean.getClass().getAnnotation(Config.class).name();
+        Config config = bean.getClass().getAnnotation(Config.class);
+        if (config == null) {
+            throw new IllegalArgumentException("Bean [" + bean
+                    + "] does not have a @Config annotation.");
+        }
+        String schemaName = config.name();
         ClassIntrospector i = new ClassIntrospector(bean.getClass());
         List<FieldWrap<Id>> ids = i.getFieldList(Id.class);
         if (ids == null || ids.size() != 1) {
@@ -95,6 +100,11 @@ public class ObjectToBeanConverter implements Converter<Object, Bean> {
         if (id.isFinal() && id.isStatic()) {
             targetId = BeanId.createSingleton(id.getStaticValue().toString(), schemaName);
         } else {
+            Object idValue = id.getValue(bean);
+            if (idValue == null) {
+                throw new IllegalArgumentException(
+                        "Cannot convert an objects that have emtpty id [" + bean + "]");
+            }
             targetId = BeanId.create(id.getValue(bean).toString(), schemaName);
         }
         return targetId;

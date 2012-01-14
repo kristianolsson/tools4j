@@ -60,4 +60,6 @@ public abstract class ValidationManager {
      * @throws AbortRuntimeException 
      */
     public abstract void validate(Collection<Bean> beans) throws AbortRuntimeException;
+
+    public abstract void unregister(String name);
 }

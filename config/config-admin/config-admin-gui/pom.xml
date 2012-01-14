@@ -24,6 +24,10 @@
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-provider-jsr303</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
       <artifactId>support-web</artifactId>
     </dependency>
     <dependency>

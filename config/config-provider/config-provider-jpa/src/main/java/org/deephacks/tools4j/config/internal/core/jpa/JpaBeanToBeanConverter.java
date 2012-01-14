@@ -28,9 +28,6 @@ public class JpaBeanToBeanConverter implements Converter<JpaBean, Bean> {
         }
         BeanId id = BeanId.create(source.getPk().id, source.getPk().schemaName);
         Bean bean = Bean.create(id);
-        if (bean.getId().getInstanceId().equals("g3")) {
-            System.out.println("ff");
-        }
         for (JpaRef ref : source.getReferences()) {
             JpaBean target = ref.getTargetBean();
             if (target == null) {

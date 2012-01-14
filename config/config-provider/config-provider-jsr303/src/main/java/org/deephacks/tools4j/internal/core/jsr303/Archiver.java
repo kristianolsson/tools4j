@@ -36,6 +36,7 @@ public class Archiver {
         for (File classFile : classFiles) {
             String relativeArchiveClass = classFile.getAbsolutePath()
                     .replace(dir.getAbsolutePath(), "").replaceFirst(File.separator, "");
+
             jarArchieve.add(new FileAsset(classFile), relativeArchiveClass);
         }
         jarArchieve.as(ZipExporter.class).exportTo(jar, true);

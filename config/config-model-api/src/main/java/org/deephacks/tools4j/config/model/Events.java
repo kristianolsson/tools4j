@@ -304,4 +304,15 @@ public class Events {
         return new AbortRuntimeException(event);
     }
 
+    /**
+     * {@value} - Bean application validation failed. 
+     */
+    public static final int CFG309 = 309;
+    private static final String CFG309_MSG = "Bean application validation failed: {0}";
+
+    @EventDoc(module = MODULE_NAME, code = CFG309, desc = "Bean application validation failed.")
+    public static AbortRuntimeException CFG309_VALIDATION_ERROR(String msg) {
+        Event event = new Event(MODULE_NAME, CFG309, MessageFormat.format(CFG309_MSG, msg));
+        return new AbortRuntimeException(event);
+    }
 }

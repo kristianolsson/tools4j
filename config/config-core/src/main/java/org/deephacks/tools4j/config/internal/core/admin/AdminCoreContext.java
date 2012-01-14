@@ -16,6 +16,7 @@ package org.deephacks.tools4j.config.internal.core.admin;
 import static org.deephacks.tools4j.config.internal.core.admin.SchemaValidator.validateSchema;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.lookup.Lookup;
 
@@ -40,10 +42,12 @@ import org.deephacks.tools4j.support.lookup.Lookup;
 public class AdminCoreContext extends AdminContext {
     private BeanManager beanManager;
     private SchemaManager schemaManager;
+    private ValidationManager validationManager;
 
     public AdminCoreContext() {
         beanManager = lookupBeanManager();
         schemaManager = Lookup.get().lookup(SchemaManager.class);
+        validationManager = Lookup.get().lookup(ValidationManager.class);
 
     }
 
@@ -88,6 +92,10 @@ public class AdminCoreContext extends AdminContext {
         Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
         bean.set(schema);
         validateSchema(bean);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(Arrays.asList(bean));
+        }
         beanManager.create(bean);
     }
 
@@ -96,6 +104,10 @@ public class AdminCoreContext extends AdminContext {
         Map<String, Schema> schemas = schemaManager.schemaMap();
         setSchema(schemas, beans);
         validateSchema(beans);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(beans);
+        }
         beanManager.create(beans);
     }
 
@@ -106,6 +118,10 @@ public class AdminCoreContext extends AdminContext {
         BeanManager beanManager = Lookup.get().lookup(BeanManager.class);
         bean.set(schema);
         validateSchema(bean);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(Arrays.asList(bean));
+        }
         beanManager.set(bean);
     }
 
@@ -114,6 +130,10 @@ public class AdminCoreContext extends AdminContext {
         Map<String, Schema> schemas = schemaManager.schemaMap();
         setSchema(schemas, beans);
         validateSchema(beans);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(beans);
+        }
         beanManager.set(beans);
     }
 
@@ -122,6 +142,10 @@ public class AdminCoreContext extends AdminContext {
         Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
         bean.set(schema);
         validateSchema(bean);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(Arrays.asList(bean));
+        }
         beanManager.merge(bean);
     }
 
@@ -134,6 +158,10 @@ public class AdminCoreContext extends AdminContext {
             merges.add(bean);
         }
         validateSchema(merges);
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.validate(merges);
+        }
         beanManager.merge(merges);
     }
 

@@ -15,19 +15,23 @@ package org.deephacks.tools4j.internal.core.jsr303;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.FieldInfo;
 import javassist.bytecode.annotation.MemberValue;
 
+import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector.FieldWrap;
 
@@ -47,25 +51,51 @@ public class ConfigurableStub {
     public ConfigurableStub(Class<?> configurable,
             Class<? extends Annotation> targetFieldAnnotation, File generatedDir, File jarFile) {
         try {
-            this.generatedClassName = configurable.getPackage().getName() + "."
-                    + configurable.getSimpleName() + SUFFIX;
+            this.generatedClassName = getClassName(configurable.getName());
             this.jarFile = jarFile;
-            this.generatedDir = new File(new File(generatedDir, GENERATED_CLASSES), UUID
-                    .randomUUID().toString());
+            this.generatedDir = new File(new File(generatedDir, GENERATED_CLASSES),
+                    "runtime_class_registration_" + UUID.randomUUID().toString());
             this.ctConfigurableClassFile = configurableClassPool.get(configurable.getName())
                     .getClassFile();
+            try {
+                CtClass c = configurableClassPool.get(generatedClassName);
+                // class have already been loaded, so defrost to allow modification.
+                c.defrost();
+            } catch (NotFoundException e) {
+                // first time class was loaded, no need to defrost.
+            }
             this.ctClassToGenerate = configurableClassPool.makeClass(generatedClassName);
+
             this.generatedConstpool = ctClassToGenerate.getClassFile().getConstPool();
             ClassIntrospector introspector = new ClassIntrospector(configurable);
 
             for (FieldWrap<?> configurableField : introspector.getFieldList(targetFieldAnnotation)) {
+                CtField ctFieldToGenerate;
+                String fieldDeclaration = "public ";
+                String fieldType;
+
+                if (configurableField.isCollection()) {
+                    fieldType = Collection.class.getName();
+                } else if (configurableField.isMap()) {
+                    fieldType = Map.class.getName();
+                } else {
+                    fieldType = configurableField.getType().getName();
+                }
+                fieldDeclaration = fieldDeclaration + fieldType + " "
+                        + configurableField.getFieldName() + ";";
+                ctFieldToGenerate = CtField.make(fieldDeclaration, ctClassToGenerate);
+                ctFields.put(configurableField.getFieldName(), ctFieldToGenerate);
+                fieldsToGenerate.put(configurableField.getFieldName(), configurableField);
+            }
+            for (FieldWrap<?> configurableField : introspector.getFieldList(Id.class)) {
                 CtField ctFieldToGenerate = CtField.make(
                         "public " + configurableField.getType().getName() + " "
                                 + configurableField.getFieldName() + ";", ctClassToGenerate);
+
                 ctFields.put(configurableField.getFieldName(), ctFieldToGenerate);
                 fieldsToGenerate.put(configurableField.getFieldName(), configurableField);
-
             }
+
             addFieldAnnotations();
             for (CtField f : ctFields.values()) {
                 ctClassToGenerate.addField(f);
@@ -74,6 +104,10 @@ public class ConfigurableStub {
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot create stub from [" + configurable + "].", e);
         }
+    }
+
+    public static String getClassName(String fullClassName) {
+        return fullClassName + SUFFIX;
     }
 
     public void addFieldAnnotations() throws Exception {
@@ -88,6 +122,7 @@ public class ConfigurableStub {
                         AnnotationsAttribute.visibleTag);
                 for (javassist.bytecode.annotation.Annotation annoAttr : annoAttrs.getAnnotations()) {
                     CtField ctField = ctFields.get(fieldInfo.getName());
+
                     addFieldAnnotation(myAttr, annoAttr, ctField);
                 }
             }
@@ -96,6 +131,10 @@ public class ConfigurableStub {
 
     private void addFieldAnnotation(AnnotationsAttribute annoAttrs,
             javassist.bytecode.annotation.Annotation origin, CtField ctField) throws Exception {
+        if (ctField == null) {
+            return;
+        }
+
         Set<?> names = origin.getMemberNames();
         javassist.bytecode.annotation.Annotation annotation = new javassist.bytecode.annotation.Annotation(
                 origin.getTypeName(), generatedConstpool);

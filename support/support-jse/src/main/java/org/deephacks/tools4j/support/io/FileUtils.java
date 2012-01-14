@@ -45,7 +45,7 @@ public class FileUtils {
     }
 
     private static void listRecursively(File fdir, int depth, Set<File> dirs) {
-        if (fdir.isDirectory() && (depth < 5)) {
+        if (fdir.isDirectory() && (depth < 10)) {
             dirs.add(fdir);
             for (File f : fdir.listFiles()) { // Go over each file/subdirectory.
                 listRecursively(f, depth + 1, dirs);

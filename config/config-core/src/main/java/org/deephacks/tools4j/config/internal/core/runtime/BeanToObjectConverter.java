@@ -70,7 +70,11 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             values.put(field, c);
         }
         for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
-            Bean ref = source.getFirstReference(prop.getName()).getBean();
+            BeanId id = source.getFirstReference(prop.getName());
+            if (id == null) {
+                continue;
+            }
+            Bean ref = id.getBean();
             if (ref == null) {
                 continue;
             }

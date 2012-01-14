@@ -103,8 +103,11 @@ public class BeanInstance<T> {
                     continue;
                 }
                 try {
+
                     field.set(instance, value);
                 } catch (IllegalArgumentException e) {
+                    System.out.println(field);
+                    System.out.println(value);
                     throw new UnsupportedOperationException(e);
                 } catch (IllegalAccessException e) {
                     throw new UnsupportedOperationException(e);

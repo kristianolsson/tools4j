@@ -67,15 +67,13 @@ public class Reflections {
             IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Class<?> enclosing = type.getEnclosingClass();
         if (enclosing == null) {
-            Constructor<?> c = type.getConstructor();
+            Constructor<?> c = type.getDeclaredConstructor();
             c.setAccessible(true);
             return type.cast(c.newInstance());
         }
         Object o = enclosing.newInstance();
-
         Constructor<?> cc = type.getDeclaredConstructor(enclosing);
         cc.setAccessible(true);
-
         return type.cast(cc.newInstance(o));
 
     }

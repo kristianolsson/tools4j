@@ -17,16 +17,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
 
+@Config(desc = "")
 public class ValidateMe {
+    @Id(desc = "")
+    private String id;
+
     @NotNull
     @Size(min = 3)
     @FirstUpper
     @Config(desc = "")
-    private String name;
+    public String name;
 
-    public ValidateMe(String name) {
-        this.name = name;
+    private ValidateMe() {
+
+    }
+
+    public ValidateMe(String id) {
+        this.id = id;
     }
 
     @NotNull
@@ -39,5 +48,4 @@ public class ValidateMe {
     public void test() {
 
     }
-
 }

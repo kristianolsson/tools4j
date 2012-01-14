@@ -28,6 +28,7 @@ import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.lookup.Lookup;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;
@@ -43,6 +44,7 @@ public class RuntimeCoreContext extends RuntimeContext {
     private Conversion conversion = Conversion.get();
     private SchemaManager schemaManager;
     private BeanManager beanManager;
+    private ValidationManager validationManager;
 
     public RuntimeCoreContext() {
         conversion.register(new ClassToSchemaConverter());
@@ -50,6 +52,7 @@ public class RuntimeCoreContext extends RuntimeContext {
         conversion.register(new BeanToObjectConverter());
         schemaManager = Lookup.get().lookup(SchemaManager.class);
         beanManager = Lookup.get().lookup(BeanManager.class);
+        validationManager = Lookup.get().lookup(ValidationManager.class);
     }
 
     @Override
@@ -60,12 +63,22 @@ public class RuntimeCoreContext extends RuntimeContext {
         if (schema.getId().isSingleton()) {
             beanManager.createSingleton(getSingletonId(schema, configurable));
         }
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.register(schema.getName(), configurable);
+        }
+
     }
 
     @Override
     public void unregister(Class<?> configurable) {
         Schema schema = conversion.convert(configurable, Schema.class);
         schemaManager.removeSchema(schema.getName());
+        // ok to not have validation manager available
+        if (validationManager != null) {
+            validationManager.unregister(schema.getName());
+        }
+
     }
 
     @Override
