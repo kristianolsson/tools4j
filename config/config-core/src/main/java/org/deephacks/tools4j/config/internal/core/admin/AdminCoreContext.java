@@ -187,7 +187,6 @@ public class AdminCoreContext extends AdminContext {
                     merge(source, bean);
                 }
                 validationManager.validate(Arrays.asList(source));
-                validationManager.validate(merges);
             }
         }
         beanManager.merge(merges);
