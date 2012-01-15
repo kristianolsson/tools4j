@@ -25,7 +25,13 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 public class Archiver {
     public static void write(File dir, File jar) {
-        JavaArchive jarArchieve = ShrinkWrap.create(JavaArchive.class, jar.getName());
+        JavaArchive jarArchieve;
+        if (jar.exists()) {
+            jarArchieve = ShrinkWrap.createFromZipFile(JavaArchive.class, jar);
+        } else {
+            jarArchieve = ShrinkWrap.create(JavaArchive.class, jar.getName());
+        }
+
         Set<File> classFiles = FileUtils.findFiles(dir, new FilenameFilter() {
 
             @Override
@@ -36,6 +42,9 @@ public class Archiver {
         for (File classFile : classFiles) {
             String relativeArchiveClass = classFile.getAbsolutePath()
                     .replace(dir.getAbsolutePath(), "").replaceFirst(File.separator, "");
+            if (jarArchieve.contains(relativeArchiveClass)) {
+                jarArchieve.delete(relativeArchiveClass);
+            }
 
             jarArchieve.add(new FileAsset(classFile), relativeArchiveClass);
         }

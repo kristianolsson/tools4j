@@ -41,10 +41,11 @@ public class Jsr303ValidationManager extends ValidationManager {
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static File GENERATED_DIR = getGenerateDir();
     private Conversion conversion = Conversion.get();
+    private File jar = new File(GENERATED_DIR, "configurable_stubs.jar");
 
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
-        File jar = new File(GENERATED_DIR, schemaName + ".jar");
+
         ConfigurableStub stub = new ConfigurableStub(clazz, Config.class, GENERATED_DIR, jar);
         stub.write();
     }
@@ -65,32 +66,32 @@ public class Jsr303ValidationManager extends ValidationManager {
         return generatedDir;
     }
 
-    private static File getGenerateJar(String schemaName) {
-        return new File(GENERATED_DIR, schemaName + ".jar");
-    }
-
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void validate(Collection<Bean> beans) throws AbortRuntimeException {
 
         for (Bean bean : beans) {
-            File generatedJar = getGenerateJar(bean.getSchema().getName());
-            ClassLoader cl = loadJars(generatedJar);
-
-            Class genclazz;
-            String className = ConfigurableStub.getClassName(bean.getSchema().getType());
+            ClassLoader cl = loadJars(jar);
+            ClassLoader org = Thread.currentThread().getContextClassLoader();
             try {
-                genclazz = cl.loadClass(className);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("Could not load stub [" + className
-                        + "] from jar [" + generatedJar.getAbsolutePath() + "].", e);
-            }
-            Object beanToValidate = conversion.convert(bean, genclazz);
-            Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
-            for (ConstraintViolation<Object> v : violations) {
+                Thread.currentThread().setContextClassLoader(cl);
+                Class genclazz;
+                String className = bean.getSchema().getType();
+                try {
+                    genclazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Could not load stub [" + className
+                            + "] from jar [" + jar.getAbsolutePath() + "].", e);
+                }
+                Object beanToValidate = conversion.convert(bean, genclazz);
+                Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
+                for (ConstraintViolation<Object> v : violations) {
 
-                String msg = v.getPropertyPath() + " " + v.getMessage();
-                throw CFG309_VALIDATION_ERROR(msg);
+                    String msg = v.getPropertyPath() + " " + v.getMessage();
+                    throw CFG309_VALIDATION_ERROR(msg);
+                }
+            } finally {
+                Thread.currentThread().setContextClassLoader(org);
             }
         }
     }

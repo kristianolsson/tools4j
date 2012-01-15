@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -45,9 +44,8 @@ import org.deephacks.tools4j.support.reflections.ClassIntrospector;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector.FieldWrap;
 
 public class ConfigurableStub {
-    private static final String SUFFIX = "_configurable_stub";
     private static final String GENERATED_CLASSES = "tools4j_validation_tmp";
-    private static final String GENERATED_CLASSES_PREFIX = "runtime_class_registration_";
+    private static final String GENERATED_CLASSES_PREFIX = "runtime_class_registration";
     private CtClass ctClassToGenerate;
     private ClassPool configurableClassPool = ClassPool.getDefault();
     private ClassFile ctConfigurableClassFile;
@@ -63,10 +61,10 @@ public class ConfigurableStub {
     public ConfigurableStub(Class<?> configurable,
             Class<? extends Annotation> targetFieldAnnotation, File generatedDir, File jarFile) {
         try {
-            this.generatedClassName = getClassName(configurable.getName());
+            this.generatedClassName = configurable.getName();
             this.jarFile = jarFile;
             this.generatedDir = new File(new File(generatedDir, GENERATED_CLASSES),
-                    GENERATED_CLASSES_PREFIX + UUID.randomUUID().toString());
+                    GENERATED_CLASSES_PREFIX);
             this.ctConfigurableClass = configurableClassPool.get(configurable.getName());
             this.ctConfigurableClassFile = ctConfigurableClass.getClassFile();
             try {
@@ -159,10 +157,6 @@ public class ConfigurableStub {
         }
 
         return fields;
-    }
-
-    public static String getClassName(String fullClassName) {
-        return fullClassName + SUFFIX;
     }
 
     private void addAnnotations(CtField target, FieldInfo source) throws Exception {
@@ -286,10 +280,6 @@ public class ConfigurableStub {
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot generate [" + ctClassToGenerate + "]", e);
         }
-    }
-
-    public String getClassName() {
-        return generatedClassName;
     }
 
 }

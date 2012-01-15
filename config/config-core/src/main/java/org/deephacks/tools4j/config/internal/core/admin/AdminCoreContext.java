@@ -165,6 +165,18 @@ public class AdminCoreContext extends AdminContext {
             List<String> values = mergeBean.getValues(name);
             source.setProperty(name, values);
         }
+        for (String name : mergeBean.getReferenceNames()) {
+            List<BeanId> values = mergeBean.getReference(name);
+            if (values == null) {
+                continue;
+            }
+            for (BeanId beanId : values) {
+                Bean ref = beanManager.get(beanId);
+                beanId.setBean(ref);
+                setSchema(schemaManager.schemaMap(), beanId.getBean());
+            }
+            source.setReferences(name, values);
+        }
     }
 
     @Override
