@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.deephacks.tools4j.config.admin.AdminContext;
+import org.deephacks.tools4j.config.internal.core.runtime.BeanToObjectConverter;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
@@ -32,6 +33,7 @@ import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.support.SystemProperties;
+import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.lookup.Lookup;
 
 /**
@@ -43,11 +45,13 @@ public class AdminCoreContext extends AdminContext {
     private BeanManager beanManager;
     private SchemaManager schemaManager;
     private ValidationManager validationManager;
+    private Conversion conversion = Conversion.get();
 
     public AdminCoreContext() {
         beanManager = lookupBeanManager();
         schemaManager = Lookup.get().lookup(SchemaManager.class);
         validationManager = Lookup.get().lookup(ValidationManager.class);
+        conversion.register(new BeanToObjectConverter());
 
     }
 

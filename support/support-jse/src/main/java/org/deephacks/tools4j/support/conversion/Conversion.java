@@ -98,7 +98,7 @@ public class Conversion {
         if (matches.size() == 0) {
             throw new ConversionException("No suitable converter found for target class ["
                     + targetclass.getName() + "] and source value [" + sourceclass.getName()
-                    + "]. The following converters are available [" + converters + "]");
+                    + "]. The following converters are available [" + converters.keySet() + "]");
         }
 
         Collections.sort(matches, SourceTargetPairMatch.bestTargetMatch());

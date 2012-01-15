@@ -42,11 +42,6 @@ public class BeanValidationManager extends ValidationManager {
     private static File GENERATED_DIR = getGenerateDir();
     private Conversion conversion = Conversion.get();
 
-    public static void main(String[] args) throws Exception {
-        BeanValidationManager manager = new BeanValidationManager();
-        manager.register("ConfigTest", ValidateMe.class);
-    }
-
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
         File jar = new File(GENERATED_DIR, schemaName + ".jar");
