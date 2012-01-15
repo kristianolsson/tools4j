@@ -122,7 +122,6 @@ public class ConfigurableStub {
                         AnnotationsAttribute.visibleTag);
                 for (javassist.bytecode.annotation.Annotation annoAttr : annoAttrs.getAnnotations()) {
                     CtField ctField = ctFields.get(fieldInfo.getName());
-
                     addFieldAnnotation(myAttr, annoAttr, ctField);
                 }
             }
@@ -134,7 +133,6 @@ public class ConfigurableStub {
         if (ctField == null) {
             return;
         }
-
         Set<?> names = origin.getMemberNames();
         javassist.bytecode.annotation.Annotation annotation = new javassist.bytecode.annotation.Annotation(
                 origin.getTypeName(), generatedConstpool);
@@ -144,10 +142,9 @@ public class ConfigurableStub {
             return;
         }
         for (Object annoName : names) {
-            MemberValue value = annotation.getMemberValue(annoName.toString());
+            MemberValue value = origin.getMemberValue(annoName.toString());
             if (value != null) {
-                annotation.addMemberValue(annoName.toString(),
-                        annotation.getMemberValue(annoName.toString()));
+                annotation.addMemberValue(annoName.toString(), value);
             }
             annoAttrs.addAnnotation(annotation);
 

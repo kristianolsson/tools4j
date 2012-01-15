@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.validation.constraints.Min;
+
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
@@ -328,7 +330,7 @@ public class ConfigTestData {
 
         @Config(desc = "prop8Desc")
         public Byte prop8;
-
+        @Min(1)
         @Config(desc = "prop9Desc")
         public Long prop9;
 
