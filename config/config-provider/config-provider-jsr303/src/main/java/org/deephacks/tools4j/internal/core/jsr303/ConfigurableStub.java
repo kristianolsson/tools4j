@@ -276,7 +276,7 @@ public class ConfigurableStub {
                 CtClass c = configurableClassPool.get(dep);
                 c.writeFile(generatedDir.getAbsolutePath());
             }
-            Archiver.write(generatedDir, jarFile);
+            Archiver.write(generatedDir, jarFile, null);
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot generate [" + ctClassToGenerate + "]", e);
         }

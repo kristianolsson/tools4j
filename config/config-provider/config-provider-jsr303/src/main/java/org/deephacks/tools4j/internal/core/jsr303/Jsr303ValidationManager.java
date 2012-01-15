@@ -16,17 +16,22 @@ package org.deephacks.tools4j.internal.core.jsr303;
 import static org.deephacks.tools4j.config.model.Events.CFG309_VALIDATION_ERROR;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.Constraint;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.deephacks.tools4j.config.Config;
+import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.support.ServiceProvider;
@@ -36,6 +41,8 @@ import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 @ServiceProvider(service = ValidationManager.class)
 public class Jsr303ValidationManager extends ValidationManager {
+    private static final String GENERATED_CLASSES = "tools4j_validation_tmp";
+    private static final String GENERATED_CLASSES_PREFIX = "runtime_class_registration";
     public static final String JSR303_JAR_STORAGE_DIR_PROP = "config.spi.validation.jar.dir";
     private static final SystemProperties PROP = SystemProperties.createDefault();
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -45,9 +52,35 @@ public class Jsr303ValidationManager extends ValidationManager {
 
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
+        File generatedDir = new File(new File(GENERATED_DIR, GENERATED_CLASSES),
+                GENERATED_CLASSES_PREFIX);
+        Set<Class<?>> dependencies = new HashSet<Class<?>>();
+        dependencies.add(clazz);
+        for (Field f : clazz.getDeclaredFields()) {
+            for (Annotation annonation : f.getAnnotations()) {
+                if (annonation.annotationType().isAnnotationPresent(Constraint.class)) {
+                    if (shouldAdd(annonation.annotationType())) {
+                        dependencies.add(annonation.annotationType());
+                    }
+                    for (Class<?> dep : annonation.annotationType().getAnnotation(Constraint.class)
+                            .validatedBy()) {
+                        if (shouldAdd(dep)) {
+                            dependencies.add(dep);
+                        }
+                    }
+                }
+            }
+        }
+        Archiver.write(generatedDir, jar, dependencies.toArray(new Class[0]));
+    }
 
-        ConfigurableStub stub = new ConfigurableStub(clazz, Config.class, GENERATED_DIR, jar);
-        stub.write();
+    private boolean shouldAdd(Class<?> clazz) {
+        String className = clazz.getName();
+        if (className.startsWith("java") || Config.class.getName().equals(className)
+                || Id.class.getName().equals(className)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

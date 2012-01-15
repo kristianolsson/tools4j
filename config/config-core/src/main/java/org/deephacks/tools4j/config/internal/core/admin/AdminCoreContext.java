@@ -98,6 +98,7 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(bean);
         // ok to not have validation manager available
         if (validationManager != null) {
+            initalizeReferences(bean);
             validationManager.validate(Arrays.asList(bean));
         }
         beanManager.create(bean);
@@ -110,6 +111,9 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(beans);
         // ok to not have validation manager available
         if (validationManager != null) {
+            for (Bean bean : beans) {
+                initalizeReferences(bean);
+            }
             validationManager.validate(beans);
         }
         beanManager.create(beans);
@@ -124,6 +128,7 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(bean);
         // ok to not have validation manager available
         if (validationManager != null) {
+            initalizeReferences(bean);
             validationManager.validate(Arrays.asList(bean));
         }
         beanManager.set(bean);
@@ -136,6 +141,9 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(beans);
         // ok to not have validation manager available
         if (validationManager != null) {
+            for (Bean bean : beans) {
+                initalizeReferences(bean);
+            }
             validationManager.validate(beans);
         }
         beanManager.set(beans);
@@ -171,12 +179,29 @@ public class AdminCoreContext extends AdminContext {
                 continue;
             }
             for (BeanId beanId : values) {
-                Bean ref = beanManager.get(beanId);
-                beanId.setBean(ref);
-                setSchema(schemaManager.schemaMap(), beanId.getBean());
+                initalizeBeanId(beanId);
             }
             source.setReferences(name, values);
         }
+    }
+
+    private void initalizeReferences(Bean bean) {
+        for (String name : bean.getReferenceNames()) {
+            List<BeanId> values = bean.getReference(name);
+            if (values == null) {
+                continue;
+            }
+            for (BeanId beanId : values) {
+                initalizeBeanId(beanId);
+            }
+        }
+
+    }
+
+    private void initalizeBeanId(BeanId beanId) {
+        Bean ref = beanManager.get(beanId);
+        beanId.setBean(ref);
+        setSchema(schemaManager.schemaMap(), beanId.getBean());
     }
 
     @Override

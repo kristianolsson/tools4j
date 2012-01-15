@@ -14,39 +14,35 @@
 package org.deephacks.tools4j.internal.core.jsr303;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Set;
+import java.util.Map;
 
-import org.deephacks.tools4j.support.io.FileUtils;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 public class Archiver {
-    public static void write(File dir, File jar) {
+
+    public static void write(File dir, File jar, Class<?>... clazzes) {
         JavaArchive jarArchieve;
+        Map<ArchivePath, Node> contents = null;
         if (jar.exists()) {
             jarArchieve = ShrinkWrap.createFromZipFile(JavaArchive.class, jar);
-        } else {
-            jarArchieve = ShrinkWrap.create(JavaArchive.class, jar.getName());
+            contents = jarArchieve.getContent();
+            jar.delete();
         }
-
-        Set<File> classFiles = FileUtils.findFiles(dir, new FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith("class");
+        jarArchieve = ShrinkWrap.create(JavaArchive.class, jar.getName());
+        if (contents != null) {
+            for (Node n : contents.values()) {
+                if (n.getAsset() == null) {
+                    continue;
+                }
+                jarArchieve.add(n.getAsset(), n.getPath());
             }
-        });
-        for (File classFile : classFiles) {
-            String relativeArchiveClass = classFile.getAbsolutePath()
-                    .replace(dir.getAbsolutePath(), "").replaceFirst(File.separator, "");
-            if (jarArchieve.contains(relativeArchiveClass)) {
-                jarArchieve.delete(relativeArchiveClass);
-            }
-
-            jarArchieve.add(new FileAsset(classFile), relativeArchiveClass);
+        }
+        for (Class<?> clazz : clazzes) {
+            jarArchieve.addClass(clazz);
         }
         jarArchieve.as(ZipExporter.class).exportTo(jar, true);
     }
