@@ -96,17 +96,20 @@ public class FieldToSchemaPropertyConverter implements
         }
         Class<?> type = source.getType();
         Config configurable = type.getAnnotation(Config.class);
-
+        String schemaName = configurable.name();
+        if (schemaName == null || "".equals(schemaName)) {
+            schemaName = type.getName();
+        }
         if (source.isCollection()) {
-            return SchemaPropertyRefList.create(name, fieldName, configurable.name(), desc,
+            return SchemaPropertyRefList.create(name, fieldName, schemaName, desc,
                     source.isFinal(), source.getCollRawType().getName());
         } else if (source.isMap()) {
             Config param = source.getMapParamTypes().get(1).getAnnotation(Config.class);
             return SchemaPropertyRefMap.create(name, fieldName, param.name(), desc,
                     source.isFinal(), source.getMapRawType().getName());
         } else {
-            return SchemaPropertyRef.create(name, fieldName, configurable.name(), desc,
-                    source.isFinal(), isSingleton(type));
+            return SchemaPropertyRef.create(name, fieldName, schemaName, desc, source.isFinal(),
+                    isSingleton(type));
         }
     }
 
