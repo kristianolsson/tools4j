@@ -174,50 +174,51 @@ public class JsfAdminBean {
      * This method is used for both creating and editing beans.
      */
     public void onClickSave() {
-        Bean save = null;
-        boolean create = false;
-        if (bean == null) {
-            // this is a create request
-            save = Bean.create(BeanId.create(id.getValue().getValue(), schema.getName()));
-            create = true;
-        } else {
-            // this is a edit request
-            save = Bean.create(bean.getId());
-        }
-
-        for (BasicProperty p : basicProperties) {
-            setProperty(save, p);
-        }
-        for (BasicPropertyList p : basicListProperties) {
-            setProperty(save, p);
-
-        }
-        for (EnumProperty p : enumProperties) {
-            setProperty(save, p);
-
-        }
-        for (EnumPropertyList p : enumListProperties) {
-            setProperty(save, p);
-
-        }
-        for (RefProperty p : refProperties) {
-            if (p.getValue().isDirty()) {
-                save.setReference(p.getName(), p.getId());
-            }
-        }
-        for (RefPropertyList p : refListProperties) {
-            if (p.getListValues().isDirty()) {
-                save.setReferences(p.getName(), p.getIds());
-            }
-        }
-        for (RefPropertyMap p : refMapProperties) {
-            if (p.getListValues().isDirty()) {
-                save.setReferences(p.getName(), p.getIds());
-            }
-        }
-        log.info("onClickSave create={} {} ", create, save);
         FacesContext context = FacesContext.getCurrentInstance();
         try {
+            Bean save = null;
+            boolean create = false;
+            if (bean == null) {
+                // this is a create request
+                save = Bean.create(BeanId.create(id.getValue().getValue(), schema.getName()));
+                create = true;
+            } else {
+                // this is a edit request
+                save = Bean.create(bean.getId());
+            }
+
+            for (BasicProperty p : basicProperties) {
+                setProperty(save, p);
+            }
+            for (BasicPropertyList p : basicListProperties) {
+                setProperty(save, p);
+
+            }
+            for (EnumProperty p : enumProperties) {
+                setProperty(save, p);
+
+            }
+            for (EnumPropertyList p : enumListProperties) {
+                setProperty(save, p);
+
+            }
+            for (RefProperty p : refProperties) {
+                if (p.getValue().isDirty()) {
+                    save.setReference(p.getName(), p.getId());
+                }
+            }
+            for (RefPropertyList p : refListProperties) {
+                if (p.getListValues().isDirty()) {
+                    save.setReferences(p.getName(), p.getIds());
+                }
+            }
+            for (RefPropertyMap p : refMapProperties) {
+                if (p.getListValues().isDirty()) {
+                    save.setReferences(p.getName(), p.getIds());
+                }
+            }
+            log.info("onClickSave create={} {} ", create, save);
+
             if (create) {
                 ctx.create(save);
             } else {
@@ -231,6 +232,10 @@ public class JsfAdminBean {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error occured",
                     e.getEvent().getMessage()));
 
+        } catch (Throwable e) {
+            log.info("", e);
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Unexpected error occured, see log for details.", e.getMessage()));
         }
     }
 
