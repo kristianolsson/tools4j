@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.deephacks.tools4j.internal.core.jsr303;
+package org.deephacks.tools4j.config.test;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -26,7 +26,7 @@ public class FirstUpperValidator implements ConstraintValidator<FirstUpper, Stri
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null || value.length() == 0) {
-            return true;
+            return false;
         }
         return value.substring(0, 1).equals(value.substring(0, 1).toUpperCase());
     }

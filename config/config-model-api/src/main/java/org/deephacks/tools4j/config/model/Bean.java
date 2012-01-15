@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.config.model;
 
 import static com.google.common.base.Objects.equal;
+import static org.deephacks.tools4j.config.model.Events.CFG107_MISSING_ID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -423,6 +424,9 @@ public class Bean implements Serializable {
          * @return AdminBeanId
          */
         public static BeanId create(String instanceId, String schemaName) {
+            if (instanceId == null || "".equals(instanceId)) {
+                throw CFG107_MISSING_ID();
+            }
             return new BeanId(instanceId, schemaName);
         }
 

@@ -148,9 +148,23 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(bean);
         // ok to not have validation manager available
         if (validationManager != null) {
-            validationManager.validate(Arrays.asList(bean));
+            Bean source = beanManager.get(bean.getId());
+            if (source == null) {
+                source = bean;
+            } else {
+                setSchema(schemaManager.schemaMap(), source);
+                merge(source, bean);
+            }
+            validationManager.validate(Arrays.asList(source));
         }
         beanManager.merge(bean);
+    }
+
+    private void merge(Bean source, Bean mergeBean) {
+        for (String name : mergeBean.getPropertyNames()) {
+            List<String> values = mergeBean.getValues(name);
+            source.setProperty(name, values);
+        }
     }
 
     @Override
@@ -164,7 +178,17 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(merges);
         // ok to not have validation manager available
         if (validationManager != null) {
-            validationManager.validate(merges);
+            for (Bean bean : merges) {
+                Bean source = beanManager.get(bean.getId());
+                if (source == null) {
+                    source = bean;
+                } else {
+                    setSchema(schemaManager.schemaMap(), source);
+                    merge(source, bean);
+                }
+                validationManager.validate(Arrays.asList(source));
+                validationManager.validate(merges);
+            }
         }
         beanManager.merge(merges);
     }

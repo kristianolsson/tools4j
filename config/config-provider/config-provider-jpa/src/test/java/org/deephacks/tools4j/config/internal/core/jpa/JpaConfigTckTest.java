@@ -28,8 +28,10 @@ import org.apache.tools.ant.taskdefs.SQLExec;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
+import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.config.test.ConfigTckTests;
 import org.deephacks.tools4j.config.test.XmlStorageHelper;
+import org.deephacks.tools4j.internal.core.jsr303.Jsr303ValidationManager;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.io.FileUtils;
 import org.deephacks.tools4j.support.lookup.MockLookup;
@@ -104,6 +106,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
         XmlStorageHelper.clearAndInit(JpaConfigTckTest.class);
         MockLookup.setMockInstances(BeanManager.class, new JpaBeanManager());
         MockLookup.addMockInstances(SchemaManager.class, new XmlSchemaManager());
+        MockLookup.addMockInstances(ValidationManager.class, new Jsr303ValidationManager());
         File targetDir = JUnitUtils.getMavenProjectChildFile(JpaBeanManager.class, "target");
         File jpaProperties = new File(targetDir, "jpa.properties");
         parameter.jpaProvider.write(jpaProperties);

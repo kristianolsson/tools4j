@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.config.test;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
@@ -118,6 +122,7 @@ public class ConfigTestData {
             gf.prop18 = Arrays.asList(new URL("http://www.deephacks.org"), new URL(
                     "http://www.google.se"));
             gf.prop19 = Arrays.asList(TimeUnit.DAYS, TimeUnit.HOURS);
+
             return gf;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -130,6 +135,10 @@ public class ConfigTestData {
 
     public Singleton getSingleton() {
         return new Singleton();
+    }
+
+    public JSR303Validation getJSR303Validation(String id) {
+        return new JSR303Validation(id);
     }
 
     public static final String GRANDFATHER_SCHEMA_NAME = "GrandfatherSchemaName";
@@ -408,4 +417,54 @@ public class ConfigTestData {
 
     }
 
+    public static final String VALIDATION_SCHEMA_NAME = "ValidationSchemaName";
+
+    @Config(name = VALIDATION_SCHEMA_NAME, desc = "JSR303 validation assertion")
+    public class JSR303Validation {
+
+        @Id(desc = "validationCheckId")
+        public String id;
+
+        @Config(desc = "Assert that JSR303 works as expected.")
+        @FirstUpper
+        @Size(min = 2, max = 50)
+        public String prop;
+
+        @Config(desc = "Assert that JSR303 works as expected.")
+        @NotNull
+        public Integer height;
+
+        @Config(desc = "Assert that JSR303 works as expected.")
+        @NotNull
+        public Integer width;
+
+        @Max(20)
+        private int getArea() {
+            // check for null, height and weight may not have been set.
+            if (height != null && width != null) {
+                return height * width;
+            }
+            return 0;
+        }
+
+        private JSR303Validation(String id) {
+            this.id = id;
+        }
+
+        public JSR303Validation() {
+
+        }
+
+        public BeanId getBeanId() {
+            return BeanId.createSingleton(id, VALIDATION_SCHEMA_NAME);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        JSR303Validation v = new ConfigTestData().getJSR303Validation("id");
+        Method m = v.getClass().getMethod("getArea");
+        System.out.println(m);
+        m.invoke(v);
+
+    }
 }

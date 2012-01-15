@@ -21,6 +21,7 @@ import static org.deephacks.tools4j.config.model.Events.CFG302;
 import static org.deephacks.tools4j.config.model.Events.CFG304;
 import static org.deephacks.tools4j.config.model.Events.CFG307;
 import static org.deephacks.tools4j.config.model.Events.CFG308;
+import static org.deephacks.tools4j.config.model.Events.CFG309;
 import static org.deephacks.tools4j.config.test.BeanUnitils.toBean;
 import static org.deephacks.tools4j.config.test.BeanUnitils.toBeans;
 import static org.hamcrest.CoreMatchers.is;
@@ -414,6 +415,62 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
             fail("Cannot add a value to a single typed value.");
         } catch (AbortRuntimeException e) {
             assertThat(e.getEvent().getCode(), is(CFG105));
+        }
+
+    }
+
+    @Test
+    public void test_JSR303_validation_success() {
+        jsr303.prop = "Valid upper value for @FirstUpperValidator";
+        jsr303.width = 2;
+        jsr303.height = 2;
+        Bean jsr303Bean = toBean(jsr303);
+        admin.create(jsr303Bean);
+    }
+
+    @Test
+    public void test_JSR303_validation_failures() {
+        jsr303.prop = "Valid upper value for @FirstUpperValidator";
+        jsr303.width = 20;
+        jsr303.height = 20;
+        Bean jsr303Bean = toBean(jsr303);
+        try {
+            admin.create(jsr303Bean);
+            fail("Area exceeds constraint");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG309));
+        }
+
+        jsr303.prop = "test";
+        jsr303.width = 1;
+        jsr303.height = 1;
+        jsr303Bean = toBean(jsr303);
+        try {
+            admin.create(jsr303Bean);
+            fail("Prop does not have first upper case.");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG309));
+        }
+        jsr303.prop = "T";
+        jsr303.width = 1;
+        jsr303.height = 1;
+        jsr303Bean = toBean(jsr303);
+        try {
+            admin.create(jsr303Bean);
+            fail("Prop must be longer than one char");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG309));
+        }
+
+        jsr303.prop = "Valid upper value for @FirstUpperValidator";
+        jsr303.width = null;
+        jsr303.height = null;
+        jsr303Bean = toBean(jsr303);
+        try {
+            admin.create(jsr303Bean);
+            fail("Width and height may not be null.");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG309));
         }
 
     }

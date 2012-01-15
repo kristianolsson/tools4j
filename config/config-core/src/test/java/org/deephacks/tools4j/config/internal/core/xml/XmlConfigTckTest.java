@@ -18,7 +18,7 @@ import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.config.test.ConfigTckTests;
 import org.deephacks.tools4j.config.test.XmlStorageHelper;
-import org.deephacks.tools4j.internal.core.jsr303.BeanValidationManager;
+import org.deephacks.tools4j.internal.core.jsr303.Jsr303ValidationManager;
 import org.deephacks.tools4j.support.lookup.MockLookup;
 
 public class XmlConfigTckTest extends ConfigTckTests {
@@ -28,7 +28,7 @@ public class XmlConfigTckTest extends ConfigTckTests {
         XmlStorageHelper.clearAndInit(XmlConfigTckTest.class);
         MockLookup.setMockInstances(BeanManager.class, new XmlBeanManager());
         MockLookup.addMockInstances(SchemaManager.class, new XmlSchemaManager());
-        MockLookup.addMockInstances(ValidationManager.class, new BeanValidationManager());
+        MockLookup.addMockInstances(ValidationManager.class, new Jsr303ValidationManager());
     }
 
 }

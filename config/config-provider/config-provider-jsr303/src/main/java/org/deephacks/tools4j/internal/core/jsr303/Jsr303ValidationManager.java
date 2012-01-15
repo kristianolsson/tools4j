@@ -35,7 +35,7 @@ import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 @ServiceProvider(service = ValidationManager.class)
-public class BeanValidationManager extends ValidationManager {
+public class Jsr303ValidationManager extends ValidationManager {
     public static final String JSR303_JAR_STORAGE_DIR_PROP = "config.spi.validation.jar.dir";
     private static final SystemProperties PROP = SystemProperties.createDefault();
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -88,6 +88,7 @@ public class BeanValidationManager extends ValidationManager {
             Object beanToValidate = conversion.convert(bean, genclazz);
             Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
             for (ConstraintViolation<Object> v : violations) {
+
                 String msg = v.getPropertyPath() + " " + v.getMessage();
                 throw CFG309_VALIDATION_ERROR(msg);
             }

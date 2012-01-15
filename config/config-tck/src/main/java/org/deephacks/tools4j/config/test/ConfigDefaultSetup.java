@@ -22,6 +22,7 @@ import org.deephacks.tools4j.config.admin.AdminContext;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.test.ConfigTestData.Child;
 import org.deephacks.tools4j.config.test.ConfigTestData.Grandfather;
+import org.deephacks.tools4j.config.test.ConfigTestData.JSR303Validation;
 import org.deephacks.tools4j.config.test.ConfigTestData.Parent;
 import org.deephacks.tools4j.config.test.ConfigTestData.Singleton;
 import org.deephacks.tools4j.config.test.ConfigTestData.SingletonParent;
@@ -40,6 +41,7 @@ public abstract class ConfigDefaultSetup {
     protected Grandfather g2;
     protected SingletonParent sp1;
     protected Singleton s1;
+    protected JSR303Validation jsr303;
     protected static Collection<Bean> defaultBeans;
 
     protected void setupDefaultConfigData() {
@@ -75,11 +77,14 @@ public abstract class ConfigDefaultSetup {
         g2.add(p1, p2);
         g2.put(p1);
 
+        jsr303 = testdata.getJSR303Validation("jsr303");
+
         runtime.register(Grandfather.class);
         runtime.register(Parent.class);
         runtime.register(Child.class);
         runtime.register(Singleton.class);
         runtime.register(SingletonParent.class);
+        runtime.register(JSR303Validation.class);
         if (defaultBeans == null) {
             // toBeans steals quite a bit of performance when having larger hierarchies. 
             defaultBeans = ImmutableList.copyOf(toBeans(g1, g2, p1, p2, c1, c2));
