@@ -14,7 +14,6 @@
 package org.deephacks.tools4j.config.test;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -458,13 +457,5 @@ public class ConfigTestData {
         public BeanId getBeanId() {
             return BeanId.createSingleton(id, VALIDATION_SCHEMA_NAME);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        JSR303Validation v = new ConfigTestData().getJSR303Validation("id");
-        Method m = v.getClass().getMethod("getArea");
-        System.out.println(m);
-        m.invoke(v);
-
     }
 }
