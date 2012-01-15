@@ -15,12 +15,14 @@ package org.deephacks.tools4j.config.internal.core.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 import org.deephacks.tools4j.config.RuntimeContext;
+import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.model.Events;
@@ -29,6 +31,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.config.spi.ValidationManager;
+import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.lookup.Lookup;
 import org.deephacks.tools4j.support.reflections.ClassIntrospector;
@@ -51,7 +54,7 @@ public class RuntimeCoreContext extends RuntimeContext {
         conversion.register(new FieldToSchemaPropertyConverter());
         conversion.register(new BeanToObjectConverter());
         schemaManager = Lookup.get().lookup(SchemaManager.class);
-        beanManager = Lookup.get().lookup(BeanManager.class);
+        beanManager = lookupBeanManager();
         validationManager = Lookup.get().lookup(ValidationManager.class);
     }
 
@@ -168,5 +171,22 @@ public class RuntimeCoreContext extends RuntimeContext {
                 bean.setReference(ref.getName(), singletonId);
             }
         }
+    }
+
+    private static BeanManager lookupBeanManager() {
+        Collection<BeanManager> beanManagers = Lookup.get().lookupAll(BeanManager.class);
+        if (beanManagers.size() == 1) {
+            return beanManagers.iterator().next();
+        }
+        String preferedBeanManager = SystemProperties.createDefault().get("config.beanmanager");
+        if (preferedBeanManager == null || "".equals(preferedBeanManager)) {
+            return beanManagers.iterator().next();
+        }
+        for (BeanManager beanManager : beanManagers) {
+            if (beanManager.getClass().getName().equals(preferedBeanManager)) {
+                return beanManager;
+            }
+        }
+        return new XmlBeanManager();
     }
 }
