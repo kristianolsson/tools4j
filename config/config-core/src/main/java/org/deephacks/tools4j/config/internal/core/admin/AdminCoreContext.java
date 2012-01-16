@@ -27,6 +27,7 @@ import org.deephacks.tools4j.config.internal.core.runtime.BeanToObjectConverter;
 import org.deephacks.tools4j.config.internal.core.xml.XmlBeanManager;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
+import org.deephacks.tools4j.config.model.BeanUtils;
 import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.spi.BeanManager;
@@ -111,9 +112,7 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(beans);
         // ok to not have validation manager available
         if (validationManager != null) {
-            for (Bean bean : beans) {
-                initalizeReferences(bean);
-            }
+            initalizeReferences(beans);
             validationManager.validate(beans);
         }
         beanManager.create(beans);
@@ -121,9 +120,7 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void set(Bean bean) {
-        SchemaManager schemaManager = Lookup.get().lookup(SchemaManager.class);
         Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
-        BeanManager beanManager = Lookup.get().lookup(BeanManager.class);
         bean.set(schema);
         validateSchema(bean);
         // ok to not have validation manager available
@@ -141,9 +138,7 @@ public class AdminCoreContext extends AdminContext {
         validateSchema(beans);
         // ok to not have validation manager available
         if (validationManager != null) {
-            for (Bean bean : beans) {
-                initalizeReferences(bean);
-            }
+            initalizeReferences(beans);
             validationManager.validate(beans);
         }
         beanManager.set(beans);
@@ -173,35 +168,7 @@ public class AdminCoreContext extends AdminContext {
             List<String> values = mergeBean.getValues(name);
             source.setProperty(name, values);
         }
-        for (String name : mergeBean.getReferenceNames()) {
-            List<BeanId> values = mergeBean.getReference(name);
-            if (values == null) {
-                continue;
-            }
-            for (BeanId beanId : values) {
-                initalizeBeanId(beanId);
-            }
-            source.setReferences(name, values);
-        }
-    }
-
-    private void initalizeReferences(Bean bean) {
-        for (String name : bean.getReferenceNames()) {
-            List<BeanId> values = bean.getReference(name);
-            if (values == null) {
-                continue;
-            }
-            for (BeanId beanId : values) {
-                initalizeBeanId(beanId);
-            }
-        }
-
-    }
-
-    private void initalizeBeanId(BeanId beanId) {
-        Bean ref = beanManager.get(beanId);
-        beanId.setBean(ref);
-        setSchema(schemaManager.schemaMap(), beanId.getBean());
+        initalizeReferences(mergeBean);
     }
 
     @Override
@@ -237,6 +204,53 @@ public class AdminCoreContext extends AdminContext {
     @Override
     public void delete(String name, Collection<String> instances) {
         beanManager.delete(name, instances);
+    }
+
+    /**
+     * Used for setting or creating a single bean.
+     */
+    private void initalizeReferences(Bean bean) {
+        for (String name : bean.getReferenceNames()) {
+            List<BeanId> values = bean.getReference(name);
+            if (values == null) {
+                continue;
+            }
+            for (BeanId beanId : values) {
+                Bean ref = beanManager.get(beanId);
+                beanId.setBean(ref);
+                setSchema(schemaManager.schemaMap(), beanId.getBean());
+            }
+        }
+    }
+
+    /**
+     * Used for setting or creating a multiple beans. 
+     * 
+     * We must consider that the operation may include beans that have 
+     * references betewen eachother. User provided beans are 
+     * prioritized and the storage is secondary for looking up references.  
+     */
+    private void initalizeReferences(Collection<Bean> beans) {
+        Map<BeanId, Bean> map = BeanUtils.uniqueIndex(beans);
+        for (Bean bean : beans) {
+            for (String name : bean.getReferenceNames()) {
+                List<BeanId> values = bean.getReference(name);
+                if (values == null) {
+                    continue;
+                }
+                for (BeanId beanId : values) {
+                    // the does not exist in storage, but may exist in the
+                    // set of beans provided by the user.
+                    Bean ref = map.get(beanId);
+                    if (ref == null) {
+                        ref = beanManager.get(beanId);
+                    }
+                    beanId.setBean(ref);
+                    setSchema(schemaManager.schemaMap(), beanId.getBean());
+
+                }
+            }
+        }
     }
 
     @Override

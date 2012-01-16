@@ -87,7 +87,7 @@ public abstract class ConfigDefaultSetup {
         runtime.register(JSR303Validation.class);
         if (defaultBeans == null) {
             // toBeans steals quite a bit of performance when having larger hierarchies. 
-            defaultBeans = ImmutableList.copyOf(toBeans(g1, g2, p1, p2, c1, c2));
+            defaultBeans = ImmutableList.copyOf(toBeans(c1, c2, p1, p2, g1, g2));
         }
     }
 }

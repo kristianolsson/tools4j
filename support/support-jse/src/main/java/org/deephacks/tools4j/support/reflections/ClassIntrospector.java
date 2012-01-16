@@ -208,11 +208,11 @@ public class ClassIntrospector {
         }
 
         @SuppressWarnings("unchecked")
-        public List<Object> getDefaultValues() {
+        public Collection<Object> getDefaultValues() {
             if (!isCollection) {
                 throw new UnsupportedOperationException("This field is not a collection.");
             }
-            return (List<Object>) getDefaultValue();
+            return (Collection<Object>) getDefaultValue();
         }
 
         public Object getValue(Object source) {

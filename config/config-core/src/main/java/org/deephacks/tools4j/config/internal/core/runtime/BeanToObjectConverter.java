@@ -58,13 +58,11 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
         for (SchemaPropertyList prop : schema.get(SchemaPropertyList.class)) {
             List<String> vals = source.getValues(prop.getName());
             String field = prop.getFieldName();
-            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
+
             if (vals == null) {
-                // ensure that Collection is empty, not null.
-                values.put(field, c);
                 continue;
             }
-
+            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
             for (String val : vals) {
                 Object converted = conversion.convert(val, forName(prop.getType()));
                 c.add(converted);
@@ -89,13 +87,10 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
         }
         for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
             List<BeanId> beans = source.getReference(prop.getName());
-            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
             if (beans == null) {
-                // ensure that Collection is empty, not null.
-                values.put(prop.getFieldName(), c);
                 continue;
             }
-
+            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
             for (BeanId beanId : beans) {
                 Bean b = beanId.getBean();
                 Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
@@ -105,13 +100,10 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
         }
         for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
             List<BeanId> beans = source.getReference(prop.getName());
-            Map<Object, Object> c = newMap(forName(prop.getMapType()));
             if (beans == null) {
-                // ensure that Map is empty, not null.
-                values.put(prop.getFieldName(), c);
                 continue;
             }
-
+            Map<Object, Object> c = newMap(forName(prop.getMapType()));
             for (BeanId beanId : beans) {
                 Bean b = beanId.getBean();
                 Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));

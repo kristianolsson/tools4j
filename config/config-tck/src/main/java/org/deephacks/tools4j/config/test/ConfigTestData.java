@@ -185,7 +185,7 @@ public class ConfigTestData {
         public List<TimeUnit> prop19 = Arrays.asList(TimeUnit.HOURS, TimeUnit.SECONDS);
 
         @Config(desc = "prop20Desc")
-        public Map<String, Parent> prop20;
+        public Map<String, Parent> prop20 = new HashMap<String, Parent>();
 
         public void add(Parent... p) {
             if (prop7 == null) {
@@ -233,7 +233,7 @@ public class ConfigTestData {
         public String prop1 = "defaultValue";
 
         @Config(desc = "prop2Desc")
-        public Set<String> prop2;
+        public Set<String> prop2 = new HashSet<String>();
 
         @Config(desc = "prop3Desc")
         public List<Integer> prop3 = Arrays.asList(1, 2, 3);
@@ -246,7 +246,7 @@ public class ConfigTestData {
         @Config(desc = "prop6Desc")
         public Child prop6;
         @Config(desc = "prop7Desc")
-        public List<Child> prop7;
+        public List<Child> prop7 = new ArrayList<Child>();
 
         @Config(desc = "prop8Desc")
         public Byte prop8;

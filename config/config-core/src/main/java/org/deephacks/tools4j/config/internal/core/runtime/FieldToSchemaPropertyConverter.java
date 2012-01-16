@@ -95,22 +95,27 @@ public class FieldToSchemaPropertyConverter implements
             name = fieldName;
         }
         Class<?> type = source.getType();
+        if (source.isCollection()) {
+            return SchemaPropertyRefList.create(name, fieldName, getSchemaName(type), desc,
+                    source.isFinal(), source.getCollRawType().getName());
+        } else if (source.isMap()) {
+            // type is contained in parameterized value of the map
+            type = source.getMapParamTypes().get(1);
+            return SchemaPropertyRefMap.create(name, fieldName, getSchemaName(type), desc,
+                    source.isFinal(), source.getMapRawType().getName());
+        } else {
+            return SchemaPropertyRef.create(name, fieldName, getSchemaName(type), desc,
+                    source.isFinal(), isSingleton(type));
+        }
+    }
+
+    private String getSchemaName(Class<?> type) {
         Config configurable = type.getAnnotation(Config.class);
         String schemaName = configurable.name();
         if (schemaName == null || "".equals(schemaName)) {
             schemaName = type.getName();
         }
-        if (source.isCollection()) {
-            return SchemaPropertyRefList.create(name, fieldName, schemaName, desc,
-                    source.isFinal(), source.getCollRawType().getName());
-        } else if (source.isMap()) {
-            Config param = source.getMapParamTypes().get(1).getAnnotation(Config.class);
-            return SchemaPropertyRefMap.create(name, fieldName, param.name(), desc,
-                    source.isFinal(), source.getMapRawType().getName());
-        } else {
-            return SchemaPropertyRef.create(name, fieldName, schemaName, desc, source.isFinal(),
-                    isSingleton(type));
-        }
+        return schemaName;
     }
 
     private boolean isSingleton(Class<?> field) {
