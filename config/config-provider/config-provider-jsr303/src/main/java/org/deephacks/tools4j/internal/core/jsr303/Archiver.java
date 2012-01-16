@@ -14,7 +14,10 @@
 package org.deephacks.tools4j.internal.core.jsr303;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -28,16 +31,14 @@ public class Archiver {
         JavaArchive jarArchieve;
         Map<ArchivePath, Node> contents = null;
         if (jar.exists()) {
-            jarArchieve = ShrinkWrap.createFromZipFile(JavaArchive.class, jar);
-            contents = jarArchieve.getContent();
+            JavaArchive old = ShrinkWrap.createFromZipFile(JavaArchive.class, jar);
+            contents = old.getContent();
             jar.delete();
         }
         jarArchieve = ShrinkWrap.create(JavaArchive.class, jar.getName());
         if (contents != null) {
-            for (Node n : contents.values()) {
-                if (n.getAsset() == null) {
-                    continue;
-                }
+            for (Node n : filter(contents, clazzes)) {
+
                 jarArchieve.add(n.getAsset(), n.getPath());
             }
         }
@@ -45,5 +46,33 @@ public class Archiver {
             jarArchieve.addClass(clazz);
         }
         jarArchieve.as(ZipExporter.class).exportTo(jar, true);
+    }
+
+    private static Set<Node> filter(Map<ArchivePath, Node> oldNodes, Class<?>... newClasses) {
+        Set<Node> nodes = new HashSet<Node>();
+        Map<String, Class<?>> classMap = toMap(newClasses);
+        for (Node node : oldNodes.values()) {
+            if (node.getAsset() == null) {
+                continue;
+            }
+            String path = node.getPath().get();
+            if (path.charAt(0) == File.separatorChar) {
+                path = path.substring(1, path.length());
+            }
+            if (classMap.get(path) == null) {
+                nodes.add(node);
+            }
+        }
+
+        return nodes;
+    }
+
+    private static Map<String, Class<?>> toMap(Class<?>... clazzes) {
+        Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+        for (Class<?> clazz : clazzes) {
+            String clazzPath = clazz.getName().replace('.', File.separatorChar) + ".class";
+            map.put(clazzPath, clazz);
+        }
+        return map;
     }
 }
