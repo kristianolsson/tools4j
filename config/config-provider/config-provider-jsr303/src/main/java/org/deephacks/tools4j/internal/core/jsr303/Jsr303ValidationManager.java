@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.internal.core.jsr303;
 
 import static org.deephacks.tools4j.config.model.Events.CFG309_VALIDATION_ERROR;
+import static org.deephacks.tools4j.support.reflections.Reflections.computeClassHierarchy;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -21,8 +22,10 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Constraint;
@@ -49,6 +52,11 @@ public class Jsr303ValidationManager extends ValidationManager {
     private static File GENERATED_DIR = getGenerateDir();
     private Conversion conversion = Conversion.get();
     private File jar = new File(GENERATED_DIR, "configurable_stubs.jar");
+    private static final Set<String> IGNORED_PACKAGES = new HashSet<String>();
+
+    static {
+        IGNORED_PACKAGES.addAll(Arrays.asList("java", Config.class.getName(), Id.class.getName()));
+    }
 
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
@@ -56,29 +64,56 @@ public class Jsr303ValidationManager extends ValidationManager {
                 GENERATED_CLASSES_PREFIX);
         Set<Class<?>> dependencies = new HashSet<Class<?>>();
         dependencies.add(clazz);
+        dependencies.addAll(getTransitiveDependencies(clazz));
+        Archiver.write(generatedDir, jar, dependencies.toArray(new Class[0]));
+    }
+
+    private Set<Class<?>> getTransitiveDependencies(Class<?> clazz) {
+        Set<Class<?>> transitive = new HashSet<Class<?>>();
+
+        transitive.addAll(getSuperClasses(clazz));
+
         for (Field f : clazz.getDeclaredFields()) {
-            for (Annotation annonation : f.getAnnotations()) {
-                if (annonation.annotationType().isAnnotationPresent(Constraint.class)) {
-                    if (shouldAdd(annonation.annotationType())) {
-                        dependencies.add(annonation.annotationType());
-                    }
-                    for (Class<?> dep : annonation.annotationType().getAnnotation(Constraint.class)
-                            .validatedBy()) {
-                        if (shouldAdd(dep)) {
-                            dependencies.add(dep);
-                        }
+            transitive.addAll(getFieldDependencies(f));
+        }
+        return transitive;
+    }
+
+    private Set<Class<?>> getSuperClasses(Class<?> clazz) {
+        Set<Class<?>> transitive = new HashSet<Class<?>>();
+        List<Class<?>> classes = computeClassHierarchy(clazz);
+        for (Class<?> superclass : classes) {
+            if (shouldAdd(superclass)) {
+                transitive.add(superclass);
+            }
+        }
+        return transitive;
+    }
+
+    private Set<Class<?>> getFieldDependencies(Field f) {
+        Set<Class<?>> transitive = new HashSet<Class<?>>();
+        for (Annotation annonation : f.getAnnotations()) {
+            if (annonation.annotationType().isAnnotationPresent(Constraint.class)) {
+                if (shouldAdd(annonation.annotationType())) {
+                    transitive.add(annonation.annotationType());
+                }
+                for (Class<?> dep : annonation.annotationType().getAnnotation(Constraint.class)
+                        .validatedBy()) {
+                    if (shouldAdd(dep)) {
+                        transitive.add(dep);
                     }
                 }
             }
         }
-        Archiver.write(generatedDir, jar, dependencies.toArray(new Class[0]));
+        return transitive;
     }
 
     private boolean shouldAdd(Class<?> clazz) {
         String className = clazz.getName();
-        if (className.startsWith("java") || Config.class.getName().equals(className)
-                || Id.class.getName().equals(className)) {
-            return false;
+        for (String ignore : IGNORED_PACKAGES) {
+            if (className.startsWith(ignore)) {
+                return false;
+            }
         }
         return true;
     }
