@@ -14,7 +14,6 @@
 package org.deephacks.tools4j.config.spi;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
 
 import org.deephacks.tools4j.config.model.Schema;
@@ -32,7 +31,7 @@ public abstract class SchemaManager implements Serializable {
      * 
      * @return list of names.
      */
-    public abstract Map<String, Schema> schemaMap();
+    public abstract Map<String, Schema> getSchemas();
 
     /**
      * Return information that describing the schema for a particular type.
@@ -56,9 +55,7 @@ public abstract class SchemaManager implements Serializable {
      * @param info A bean info hierarchy representing its model, and
      *            also model specific properties.
      */
-    public abstract void addSchema(Schema schema);
-
-    public abstract void addSchemas(Collection<Schema> schemas);
+    public abstract void regsiterSchema(Schema... schema);
 
     /**
      * Removes the schema and will not longer be managed by this

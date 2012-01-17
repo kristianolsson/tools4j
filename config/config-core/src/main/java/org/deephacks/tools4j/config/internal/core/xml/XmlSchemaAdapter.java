@@ -14,7 +14,9 @@
 package org.deephacks.tools4j.config.internal.core.xml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,14 +43,14 @@ public class XmlSchemaAdapter {
 
         }
 
-        public XmlSchemas(List<Schema> schemas) {
-            for (Schema bean : schemas) {
+        public XmlSchemas(Map<String, Schema> schemas) {
+            for (Schema bean : schemas.values()) {
                 this.schemas.add(new XmlSchema(bean));
             }
         }
 
-        public List<Schema> getSchemas() {
-            ArrayList<Schema> result = new ArrayList<Schema>();
+        public Map<String, Schema> getSchemas() {
+            Map<String, Schema> result = new HashMap<String, Schema>();
             for (XmlSchema b : schemas) {
                 Schema schema = Schema.create(
                         SchemaId.create(b.id.name, b.id.desc, b.id.singleton), b.type, b.name,
@@ -73,7 +75,7 @@ public class XmlSchemaAdapter {
                     schema.add(SchemaPropertyRefMap.create(p.name, p.fieldName, p.schemaName,
                             p.desc, p.isImmutable, p.mapType));
                 }
-                result.add(schema);
+                result.put(schema.getName(), schema);
             }
             return result;
         }

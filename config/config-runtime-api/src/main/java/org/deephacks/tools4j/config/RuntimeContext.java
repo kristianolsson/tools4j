@@ -65,9 +65,9 @@ public abstract class RuntimeContext {
         }
     }
 
-    public abstract void register(Class<?> configurable);
+    public abstract void register(Class<?>... configurable);
 
-    public abstract void unregister(Class<?> configurable);
+    public abstract void unregister(Class<?>... configurable);
 
     /**
      * Read a singleton instance. This requires the configurable to have a 

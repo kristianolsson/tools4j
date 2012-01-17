@@ -22,9 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -47,54 +44,37 @@ public class XmlSchemaManager extends SchemaManager {
     private static final long serialVersionUID = 8979172640204086999L;
 
     @Override
-    public Map<String, Schema> schemaMap() {
-        List<Schema> list = readValues();
-        Map<String, Schema> indexOnName = new HashMap<String, Schema>();
-        for (Schema schema : list) {
-            indexOnName.put(schema.getName(), schema);
-        }
-        return indexOnName;
+    public Map<String, Schema> getSchemas() {
+        return readValues();
     }
 
     @Override
     public Schema getSchema(String schemaName) {
-        List<Schema> values = readValues();
-        for (Schema s : values) {
-            if (s.getName().equals(schemaName)) {
-                return s;
-            }
+        Map<String, Schema> values = readValues();
+        Schema schema = values.get(schemaName);
+        if (schema == null) {
+            throw CFG101_SCHEMA_NOT_EXIST(schemaName);
         }
-        throw CFG101_SCHEMA_NOT_EXIST(schemaName);
+        return schema;
     }
 
     @Override
-    public void addSchema(Schema schema) {
-        List<Schema> values = readValues();
-        values.add(schema);
-        writeValues(values);
-    }
-
-    @Override
-    public void addSchemas(Collection<Schema> schemas) {
-        List<Schema> values = readValues();
+    public void regsiterSchema(Schema... schemas) {
+        Map<String, Schema> values = readValues();
         for (Schema schema : schemas) {
-            values.add(schema);
+            values.put(schema.getName(), schema);
+            writeValues(values);
         }
-        writeValues(values);
     }
 
     @Override
-    public void removeSchema(String schema) {
-        List<Schema> values = readValues();
-        for (Schema c : values) {
-            if (c.getName().equals(schema)) {
-                values.remove(c);
-            }
-        }
+    public void removeSchema(String schemaName) {
+        Map<String, Schema> values = readValues();
+        values.remove(schemaName);
         writeValues(values);
     }
 
-    private List<Schema> readValues() {
+    private Map<String, Schema> readValues() {
         String dirValue = PROP.get(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
             throw CFG201_XML_STORAGE_PROP_MISSING(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
@@ -120,7 +100,7 @@ public class XmlSchemaManager extends SchemaManager {
 
     }
 
-    private void writeValues(List<Schema> values) {
+    private void writeValues(Map<String, Schema> values) {
         String dirValue = PROP.get(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
             throw CFG201_XML_STORAGE_PROP_MISSING(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);

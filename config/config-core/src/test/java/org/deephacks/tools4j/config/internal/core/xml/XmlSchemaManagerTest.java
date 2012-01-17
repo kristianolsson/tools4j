@@ -46,7 +46,7 @@ public class XmlSchemaManagerTest {
     public void addGetSchema() {
         Set<Schema> schemas = generateSchemas(10, 10);
         for (Schema schema : schemas) {
-            manager.addSchema(schema);
+            manager.regsiterSchema(schema);
             Schema response = manager.getSchema(schema.getName());
             assertThat(schema, equalTo(response));
         }
@@ -57,12 +57,12 @@ public class XmlSchemaManagerTest {
     public void allSchemas() {
         Set<Schema> schemas = generateSchemas(10, 10);
         for (Schema schema : schemas) {
-            manager.addSchema(schema);
+            manager.regsiterSchema(schema);
             Schema response = manager.getSchema(schema.getName());
             assertThat(schema, equalTo(response));
         }
 
-        Map<String, Schema> schemaNames = manager.schemaMap();
+        Map<String, Schema> schemaNames = manager.getSchemas();
         for (Schema s : schemas) {
             assertTrue(schemaNames.containsKey(s.getName()));
         }
@@ -72,7 +72,7 @@ public class XmlSchemaManagerTest {
     public void testRemoveSchema() {
         Set<Schema> schemas = generateSchemas(2, 2);
         for (Schema schema : schemas) {
-            manager.addSchema(schema);
+            manager.regsiterSchema(schema);
             Schema response = manager.getSchema(schema.getName());
             assertThat(schema, equalTo(response));
         }

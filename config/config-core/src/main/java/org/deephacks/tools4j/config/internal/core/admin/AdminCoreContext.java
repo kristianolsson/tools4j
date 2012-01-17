@@ -59,7 +59,7 @@ public class AdminCoreContext extends AdminContext {
     @Override
     public List<Bean> list(String schemaName) {
         Map<BeanId, Bean> beans = beanManager.list(schemaName);
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, beans);
         return new ArrayList<Bean>(beans.values());
     }
@@ -75,7 +75,7 @@ public class AdminCoreContext extends AdminContext {
             }
             result.put(b.getId(), b);
         }
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, result);
 
         return new ArrayList<Bean>(result.values());
@@ -84,10 +84,10 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public Bean get(BeanId beanId) {
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         Bean bean = beanManager.get(beanId);
         bean.set(schemas.get(beanId.getSchemaName()));
-        setSchema(schemaManager.schemaMap(), bean);
+        setSchema(schemaManager.getSchemas(), bean);
         setSingletonReferences(bean, schemas);
         return bean;
     }
@@ -107,7 +107,7 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void create(Collection<Bean> beans) {
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, beans);
         validateSchema(beans);
         // ok to not have validation manager available
@@ -133,7 +133,7 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void set(Collection<Bean> beans) {
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, beans);
         validateSchema(beans);
         // ok to not have validation manager available
@@ -155,7 +155,7 @@ public class AdminCoreContext extends AdminContext {
             if (source == null) {
                 source = bean;
             } else {
-                setSchema(schemaManager.schemaMap(), source);
+                setSchema(schemaManager.getSchemas(), source);
                 merge(source, bean);
             }
             validationManager.validate(Arrays.asList(source));
@@ -187,7 +187,7 @@ public class AdminCoreContext extends AdminContext {
                 if (source == null) {
                     source = bean;
                 } else {
-                    setSchema(schemaManager.schemaMap(), source);
+                    setSchema(schemaManager.getSchemas(), source);
                     merge(source, bean);
                 }
                 validationManager.validate(Arrays.asList(source));
@@ -218,7 +218,7 @@ public class AdminCoreContext extends AdminContext {
             for (BeanId beanId : values) {
                 Bean ref = beanManager.get(beanId);
                 beanId.setBean(ref);
-                setSchema(schemaManager.schemaMap(), beanId.getBean());
+                setSchema(schemaManager.getSchemas(), beanId.getBean());
             }
         }
     }
@@ -246,7 +246,7 @@ public class AdminCoreContext extends AdminContext {
                         ref = beanManager.get(beanId);
                     }
                     beanId.setBean(ref);
-                    setSchema(schemaManager.schemaMap(), beanId.getBean());
+                    setSchema(schemaManager.getSchemas(), beanId.getBean());
 
                 }
             }
@@ -255,7 +255,7 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public Map<String, Schema> getSchemas() {
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         return schemas;
     }
 

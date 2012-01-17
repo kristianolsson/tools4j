@@ -13,8 +13,6 @@
  */
 package org.deephacks.tools4j.config.internal.core.runtime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,36 +57,37 @@ public class RuntimeCoreContext extends RuntimeContext {
     }
 
     @Override
-    public void register(Class<?> configurable) {
-        Schema schema = conversion.convert(configurable, Schema.class);
-        ArrayList<Schema> schemas = new ArrayList<Schema>(Arrays.asList(schema));
-        schemaManager.addSchemas(schemas);
-        if (schema.getId().isSingleton()) {
-            beanManager.createSingleton(getSingletonId(schema, configurable));
+    public void register(Class<?>... configurable) {
+        for (Class<?> clazz : configurable) {
+            Schema schema = conversion.convert(clazz, Schema.class);
+            schemaManager.regsiterSchema(schema);
+            if (schema.getId().isSingleton()) {
+                beanManager.createSingleton(getSingletonId(schema, clazz));
+            }
+            // ok to not have validation manager available
+            if (validationManager != null) {
+                validationManager.register(schema.getName(), clazz);
+            }
         }
-        // ok to not have validation manager available
-        if (validationManager != null) {
-            validationManager.register(schema.getName(), configurable);
-        }
-
     }
 
     @Override
-    public void unregister(Class<?> configurable) {
-        Schema schema = conversion.convert(configurable, Schema.class);
-        schemaManager.removeSchema(schema.getName());
-        // ok to not have validation manager available
-        if (validationManager != null) {
-            validationManager.unregister(schema.getName());
+    public void unregister(Class<?>... configurable) {
+        for (Class<?> clazz : configurable) {
+            Schema schema = conversion.convert(clazz, Schema.class);
+            schemaManager.removeSchema(schema.getName());
+            // ok to not have validation manager available
+            if (validationManager != null) {
+                validationManager.unregister(schema.getName());
+            }
         }
-
     }
 
     @Override
     public <T> T singleton(Class<T> configurable) {
         Schema schema = conversion.convert(configurable, Schema.class);
         BeanId singleton = getSingletonId(schema, configurable);
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         Bean bean = beanManager.get(singleton);
         bean.set(schema);
         setSingletonReferences(bean, schemas);
@@ -98,7 +97,7 @@ public class RuntimeCoreContext extends RuntimeContext {
     @Override
     public <T> List<T> all(Class<T> clazz) {
         Schema s = schemaManager.getSchema(clazz.getAnnotation(Config.class).name());
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         Map<BeanId, Bean> beans = beanManager.list(s.getName());
         setSchema(beans, schemas);
         for (Bean bean : beans.values()) {
@@ -110,7 +109,7 @@ public class RuntimeCoreContext extends RuntimeContext {
     @Override
     public <T> T get(String id, Class<T> clazz) {
         Schema s = schemaManager.getSchema(clazz.getAnnotation(Config.class).name());
-        Map<String, Schema> schemas = schemaManager.schemaMap();
+        Map<String, Schema> schemas = schemaManager.getSchemas();
         BeanId beanId = BeanId.create(id, s.getName());
         Bean bean = beanManager.get(beanId);
         if (bean == null) {
