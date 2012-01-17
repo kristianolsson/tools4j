@@ -166,18 +166,6 @@ public class Events {
     }
 
     /**
-     * {@value} - XML storage directory system variable not set. 
-     */
-    public static final int CFG201 = 201;
-    private static final String CFG201_MSG = "XML storage directory configuration variable [{0}] not set.";
-
-    @EventDoc(module = MODULE_NAME, code = CFG201, desc = CFG201_MSG)
-    public static AbortRuntimeException CFG201_XML_STORAGE_PROP_MISSING(String prop) {
-        Event event = new Event(MODULE_NAME, CFG201, MessageFormat.format(CFG201_MSG, prop));
-        throw new AbortRuntimeException(event);
-    }
-
-    /**
      * {@value} - XML schema storage file does not exist. 
      */
     public static final int CFG202 = 202;

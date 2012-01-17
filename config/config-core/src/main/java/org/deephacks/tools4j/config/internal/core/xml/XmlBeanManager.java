@@ -13,7 +13,6 @@
  */
 package org.deephacks.tools4j.config.internal.core.xml;
 
-import static org.deephacks.tools4j.config.model.Events.CFG201_XML_STORAGE_PROP_MISSING;
 import static org.deephacks.tools4j.config.model.Events.CFG202_XML_SCHEMA_FILE_MISSING;
 import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
 import static org.deephacks.tools4j.config.model.Events.CFG302_CANNOT_DELETE_BEAN;
@@ -294,7 +293,7 @@ public class XmlBeanManager extends BeanManager {
     private List<Bean> readValues() {
         String dirValue = PROP.get(XML_BEAN_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
-            throw CFG201_XML_STORAGE_PROP_MISSING(XML_BEAN_FILE_STORAGE_DIR_PROP);
+            dirValue = System.getProperty("java.io.tmpdir");
         }
         File file = new File(new File(dirValue), XML_BEAN_FILE_NAME);
         if (!file.exists()) {
@@ -332,7 +331,7 @@ public class XmlBeanManager extends BeanManager {
     private void writeValues(List<Bean> beans) {
         String dirValue = PROP.get(XML_BEAN_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
-            throw CFG201_XML_STORAGE_PROP_MISSING(XML_BEAN_FILE_STORAGE_DIR_PROP);
+            dirValue = System.getProperty("java.io.tmpdir");
         }
         File dir = new File(dirValue);
         if (!dir.exists()) {

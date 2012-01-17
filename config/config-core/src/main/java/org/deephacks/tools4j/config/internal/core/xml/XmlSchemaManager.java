@@ -14,7 +14,6 @@
 package org.deephacks.tools4j.config.internal.core.xml;
 
 import static org.deephacks.tools4j.config.model.Events.CFG101_SCHEMA_NOT_EXIST;
-import static org.deephacks.tools4j.config.model.Events.CFG201_XML_STORAGE_PROP_MISSING;
 import static org.deephacks.tools4j.config.model.Events.CFG202_XML_SCHEMA_FILE_MISSING;
 
 import java.io.File;
@@ -77,7 +76,7 @@ public class XmlSchemaManager extends SchemaManager {
     private Map<String, Schema> readValues() {
         String dirValue = PROP.get(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
-            throw CFG201_XML_STORAGE_PROP_MISSING(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
+            dirValue = System.getProperty("java.io.tmpdir");
         }
         File file = new File(new File(dirValue), XML_SCHEMA_FILE_NAME);
         if (!file.exists()) {
@@ -103,7 +102,7 @@ public class XmlSchemaManager extends SchemaManager {
     private void writeValues(Map<String, Schema> values) {
         String dirValue = PROP.get(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
         if (dirValue == null || "".equals(dirValue)) {
-            throw CFG201_XML_STORAGE_PROP_MISSING(XML_CONFIG_SCHEMA_FILE_STORAGE_DIR_PROP);
+            dirValue = System.getProperty("java.io.tmpdir");
         }
         File dir = new File(dirValue);
         if (!dir.exists()) {
