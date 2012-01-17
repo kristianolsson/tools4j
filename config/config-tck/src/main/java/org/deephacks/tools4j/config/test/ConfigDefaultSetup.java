@@ -79,12 +79,8 @@ public abstract class ConfigDefaultSetup {
 
         jsr303 = testdata.getJSR303Validation("jsr303");
 
-        runtime.register(Grandfather.class);
-        runtime.register(Parent.class);
-        runtime.register(Child.class);
-        runtime.register(Singleton.class);
-        runtime.register(SingletonParent.class);
-        runtime.register(JSR303Validation.class);
+        runtime.register(Grandfather.class, Parent.class, Child.class, Singleton.class,
+                SingletonParent.class, JSR303Validation.class);
         if (defaultBeans == null) {
             // toBeans steals quite a bit of performance when having larger hierarchies. 
             defaultBeans = ImmutableList.copyOf(toBeans(c1, c2, p1, p2, g1, g2));
