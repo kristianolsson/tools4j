@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -34,6 +35,8 @@ import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.spi.SchemaManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;
+
+import com.google.common.io.Files;
 
 @ServiceProvider(service = SchemaManager.class)
 public class XmlSchemaManager extends SchemaManager {
@@ -79,22 +82,23 @@ public class XmlSchemaManager extends SchemaManager {
             dirValue = System.getProperty("java.io.tmpdir");
         }
         File file = new File(new File(dirValue), XML_SCHEMA_FILE_NAME);
-        if (!file.exists()) {
-            throw CFG202_XML_SCHEMA_FILE_MISSING(file);
-        }
 
         try {
+            if (!file.exists()) {
+                Files.write("<schema-xml></schema-xml>", file, Charset.defaultCharset());
+            }
             FileInputStream in = new FileInputStream(file);
             JAXBContext context = JAXBContext.newInstance(XmlSchemas.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             XmlSchemas schemas = (XmlSchemas) unmarshaller.unmarshal(in);
-
             return schemas.getSchemas();
 
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
             throw CFG202_XML_SCHEMA_FILE_MISSING(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }

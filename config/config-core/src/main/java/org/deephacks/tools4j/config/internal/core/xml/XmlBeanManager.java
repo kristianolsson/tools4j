@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +48,8 @@ import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
+
+import com.google.common.io.Files;
 
 /**
  * ConfigBeanManagerDefault is responsible for storing config bean instances in 
@@ -296,11 +299,10 @@ public class XmlBeanManager extends BeanManager {
             dirValue = System.getProperty("java.io.tmpdir");
         }
         File file = new File(new File(dirValue), XML_BEAN_FILE_NAME);
-        if (!file.exists()) {
-            throw CFG202_XML_SCHEMA_FILE_MISSING(file);
-        }
-
         try {
+            if (!file.exists()) {
+                Files.write("<bean-xml></bean-xml>", file, Charset.defaultCharset());
+            }
             FileInputStream in = new FileInputStream(file);
             JAXBContext context = JAXBContext.newInstance(XmlBeans.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -310,6 +312,8 @@ public class XmlBeanManager extends BeanManager {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
             throw CFG202_XML_SCHEMA_FILE_MISSING(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }
