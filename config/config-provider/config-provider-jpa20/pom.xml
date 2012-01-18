@@ -9,8 +9,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>config-provider-jpa</artifactId>
-  <name>Tools4j Config Provider JPA</name>
+  <artifactId>config-provider-jpa20</artifactId>
+  <name>Tools4j Config Provider JPA 2.0</name>
   <version>${version.tools4j.config}</version>
   <description>JPA Configuration Provider</description>
   <dependencies>
@@ -78,6 +78,12 @@
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>9.1-901.jdbc4</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.8.2.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
-      <artifactId>config-provider-jpa</artifactId>
+      <artifactId>config-provider-jpa20</artifactId>
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>

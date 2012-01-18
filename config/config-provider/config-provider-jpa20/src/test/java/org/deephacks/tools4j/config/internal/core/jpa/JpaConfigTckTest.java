@@ -13,7 +13,10 @@
  */
 package org.deephacks.tools4j.config.internal.core.jpa;
 
+import static org.deephacks.tools4j.support.reflections.Reflections.forName;
+
 import java.io.File;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +26,6 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.SQLExec;
 import org.deephacks.tools4j.config.internal.core.xml.XmlSchemaManager;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.config.spi.SchemaManager;
@@ -35,6 +36,7 @@ import org.deephacks.tools4j.internal.core.jsr303.Jsr303ValidationManager;
 import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.io.FileUtils;
 import org.deephacks.tools4j.support.lookup.MockLookup;
+import org.deephacks.tools4j.support.test.DdlExec;
 import org.deephacks.tools4j.support.test.EclipseParameterized;
 import org.deephacks.tools4j.support.test.JUnitUtils;
 import org.deephacks.tools4j.support.web.jpa.EntityManagerFactoryCreator;
@@ -57,8 +59,11 @@ import org.junit.runners.Parameterized.Parameters;
 public class JpaConfigTckTest extends ConfigTckTests {
     public static final String UNIT_NAME = "tools4j-config-jpa-unit";
     /**
-     * Database providers
+     * Database providers. Derby is default.
      */
+    public static final String DERBY = "derby";
+    public static final String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+
     public static final String MYSQL = "mysql";
     public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
 
@@ -68,7 +73,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
     // TO BE IMPLEMENTED LATER
     public static final String ORACLE = "oracle";
     public static final String DB2 = "db2";
-    public static final String DERBY = "derby";
+
     public static final String SQLITE = "sqlite";
     public static final String HSQL = "hsql";
 
@@ -104,10 +109,10 @@ public class JpaConfigTckTest extends ConfigTckTests {
      */
     public void before() {
         XmlStorageHelper.clearAndInit(JpaConfigTckTest.class);
-        MockLookup.setMockInstances(BeanManager.class, new JpaBeanManager());
+        MockLookup.setMockInstances(BeanManager.class, new Jpa20BeanManager());
         MockLookup.addMockInstances(SchemaManager.class, new XmlSchemaManager());
         MockLookup.addMockInstances(ValidationManager.class, new Jsr303ValidationManager());
-        File targetDir = JUnitUtils.getMavenProjectChildFile(JpaBeanManager.class, "target");
+        File targetDir = JUnitUtils.getMavenProjectChildFile(Jpa20BeanManager.class, "target");
         File jpaProperties = new File(targetDir, "jpa.properties");
         parameter.jpaProvider.write(jpaProperties);
         System.setProperty(EntityManagerFactoryCreator.JPA_PROPERTIES_FILE,
@@ -125,7 +130,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
     @Parameters
     public static Collection<Object[]> data() {
         Collection<Object[]> parameters = new ArrayList<Object[]>();
-        List<String> dbProviders = Arrays.asList(MYSQL);
+        List<String> dbProviders = Arrays.asList(DERBY);
         List<String> jpaProviders = Arrays.asList(HIBERNATE, ECLIPSELINK);
         List<List<String>> list = new ArrayList<List<String>>();
         list.add(dbProviders);
@@ -250,6 +255,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
     }
 
     private static class Hibernate extends Jpaprovider {
+        private static final String DERBY_DIALECT = "org.hibernate.dialect.DerbyDialect";
         private static final String MYSQL_DIALECT = "org.hibernate.dialect.MySQLDialect";
         private static final String POSTGRESQL_DIALECT = "org.hibernate.dialect.PostgreSQLDialect";
 
@@ -258,6 +264,10 @@ public class JpaConfigTckTest extends ConfigTckTests {
             provider = "org.hibernate.ejb.HibernatePersistence";
 
             switch (database.getDatabaseProvider()) {
+            case DERBY:
+                driver = DERBY_DRIVER;
+                providerSpecific.put("hibernate.dialect", DERBY_DIALECT);
+                break;
             case MYSQL:
                 driver = MYSQL_DRIVER;
                 providerSpecific.put("hibernate.dialect", MYSQL_DIALECT);
@@ -266,6 +276,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
                 driver = POSTGRESQL_DRIVER;
                 providerSpecific.put("hibernate.dialect", POSTGRESQL_DIALECT);
                 break;
+
             default:
                 throw new UnsupportedOperationException();
             }
@@ -282,6 +293,9 @@ public class JpaConfigTckTest extends ConfigTckTests {
             super(database);
             provider = "org.eclipse.persistence.jpa.PersistenceProvider";
             switch (database.getDatabaseProvider()) {
+            case DERBY:
+                driver = DERBY_DRIVER;
+                break;
             case MYSQL:
                 driver = MYSQL_DRIVER;
                 break;
@@ -312,7 +326,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
          * Install and uninstall database scripts.
          */
         private static final File DB_SCRIPT_DIR = JUnitUtils.getMavenProjectChildFile(
-                JpaBeanManager.class, "src/main/resources/META-INF/");
+                Jpa20BeanManager.class, "src/main/resources/META-INF/");
         private static final String INSTALL_DDL = "install_{0}.ddl";
         private static final String UNINSTALL_DDL = "uninstall_{0}.ddl";
 
@@ -337,6 +351,11 @@ public class JpaConfigTckTest extends ConfigTckTests {
             this.host = PROPS.get(DB_HOST_TOOLS4J_CONFIG_PROPERTY);
             this.tablespace = System.getProperty("user.name");
             switch (dbProvider) {
+            case DERBY:
+                driver = DERBY_DRIVER;
+                forName(driver);
+                url = "jdbc:derby:memory:" + tablespace + ";create=true";
+                break;
             case MYSQL:
                 driver = MYSQL_DRIVER;
                 url = "jdbc:mysql://" + host + ":3306/" + tablespace;
@@ -360,19 +379,29 @@ public class JpaConfigTckTest extends ConfigTckTests {
         }
 
         public void initalize() {
-            exeucteFile(new File(DB_SCRIPT_DIR, uninstallDdl));
-            exeucteFile(new File(DB_SCRIPT_DIR, installDdl));
-        }
-
-        private void exeucteFile(File file) {
-            SQLExec sql = new SQLExec();
-            sql.setProject(new Project());
-            sql.setSrc(file);
-            sql.setUserid(username);
-            sql.setPassword(password);
-            sql.setUrl(url);
-            sql.setDriver(driver);
-            sql.execute();
+            try {
+                if (dbProvider == DERBY) {
+                    try {
+                        /**
+                         * Derby is a special case that, at the moment, does not support support "if exist".
+                         * The only option is to ignore SQLException from dropping stuff.
+                         */
+                        DdlExec.execute(new File(DB_SCRIPT_DIR, uninstallDdl), url, username,
+                                password, true);
+                    } catch (SQLException e) {
+                        // ignore, probably the first DROP TABLE of a non-existing table
+                    }
+                    DdlExec.execute(new File(DB_SCRIPT_DIR, installDdl), url, username, password,
+                            false);
+                } else {
+                    DdlExec.execute(new File(DB_SCRIPT_DIR, uninstallDdl), url, username, password,
+                            false);
+                    DdlExec.execute(new File(DB_SCRIPT_DIR, installDdl), url, username, password,
+                            false);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

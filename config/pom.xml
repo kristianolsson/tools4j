@@ -99,7 +99,7 @@
       </dependency>
       <dependency>
         <groupId>org.deephacks.tools4j</groupId>
-        <artifactId>config-provider-jpa</artifactId>
+        <artifactId>config-provider-jpa20</artifactId>
         <version>${version.tools4j.config}</version>
         <scope>compile</scope>
       </dependency>

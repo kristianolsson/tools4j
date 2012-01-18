@@ -25,6 +25,7 @@ import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteRefere
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReferences;
 import static org.deephacks.tools4j.config.model.BeanUtils.uniqueIndex;
 import static org.deephacks.tools4j.config.model.Events.CFG301_MISSING_RUNTIME_REF;
+import static org.deephacks.tools4j.config.model.Events.CFG302_CANNOT_DELETE_BEAN;
 import static org.deephacks.tools4j.config.model.Events.CFG303_BEAN_ALREADY_EXIST;
 import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
 import static org.deephacks.tools4j.config.model.Events.CFG307_SINGELTON_REMOVAL;
@@ -39,14 +40,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.PersistenceException;
-
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
 import org.deephacks.tools4j.config.spi.BeanManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.conversion.Conversion;
-import org.eclipse.persistence.exceptions.DatabaseException;
+import org.deephacks.tools4j.support.event.AbortRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,12 +58,12 @@ import org.slf4j.LoggerFactory;
  *  TODO: Mention container-managed vs standalone deployment. Datasource integration and JTA setups.
  */
 @ServiceProvider(service = BeanManager.class)
-public class JpaBeanManager extends BeanManager {
+public class Jpa20BeanManager extends BeanManager {
     private static final long serialVersionUID = -1356093069248894779L;
-    private Logger log = LoggerFactory.getLogger(JpaBeanManager.class);
+    private Logger log = LoggerFactory.getLogger(Jpa20BeanManager.class);
     private Conversion conversion;
 
-    public JpaBeanManager() {
+    public Jpa20BeanManager() {
         conversion = Conversion.get();
         conversion.register(new JpaBeanToBeanConverter());
     }
@@ -200,39 +199,60 @@ public class JpaBeanManager extends BeanManager {
             }
             deleteJpaBean(id);
             commit();
-        } catch (PersistenceException e) {
-            rollback();
-            translateDelete(Arrays.asList(id), e);
-        } catch (DatabaseException e) {
-            rollback();
-            translateDelete(Arrays.asList(id), e);
-        } catch (Throwable e) {
+        } catch (AbortRuntimeException e) {
             rollback();
             throw e;
+        } catch (Throwable e) {
+            try {
+                rollback();
+            } catch (NullPointerException e1) {
+                /**
+                 * Postgres+EclipseLink 2.2.0 have bug that fails with a NPE when trying to rolback an 
+                 * exception when a constraint is violated. 
+                 * 
+                 * Probably idiotic thing to do but this is only for making TCK test pass until 
+                 * bug have been fixed.  
+                 * 
+                 * TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=289191
+                 */
+                throw CFG302_CANNOT_DELETE_BEAN(Arrays.asList(id));
+            }
+            translateDelete(Arrays.asList(id), e);
         }
     }
 
     @Override
     public void delete(String schemaName, Collection<String> ids) {
+        BeanId beanId = null;
         try {
             begin();
             for (String id : ids) {
-                BeanId beanId = BeanId.create(id, schemaName);
+                beanId = BeanId.create(id, schemaName);
                 if (isJpaBeanSingleton(schemaName)) {
                     throw CFG307_SINGELTON_REMOVAL(beanId);
                 }
                 deleteJpaBean(beanId);
             }
             commit();
-        } catch (PersistenceException e) {
-            rollback();
-            translateDelete(ids, schemaName, e);
-        } catch (DatabaseException e) {
-            rollback();
-            translateDelete(ids, schemaName, e);
-        } catch (Throwable e) {
+        } catch (AbortRuntimeException e) {
             rollback();
             throw e;
+        } catch (Throwable e) {
+            try {
+                rollback();
+            } catch (NullPointerException e1) {
+                /**
+                 * Postgres+EclipseLink 2.2.0 have bug that fails with a NPE when trying to rolback an 
+                 * exception when a constraint is violated. 
+                 * 
+                 * Probably idiotic thing to do but this is only for making TCK test pass until 
+                 * bug have been fixed.  
+                 * 
+                 * TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=289191
+                 */
+                throw CFG302_CANNOT_DELETE_BEAN(Arrays.asList(beanId));
+            }
+            translateDelete(ids, schemaName, e);
         }
     }
 
@@ -272,14 +292,12 @@ public class JpaBeanManager extends BeanManager {
             begin();
             mergeJpaBean(bean);
             commit();
-        } catch (PersistenceException e) {
+        } catch (AbortRuntimeException e) {
             rollback();
-            log.debug("Merge failed.", e);
-            translateMerge(bean.getId(), e);
+            throw e;
         } catch (Throwable e) {
             rollback();
-            log.debug("Merge failed.", e);
-            throw e;
+            translateMerge(bean.getId(), e);
         }
     }
 
@@ -291,6 +309,9 @@ public class JpaBeanManager extends BeanManager {
                 mergeJpaBean(bean);
             }
             commit();
+        } catch (AbortRuntimeException e) {
+            rollback();
+            throw e;
         } catch (Throwable e) {
             rollback();
             throw e;

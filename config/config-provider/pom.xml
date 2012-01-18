@@ -13,7 +13,7 @@
 
   <modules>
     <module>config-provider-api</module>
-    <module>config-provider-jpa</module>
+    <module>config-provider-jpa20</module>
     <module>config-provider-jsr303</module>
   </modules>
   <dependencies>

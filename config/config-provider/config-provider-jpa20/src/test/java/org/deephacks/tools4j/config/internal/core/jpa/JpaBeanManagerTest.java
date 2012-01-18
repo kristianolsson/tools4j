@@ -30,7 +30,7 @@ public class JpaBeanManagerTest {
     @Before
     public void before() {
         XmlStorageHelper.clearAndInit(JpaBeanManagerTest.class);
-        MockLookup.setMockInstances(BeanManager.class, new JpaBeanManager());
+        MockLookup.setMockInstances(BeanManager.class, new Jpa20BeanManager());
         MockLookup.addMockInstances(SchemaManager.class, new XmlSchemaManager());
         runtime.register(Grandfather.class);
         runtime.register(Parent.class);
