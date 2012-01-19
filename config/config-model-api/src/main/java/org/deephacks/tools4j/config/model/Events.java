@@ -166,6 +166,19 @@ public class Events {
     }
 
     /**
+     * {@value} - Bean have property that does not exist in schema. 
+     */
+    public static final int CFG110 = 110;
+    private static final String CFG110_MSG = "Bean property [{0}] does not exist in schema.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG110,
+            desc = "Bean have property that does not exist in schema.")
+    public static AbortRuntimeException CFG110_PROP_NOT_EXIST_IN_SCHEMA(String propertyName) {
+        Event event = new Event(MODULE_NAME, CFG110, MessageFormat.format(CFG110_MSG, propertyName));
+        return new AbortRuntimeException(event);
+    }
+
+    /**
      * {@value} - XML schema storage file does not exist. 
      */
     public static final int CFG202 = 202;

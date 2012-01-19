@@ -65,6 +65,12 @@ public abstract class RuntimeContext {
         }
     }
 
+    /**
+     * If @Config changes name between upgrades, the new schema will be registered as 
+     * a new while the old one will persist. 
+     * 
+     * @param configurable
+     */
     public abstract void register(Class<?>... configurable);
 
     public abstract void unregister(Class<?>... configurable);

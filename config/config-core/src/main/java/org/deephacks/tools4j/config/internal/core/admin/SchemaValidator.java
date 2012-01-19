@@ -17,12 +17,16 @@ import static org.deephacks.tools4j.support.reflections.Reflections.forName;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema;
 import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
+import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
 import org.deephacks.tools4j.support.conversion.Conversion;
 
 public class SchemaValidator {
@@ -45,6 +49,18 @@ public class SchemaValidator {
 
         if (bean.getId().getInstanceId() == null || "".equals(bean.getId().getInstanceId())) {
             throw Events.CFG107_MISSING_ID();
+        }
+        Set<String> schemaPropertyNames = schema.getAllPropertyNames();
+        for (String name : bean.getPropertyNames()) {
+            if (!schemaPropertyNames.contains(name)) {
+                throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
+            }
+        }
+        for (String name : bean.getReferenceNames()) {
+
+            if (!schemaPropertyNames.contains(name)) {
+                throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
+            }
         }
         for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
             List<String> values = bean.getValues(prop.getName());
@@ -79,6 +95,12 @@ public class SchemaValidator {
                             prop.getType(), value);
                 }
             }
+        }
+        for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
+        }
+        for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
+        }
+        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
         }
 
     }

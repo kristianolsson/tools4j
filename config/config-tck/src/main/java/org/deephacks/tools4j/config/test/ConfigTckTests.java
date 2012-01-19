@@ -16,6 +16,7 @@ package org.deephacks.tools4j.config.test;
 import static org.deephacks.tools4j.config.model.Events.CFG101;
 import static org.deephacks.tools4j.config.model.Events.CFG105;
 import static org.deephacks.tools4j.config.model.Events.CFG106;
+import static org.deephacks.tools4j.config.model.Events.CFG110;
 import static org.deephacks.tools4j.config.model.Events.CFG301;
 import static org.deephacks.tools4j.config.model.Events.CFG302;
 import static org.deephacks.tools4j.config.model.Events.CFG304;
@@ -69,6 +70,54 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
     public final void beforeMethod() {
         before();
         setupDefaultConfigData();
+    }
+
+    @Test
+    public void test_create_set_merge_non_existing_property() {
+        createDefault();
+        Bean bean = Bean.create(c1.getId());
+        bean.addProperty("non_existing", "bogus");
+        try {
+            admin.create(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
+        try {
+            admin.set(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
+        try {
+            admin.merge(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
+        try {
+            bean = Bean.create(BeanId.create("c5", ConfigTestData.CHILD_SCHEMA_NAME));
+            bean.setReference("non_existing", c1.getId());
+            admin.create(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
+        bean = Bean.create(c1.getId());
+        bean.addProperty("non_existing", "bogus");
+
+        try {
+            admin.set(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
+        try {
+            admin.merge(bean);
+            fail("Not possible to set property names that does not exist in schema");
+        } catch (AbortRuntimeException e) {
+            assertThat(e.getEvent().getCode(), is(CFG110));
+        }
     }
 
     /**
@@ -257,7 +306,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
         createDefault();
         // try merge a invalid single reference
         Bean b = Bean.create(BeanId.create("p1", ConfigTestData.PARENT_SCHEMA_NAME));
-        b.addReference("prop6Name", BeanId.create("non_existing_child_ref", ""));
+        b.addReference("prop6", BeanId.create("non_existing_child_ref", ""));
         try {
             admin.merge(b);
             fail("Should not be possible to merge invalid reference");
@@ -269,7 +318,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
 
         // try merge a invalid reference on collection
         b = Bean.create(BeanId.create("p2", ConfigTestData.PARENT_SCHEMA_NAME));
-        b.addReference("prop7Name", BeanId.create("non_existing_child_ref", ""));
+        b.addReference("prop7", BeanId.create("non_existing_child_ref", ""));
         try {
             admin.merge(b);
             fail("Should not be possible to merge invalid reference");
@@ -281,7 +330,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
 
         // try set a invalid single reference
         b = Bean.create(BeanId.create("parent4", ConfigTestData.PARENT_SCHEMA_NAME));
-        b.addReference("prop6Name", BeanId.create("non_existing_child_ref", ""));
+        b.addReference("prop6", BeanId.create("non_existing_child_ref", ""));
         try {
             admin.set(b);
             fail("Should not be possible to merge beans that does not exist");
@@ -293,7 +342,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
 
         // try merge a invalid single reference
         b = Bean.create(BeanId.create("p1", ConfigTestData.PARENT_SCHEMA_NAME));
-        b.addReference("prop6Name", BeanId.create("non_existing_child_ref", ""));
+        b.addReference("prop6", BeanId.create("non_existing_child_ref", ""));
         try {
             admin.set(b);
             fail("Should not be possible to merge invalid reference");

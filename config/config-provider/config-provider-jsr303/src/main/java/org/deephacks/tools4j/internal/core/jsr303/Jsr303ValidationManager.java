@@ -15,6 +15,7 @@ package org.deephacks.tools4j.internal.core.jsr303;
 
 import static org.deephacks.tools4j.config.model.Events.CFG309_VALIDATION_ERROR;
 import static org.deephacks.tools4j.support.reflections.Reflections.computeClassHierarchy;
+import static org.deephacks.tools4j.support.reflections.Reflections.findFields;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -44,6 +45,7 @@ import org.deephacks.tools4j.support.event.AbortRuntimeException;
 
 @ServiceProvider(service = ValidationManager.class)
 public class Jsr303ValidationManager extends ValidationManager {
+    public static final String NOT_VALID_TOKEN = "NOT_VALID_TOKEN";
     private static final String GENERATED_CLASSES = "tools4j_validation_tmp";
     private static final String GENERATED_CLASSES_PREFIX = "runtime_class_registration";
     public static final String JSR303_JAR_STORAGE_DIR_PROP = "config.spi.validation.jar.dir";
@@ -68,13 +70,55 @@ public class Jsr303ValidationManager extends ValidationManager {
         Archiver.write(generatedDir, jar, dependencies.toArray(new Class[0]));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public void validate(Collection<Bean> beans) throws AbortRuntimeException {
+
+        for (Bean bean : beans) {
+            ClassLoader cl = loadJars(jar);
+            ClassLoader org = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(cl);
+                Class genclazz;
+                String className = bean.getSchema().getType();
+                try {
+                    genclazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Could not load stub [" + className
+                            + "] from jar [" + jar.getAbsolutePath() + "].", e);
+                }
+                Object beanToValidate = conversion.convert(bean, genclazz);
+                Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
+                String msg = "";
+                for (ConstraintViolation<Object> v : violations) {
+                    msg = msg + v.getPropertyPath() + " " + v.getMessage();
+                }
+                if (msg != null && !"".equals(msg.trim())) {
+                    throw CFG309_VALIDATION_ERROR(msg);
+                }
+            } finally {
+                Thread.currentThread().setContextClassLoader(org);
+            }
+        }
+    }
+
     private Set<Class<?>> getTransitiveDependencies(Class<?> clazz) {
         Set<Class<?>> transitive = new HashSet<Class<?>>();
 
         transitive.addAll(getSuperClasses(clazz));
+        transitive.addAll(getAnnotationDependencies(clazz.getAnnotations()));
+        for (Field f : findFields(clazz)) {
+            transitive.addAll(getAnnotationDependencies(f.getAnnotations()));
+            transitive.addAll(getEnumDependencies(f));
+        }
+        return transitive;
+    }
 
-        for (Field f : clazz.getDeclaredFields()) {
-            transitive.addAll(getFieldDependencies(f));
+    private Set<Class<?>> getEnumDependencies(Field f) {
+        Set<Class<?>> transitive = new HashSet<Class<?>>();
+
+        if (f.getType().isEnum()) {
+            transitive.add(f.getType());
         }
         return transitive;
     }
@@ -90,9 +134,9 @@ public class Jsr303ValidationManager extends ValidationManager {
         return transitive;
     }
 
-    private Set<Class<?>> getFieldDependencies(Field f) {
+    private Set<Class<?>> getAnnotationDependencies(Annotation[] annotations) {
         Set<Class<?>> transitive = new HashSet<Class<?>>();
-        for (Annotation annonation : f.getAnnotations()) {
+        for (Annotation annonation : annotations) {
             if (annonation.annotationType().isAnnotationPresent(Constraint.class)) {
                 if (shouldAdd(annonation.annotationType())) {
                     transitive.add(annonation.annotationType());
@@ -132,36 +176,6 @@ public class Jsr303ValidationManager extends ValidationManager {
             generatedDir = new File(confDir);
         }
         return generatedDir;
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    public void validate(Collection<Bean> beans) throws AbortRuntimeException {
-
-        for (Bean bean : beans) {
-            ClassLoader cl = loadJars(jar);
-            ClassLoader org = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(cl);
-                Class genclazz;
-                String className = bean.getSchema().getType();
-                try {
-                    genclazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("Could not load stub [" + className
-                            + "] from jar [" + jar.getAbsolutePath() + "].", e);
-                }
-                Object beanToValidate = conversion.convert(bean, genclazz);
-                Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
-                for (ConstraintViolation<Object> v : violations) {
-
-                    String msg = v.getPropertyPath() + " " + v.getMessage();
-                    throw CFG309_VALIDATION_ERROR(msg);
-                }
-            } finally {
-                Thread.currentThread().setContextClassLoader(org);
-            }
-        }
     }
 
     private static ClassLoader loadJars(File... jars) {

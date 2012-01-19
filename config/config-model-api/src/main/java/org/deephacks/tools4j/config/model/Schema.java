@@ -147,6 +147,17 @@ public class Schema implements Serializable {
         return null;
     }
 
+    /**
+     * Returns all property names that exist for this schema.
+     */
+    public Set<String> getAllPropertyNames() {
+        Set<String> names = new HashSet<String>();
+        for (AbstractSchemaProperty prop : properties.values()) {
+            names.add(prop.getName());
+        }
+        return names;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(Schema.class).add("id", id).add("name", getName())
@@ -548,4 +559,5 @@ public class Schema implements Serializable {
         }
 
     }
+
 }

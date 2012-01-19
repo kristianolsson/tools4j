@@ -164,11 +164,14 @@ public class AdminCoreContext extends AdminContext {
     }
 
     private void merge(Bean source, Bean mergeBean) {
-        for (String name : mergeBean.getPropertyNames()) {
+        for (String name : source.getPropertyNames()) {
             List<String> values = mergeBean.getValues(name);
+            if (values == null || values.size() == 0) {
+                continue;
+            }
             source.setProperty(name, values);
         }
-        initalizeReferences(mergeBean);
+        initalizeMergeReferences(source, mergeBean);
     }
 
     @Override
@@ -204,6 +207,21 @@ public class AdminCoreContext extends AdminContext {
     @Override
     public void delete(String name, Collection<String> instances) {
         beanManager.delete(name, instances);
+    }
+
+    private void initalizeMergeReferences(Bean source, Bean target) {
+        for (String name : target.getReferenceNames()) {
+            List<BeanId> values = target.getReference(name);
+            if (values == null) {
+                continue;
+            }
+            for (BeanId beanId : values) {
+                Bean ref = beanManager.get(beanId);
+                beanId.setBean(ref);
+                setSchema(schemaManager.getSchemas(), beanId.getBean());
+            }
+            source.setReferences(name, values);
+        }
     }
 
     /**
