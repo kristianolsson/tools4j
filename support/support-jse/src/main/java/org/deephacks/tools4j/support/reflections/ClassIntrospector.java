@@ -145,6 +145,19 @@ public class ClassIntrospector {
             return Modifier.isTransient(field.getModifiers());
         }
 
+        public boolean isEnum() {
+            if (!isCollection) {
+                return field.getType().isEnum();
+            }
+            List<Class<?>> p = getParameterizedType(field);
+            if (p.size() == 0) {
+                throw new UnsupportedOperationException("Collection of field [" + field
+                        + "] does not have parameterized arguments, which is not allowed.");
+            }
+            return p.get(0).isEnum();
+
+        }
+
         /**
          * Return the raw collection type
          * @return

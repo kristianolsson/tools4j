@@ -75,11 +75,12 @@ public class FieldToSchemaPropertyConverter implements
                         String.class);
                 List<String> defaultValues = new ArrayList<String>(converted);
 
-                return SchemaPropertyList.create(name, fieldName, type.getName(), desc,
-                        source.isFinal(), defaultValues, source.getCollRawType().getName());
+                return SchemaPropertyList.create(name, fieldName, type.getName(), desc, source
+                        .isFinal(), source.isEnum(), defaultValues, source.getCollRawType()
+                        .getName());
             } else {
                 return SchemaProperty.create(name, fieldName, type.getName(), desc,
-                        source.isFinal(),
+                        source.isFinal(), source.isEnum(),
                         conversion.convert(source.getDefaultValue(), String.class));
             }
         } catch (ConversionException e) {

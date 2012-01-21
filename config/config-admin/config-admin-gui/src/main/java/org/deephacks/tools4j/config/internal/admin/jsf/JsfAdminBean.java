@@ -64,14 +64,14 @@ public class JsfAdminBean {
         id = new IdProperty(bean.getId().getInstanceId(), schema.getId().getName(), schema.getId()
                 .getDesc());
         for (SchemaProperty p : schema.get(SchemaProperty.class)) {
-            if (isEnum(p.getType())) {
+            if (p.isEnum()) {
                 enumProperties.add(new EnumProperty(bean.getSingleValue(p.getName()), p));
             } else {
                 basicProperties.add(new BasicProperty(bean.getSingleValue(p.getName()), p));
             }
         }
         for (SchemaPropertyList p : schema.get(SchemaPropertyList.class)) {
-            if (isEnum(p.getType())) {
+            if (p.isEnum()) {
                 enumListProperties.add(new EnumPropertyList(bean.getValues(p.getName()), p));
             } else {
                 basicListProperties.add(new BasicPropertyList(bean.getValues(p.getName()), p));
@@ -95,14 +95,14 @@ public class JsfAdminBean {
         this.currentTree = tree;
         id = new IdProperty(null, schema.getId().getName(), schema.getId().getDesc());
         for (SchemaProperty p : schema.get(SchemaProperty.class)) {
-            if (isEnum(p.getType())) {
+            if (p.isEnum()) {
                 enumProperties.add(new EnumProperty(null, p));
             } else {
                 basicProperties.add(new BasicProperty(null, p));
             }
         }
         for (SchemaPropertyList p : schema.get(SchemaPropertyList.class)) {
-            if (isEnum(p.getType())) {
+            if (p.isEnum()) {
                 enumListProperties.add(new EnumPropertyList(null, p));
             } else {
                 basicListProperties.add(new BasicPropertyList(null, p));
@@ -260,14 +260,6 @@ public class JsfAdminBean {
             return;
         }
         save.setProperty(p.getName(), p.getValue().getValue());
-    }
-
-    private static boolean isEnum(String type) {
-        try {
-            return Class.forName(type).isEnum();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

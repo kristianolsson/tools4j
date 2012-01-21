@@ -187,21 +187,10 @@ public abstract class JsfAdminProperties implements Comparable<JsfAdminPropertie
 
         public EnumProperty(String value, SchemaProperty prop) {
             super(value, prop);
-            try {
-                Class<?> clazz = Class.forName(getType());
-                for (Field f : clazz.getDeclaredFields()) {
-                    if (f.isEnumConstant()) {
-                        Object aEnum = f.get(null);
-                        possibleValues.add(aEnum.toString());
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
 
         public List<String> getPossibleValues() {
-            return possibleValues;
+            throw new UnsupportedOperationException("TODO: implement me");
         }
     }
 

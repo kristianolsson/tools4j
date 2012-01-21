@@ -101,7 +101,7 @@ public class XmlSchemaManagerTest {
                 String _desc = "propDesc" + j;
                 String _defaultValue = "" + j;
                 SchemaProperty prop = SchemaProperty.create(_name, _fieldName, _classType, _desc,
-                        true, _defaultValue);
+                        true, false, _defaultValue);
                 schema.add(prop);
                 _name = "collPropName" + j;
                 _fieldName = "collpropFieldName" + j;
@@ -112,7 +112,7 @@ public class XmlSchemaManagerTest {
                 _colDefault.add("simple1");
                 _colDefault.add("simple2");
                 SchemaPropertyList col = SchemaPropertyList.create(_name, _fieldName, _classType,
-                        _desc, true, _colDefault, _colDefault.getClass().getName());
+                        _desc, true, false, _colDefault, _colDefault.getClass().getName());
                 schema.add(col);
 
             }

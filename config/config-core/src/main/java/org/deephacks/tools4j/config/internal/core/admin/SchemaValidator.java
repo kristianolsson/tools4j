@@ -13,8 +13,6 @@
  */
 package org.deephacks.tools4j.config.internal.core.admin;
 
-import static org.deephacks.tools4j.support.reflections.Reflections.forName;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +25,7 @@ import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRefMap;
+import org.deephacks.tools4j.config.spi.ClassRepository;
 import org.deephacks.tools4j.support.conversion.Conversion;
 
 public class SchemaValidator {
@@ -45,6 +44,7 @@ public class SchemaValidator {
      * Validate that the value of the bean is according to schema. 
      */
     public static void validateSchema(Bean bean) {
+        ClassRepository repos = new ClassRepository();
         Schema schema = bean.getSchema();
 
         if (bean.getId().getInstanceId() == null || "".equals(bean.getId().getInstanceId())) {
@@ -76,7 +76,7 @@ public class SchemaValidator {
             String value = values.get(0);
 
             try {
-                conversion.convert(value, forName(prop.getType()));
+                conversion.convert(value, repos.loadClass(prop.getType()));
             } catch (Exception e) {
                 throw Events.CFG105_WRONG_PROPERTY_TYPE(bean.getId(), prop.getName(),
                         prop.getType(), value);
@@ -89,7 +89,7 @@ public class SchemaValidator {
             }
             for (String value : values) {
                 try {
-                    conversion.convert(value, forName(prop.getType()));
+                    conversion.convert(value, repos.loadClass(prop.getType()));
                 } catch (Exception e) {
                     throw Events.CFG105_WRONG_PROPERTY_TYPE(bean.getId(), prop.getName(),
                             prop.getType(), value);

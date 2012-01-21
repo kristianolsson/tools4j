@@ -288,11 +288,13 @@ public class Schema implements Serializable {
         private static final long serialVersionUID = -8108590860088240249L;
         private String defaultValue;
         private String type;
+        private boolean isEnum;
 
         private SchemaProperty(String name, String fieldName, String type, String desc,
-                boolean isImmutable, String defaultValue) {
+                boolean isImmutable, boolean isEnum, String defaultValue) {
             super(name, fieldName, desc, isImmutable);
             this.defaultValue = defaultValue;
+            this.isEnum = isEnum;
             this.type = Preconditions.checkNotNull(type);
         }
 
@@ -300,12 +302,18 @@ public class Schema implements Serializable {
          * Not to be used by users.
          */
         public static SchemaProperty create(String name, String fieldName, String type,
-                String desc, boolean isImmutable, String defaultValue) {
-            return new SchemaProperty(name, fieldName, type, desc, isImmutable, defaultValue);
+                String desc, boolean isImmutable, boolean isEnum, String defaultValue) {
+
+            return new SchemaProperty(name, fieldName, type, desc, isImmutable, isEnum,
+                    defaultValue);
         }
 
         public String getType() {
             return type;
+        }
+
+        public boolean isEnum() {
+            return isEnum;
         }
 
         public String getDefaultValue() {
@@ -341,22 +349,26 @@ public class Schema implements Serializable {
         private String type;
         private String collectionType;
         private List<String> defaultValues;
+        private boolean isEnum;
 
         private SchemaPropertyList(String name, String fieldName, String type, String desc,
-                boolean isImmutable, String collectionType, List<String> defaultValues) {
+                boolean isImmutable, boolean isEnum, String collectionType,
+                List<String> defaultValues) {
             super(name, fieldName, desc, isImmutable);
             this.collectionType = Preconditions.checkNotNull(collectionType);
             this.type = Preconditions.checkNotNull(type);
             this.defaultValues = defaultValues;
+            this.isEnum = isEnum;
         }
 
         /**
          * Not to be used by users.
          */
         public static SchemaPropertyList create(String name, String fieldName, String type,
-                String desc, boolean isImmutable, List<String> defaultValues, String collectionType) {
-            return new SchemaPropertyList(name, fieldName, type, desc, isImmutable, collectionType,
-                    defaultValues);
+                String desc, boolean isImmutable, boolean isEnum, List<String> defaultValues,
+                String collectionType) {
+            return new SchemaPropertyList(name, fieldName, type, desc, isImmutable, isEnum,
+                    collectionType, defaultValues);
         }
 
         public String getType() {
@@ -369,6 +381,10 @@ public class Schema implements Serializable {
 
         public String getCollectionType() {
             return collectionType;
+        }
+
+        public boolean isEnum() {
+            return isEnum;
         }
 
         public String toString() {

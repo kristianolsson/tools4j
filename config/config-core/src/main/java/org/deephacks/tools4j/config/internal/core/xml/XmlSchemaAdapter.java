@@ -57,11 +57,11 @@ public class XmlSchemaAdapter {
                         b.desc);
                 for (XmlSchemaProperty p : b.properties) {
                     schema.add(SchemaProperty.create(p.name, p.fieldName, p.type, p.desc,
-                            p.isImmutable, p.defaultValue));
+                            p.isImmutable, p.isEnum, p.defaultValue));
                 }
                 for (XmlSchemaCollection p : b.collection) {
                     schema.add(SchemaPropertyList.create(p.name, p.fieldName, p.parameterizedType,
-                            p.desc, p.isImmutable, p.defaultValues, p.collectionType));
+                            p.desc, p.isImmutable, p.isEnum, p.defaultValues, p.collectionType));
                 }
                 for (XmlSchemaRef p : b.ref) {
                     schema.add(SchemaPropertyRef.create(p.name, p.fieldName, p.schemaName, p.desc,
@@ -163,6 +163,8 @@ public class XmlSchemaAdapter {
             private String desc;
             @XmlAttribute(name = "immutable")
             private boolean isImmutable;
+            @XmlAttribute(name = "enum")
+            private boolean isEnum;
             @XmlElement(name = "default")
             private String defaultValue;
 
@@ -177,6 +179,7 @@ public class XmlSchemaAdapter {
                 this.defaultValue = p.getDefaultValue();
                 this.desc = p.getDesc();
                 this.isImmutable = p.isImmutable();
+                this.isEnum = p.isEnum();
             }
         }
 
@@ -190,6 +193,8 @@ public class XmlSchemaAdapter {
             private String parameterizedType;
             @XmlAttribute(name = "immutable")
             private boolean isImmutable;
+            @XmlAttribute(name = "enum")
+            private boolean isEnum;
             @XmlAttribute(name = "collection-type")
             public String collectionType;
             @XmlAttribute
@@ -207,6 +212,7 @@ public class XmlSchemaAdapter {
                 this.collectionType = p.getCollectionType();
                 this.desc = p.getDesc();
                 this.isImmutable = p.isImmutable();
+                this.isImmutable = p.isEnum();
                 this.defaultValues = p.getDefaultValues();
             }
         }
