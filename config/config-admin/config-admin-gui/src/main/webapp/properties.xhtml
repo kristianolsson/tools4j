@@ -121,14 +121,14 @@
         <!-- BasicListProperty -->
         <h:panelGroup rendered="#{property.simpleClassname == 'BasicPropertyList'}">
           <p:menuButton value="Action">
-            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="prop_#{property.name}.show();"/>
             <p:menuitem icon="ui-icon ui-icon-close"
                         actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
             <p:menuitem value="Reset to default" update="adminSchemaProperties"
                         actionListener="#{property.listValues.resetToDefault}"
                         icon="ui-icon ui-icon-arrowrefresh-1-w"/>
           </p:menuButton>
-          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+          <p:dialog header="Add #{property.name}" widgetVar="prop_#{property.name}">
             <p:inputText value="#{property.listValues.inputTextValue}" />
             <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
           </p:dialog>
@@ -142,14 +142,14 @@
         <!-- EnumListProperty -->
         <h:panelGroup rendered="#{property.simpleClassname == 'EnumPropertyList'}">
           <p:menuButton value="Action">
-            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="prop_#{property.name}.show();"/>
             <p:menuitem icon="ui-icon ui-icon-close"
                         actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
             <p:menuitem value="Reset to default" update="adminSchemaProperties"
                         actionListener="#{property.listValues.resetToDefault}"
                         icon="ui-icon ui-icon-arrowrefresh-1-w"/>
           </p:menuButton>
-          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+          <p:dialog header="Add #{property.name}" widgetVar="prop_#{property.name}">
             <p:inputText value="#{property.listValues.inputTextValue}" />
             <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
           </p:dialog>
@@ -164,11 +164,11 @@
         <!-- RefListProperty -->
         <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyList'}">
           <p:menuButton value="Action">
-            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="prop_#{property.name}.show();"/>
             <p:menuitem icon="ui-icon ui-icon-close"
                         actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
           </p:menuButton>
-          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+          <p:dialog header="Add #{property.name}" widgetVar="prop_#{property.name}">
             <p:inputText value="#{property.listValues.inputTextValue}" />
             <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
           </p:dialog>
@@ -177,11 +177,11 @@
         <!-- RefMapProperty -->
         <h:panelGroup rendered="#{property.simpleClassname == 'RefPropertyMap'}">
           <p:menuButton value="Action">
-            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="#{property.name}.show();"/>
+            <p:menuitem value="Add" icon="ui-icon ui-icon-extlink" onclick="prop_#{property.name}.show();"/>
             <p:menuitem icon="ui-icon ui-icon-close"
                         actionListener="#{property.listValues.deleteValue}" value="Delete" update="adminSchemaProperties"/>
           </p:menuButton>
-          <p:dialog header="Add #{property.name}" widgetVar="#{property.name}">
+          <p:dialog header="Add #{property.name}" widgetVar="prop_#{property.name}">
             <p:inputText value="#{property.listValues.inputTextValue}" />
             <p:commandButton  actionListener="#{property.listValues.addValue}" value="Add" update="adminSchemaProperties"/>
           </p:dialog>
