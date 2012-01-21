@@ -179,6 +179,20 @@ public class Events {
     }
 
     /**
+     * {@value} - Bean have reference that does not exist in schema. 
+     */
+    public static final int CFG111 = 111;
+    private static final String CFG111_MSG = "Bean reference [{0}] does not exist in schema.";
+
+    @EventDoc(module = MODULE_NAME, code = CFG111,
+            desc = "Bean have reference that does not exist in schema.")
+    public static AbortRuntimeException CFG111_REF_NOT_EXIST_IN_SCHEMA(String referenceName) {
+        Event event = new Event(MODULE_NAME, CFG111,
+                MessageFormat.format(CFG111_MSG, referenceName));
+        return new AbortRuntimeException(event);
+    }
+
+    /**
      * {@value} - XML schema storage file does not exist. 
      */
     public static final int CFG202 = 202;

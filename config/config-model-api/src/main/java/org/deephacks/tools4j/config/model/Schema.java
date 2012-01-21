@@ -150,15 +150,34 @@ public class Schema implements Serializable {
     /**
      * Returns all property names that exist for this schema.
      */
-    public Set<String> getAllPropertyNames() {
+    public Set<String> getPropertyNames() {
         Set<String> names = new HashSet<String>();
-        for (AbstractSchemaProperty prop : properties.values()) {
+        for (AbstractSchemaProperty prop : get(SchemaProperty.class)) {
+            names.add(prop.getName());
+        }
+        for (AbstractSchemaProperty prop : get(SchemaPropertyList.class)) {
             names.add(prop.getName());
         }
         return names;
     }
 
-    @Override
+    /**
+     * Returns all reference names that exist for this schema.
+     */
+    public Set<String> getReferenceNames() {
+        Set<String> names = new HashSet<String>();
+        for (AbstractSchemaProperty prop : get(SchemaPropertyRef.class)) {
+            names.add(prop.getName());
+        }
+        for (AbstractSchemaProperty prop : get(SchemaPropertyRefList.class)) {
+            names.add(prop.getName());
+        }
+        for (AbstractSchemaProperty prop : get(SchemaPropertyRefMap.class)) {
+            names.add(prop.getName());
+        }
+        return names;
+    }
+
     public String toString() {
         return Objects.toStringHelper(Schema.class).add("id", id).add("name", getName())
                 .add("type", getType()).add("desc", getDesc()).add("properties", properties)

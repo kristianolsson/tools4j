@@ -20,6 +20,7 @@ import java.util.Set;
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Events;
 import org.deephacks.tools4j.config.model.Schema;
+import org.deephacks.tools4j.config.model.Schema.AbstractSchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaProperty;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyList;
 import org.deephacks.tools4j.config.model.Schema.SchemaPropertyRef;
@@ -50,30 +51,23 @@ public class SchemaValidator {
         if (bean.getId().getInstanceId() == null || "".equals(bean.getId().getInstanceId())) {
             throw Events.CFG107_MISSING_ID();
         }
-        Set<String> schemaPropertyNames = schema.getAllPropertyNames();
+        Set<String> schemaPropertyNames = schema.getPropertyNames();
         for (String name : bean.getPropertyNames()) {
             if (!schemaPropertyNames.contains(name)) {
                 throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
             }
         }
+        Set<String> schemaReferenceNames = schema.getReferenceNames();
         for (String name : bean.getReferenceNames()) {
-
-            if (!schemaPropertyNames.contains(name)) {
-                throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
+            if (!schemaReferenceNames.contains(name)) {
+                throw Events.CFG111_REF_NOT_EXIST_IN_SCHEMA(name);
             }
         }
         for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
-            List<String> values = bean.getValues(prop.getName());
-            if (values == null) {
-                continue;
+            String value = validateSingle(bean, prop);
+            if (value == null) {
+                return;
             }
-            if (prop.isImmutable()) {
-                throw Events.CFG306_PROPERTY_IMMUTABLE(bean.getId(), prop.getName());
-            }
-            if (values.size() > 1) {
-                throw Events.CFG106_WRONG_MULTIPLICITY_TYPE(bean.getId(), prop.getName());
-            }
-            String value = values.get(0);
 
             try {
                 conversion.convert(value, repos.loadClass(prop.getType()));
@@ -97,11 +91,26 @@ public class SchemaValidator {
             }
         }
         for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
+            validateSingle(bean, prop);
         }
         for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
         }
         for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
         }
 
+    }
+
+    private static String validateSingle(Bean bean, AbstractSchemaProperty prop) {
+        List<String> values = bean.getValues(prop.getName());
+        if (values == null) {
+            return null;
+        }
+        if (prop.isImmutable()) {
+            throw Events.CFG306_PROPERTY_IMMUTABLE(bean.getId(), prop.getName());
+        }
+        if (values.size() > 1) {
+            throw Events.CFG106_WRONG_MULTIPLICITY_TYPE(bean.getId(), prop.getName());
+        }
+        return values.get(0);
     }
 }
