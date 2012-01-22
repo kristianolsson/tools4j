@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>config-root</artifactId>
+    <version>1</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>config-examples</artifactId>
+  <name>Tools4j Config Examples</name>
+  <version>${version.tools4j.config}</version>
+  <description>Tools4j Config Examples</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-provider-jpa20</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-provider-jsr303</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-tck</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-test</artifactId>
+    </dependency>
+  </dependencies>
+</project>

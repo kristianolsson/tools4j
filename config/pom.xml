@@ -21,6 +21,7 @@
     <module>config-provider</module>
     <module>config-core</module>
     <module>config-tck</module>
+    <module>config-examples</module>
     <module>config-docbkx</module>
   </modules>
 

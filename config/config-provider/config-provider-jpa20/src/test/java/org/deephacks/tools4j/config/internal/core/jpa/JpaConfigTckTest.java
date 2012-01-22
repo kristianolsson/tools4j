@@ -13,11 +13,14 @@
  */
 package org.deephacks.tools4j.config.internal.core.jpa;
 
-import static org.deephacks.tools4j.support.reflections.Reflections.forName;
+import static org.deephacks.tools4j.support.test.Database.DERBY;
+import static org.deephacks.tools4j.support.test.Database.DERBY_DRIVER;
+import static org.deephacks.tools4j.support.test.Database.MYSQL;
+import static org.deephacks.tools4j.support.test.Database.MYSQL_DRIVER;
+import static org.deephacks.tools4j.support.test.Database.POSTGRESQL;
+import static org.deephacks.tools4j.support.test.Database.POSTGRESQL_DRIVER;
 
 import java.io.File;
-import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,10 +36,9 @@ import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.config.test.ConfigTckTests;
 import org.deephacks.tools4j.config.test.XmlStorageHelper;
 import org.deephacks.tools4j.internal.core.jsr303.Jsr303ValidationManager;
-import org.deephacks.tools4j.support.SystemProperties;
 import org.deephacks.tools4j.support.io.FileUtils;
 import org.deephacks.tools4j.support.lookup.MockLookup;
-import org.deephacks.tools4j.support.test.DdlExec;
+import org.deephacks.tools4j.support.test.Database;
 import org.deephacks.tools4j.support.test.EclipseParameterized;
 import org.deephacks.tools4j.support.test.JUnitUtils;
 import org.deephacks.tools4j.support.web.jpa.EntityManagerFactoryCreator;
@@ -58,24 +60,6 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(value = EclipseParameterized.class)
 public class JpaConfigTckTest extends ConfigTckTests {
     public static final String UNIT_NAME = "tools4j-config-jpa-unit";
-    /**
-     * Database providers. Derby is default.
-     */
-    public static final String DERBY = "derby";
-    public static final String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-
-    public static final String MYSQL = "mysql";
-    public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-
-    public static final String POSTGRESQL = "postgresql";
-    public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
-
-    // TO BE IMPLEMENTED LATER
-    public static final String ORACLE = "oracle";
-    public static final String DB2 = "db2";
-
-    public static final String SQLITE = "sqlite";
-    public static final String HSQL = "hsql";
 
     /**
      * JPA providers
@@ -148,7 +132,9 @@ public class JpaConfigTckTest extends ConfigTckTests {
         private Jpaprovider jpaProvider;
 
         public ProviderCombination(String dbProvider, String jpaProvider) {
-            this.database = Database.create(dbProvider);
+            File scriptDir = JUnitUtils.getMavenProjectChildFile(Jpa20BeanManager.class,
+                    "src/main/resources/META-INF/");
+            this.database = Database.create(dbProvider, scriptDir);
             this.jpaProvider = Jpaprovider.create(jpaProvider, database);
         }
 
@@ -176,7 +162,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
 
         @Override
         public String toString() {
-            return database.dbProvider + "+" + jpaProvider.getClass().getSimpleName();
+            return database.getDatabaseProvider() + "+" + jpaProvider.getClass().getSimpleName();
         }
 
     }
@@ -223,9 +209,9 @@ public class JpaConfigTckTest extends ConfigTckTests {
         protected HashMap<String, String> providerSpecific = new HashMap<String, String>();
 
         public Jpaprovider(Database database) {
-            url = database.url;
-            username = database.username;
-            password = database.password;
+            url = database.getUrl();
+            username = database.getUsername();
+            password = database.getPassword();
         }
 
         public static Jpaprovider create(String jpaProvider, Database database) {
@@ -310,98 +296,4 @@ public class JpaConfigTckTest extends ConfigTckTests {
         }
     }
 
-    /**
-     * The machine that runs the test must specify username, password and host 
-     * for the database. 
-     * 
-     * Port configuration is not supported at the moment in order to have
-     * simple and unified configuration for all databases. 
-     */
-    public static class Database {
-        /**
-         * Properties for test databases kept in tools4j for configuration. 
-         */
-        public static final String DB_HOST_TOOLS4J_CONFIG_PROPERTY = "config.testdb.host";
-        /**
-         * Install and uninstall database scripts.
-         */
-        private static final File DB_SCRIPT_DIR = JUnitUtils.getMavenProjectChildFile(
-                Jpa20BeanManager.class, "src/main/resources/META-INF/");
-        private static final String INSTALL_DDL = "install_{0}.ddl";
-        private static final String UNINSTALL_DDL = "uninstall_{0}.ddl";
-
-        private static final SystemProperties PROPS = SystemProperties.createDefault();
-
-        private String username;
-        private String password;
-        private String host;
-        private String url;
-        private String tablespace;
-        private String driver;
-        private String dbProvider;
-        private String installDdl;
-        private String uninstallDdl;
-
-        public Database(String dbProvider) {
-            this.dbProvider = dbProvider;
-            this.installDdl = MessageFormat.format(INSTALL_DDL, dbProvider);
-            this.uninstallDdl = MessageFormat.format(UNINSTALL_DDL, dbProvider);
-            this.username = System.getProperty("user.name");
-            this.password = System.getProperty("user.name");
-            this.host = PROPS.get(DB_HOST_TOOLS4J_CONFIG_PROPERTY);
-            this.tablespace = System.getProperty("user.name");
-            switch (dbProvider) {
-            case DERBY:
-                driver = DERBY_DRIVER;
-                forName(driver);
-                url = "jdbc:derby:memory:" + tablespace + ";create=true";
-                break;
-            case MYSQL:
-                driver = MYSQL_DRIVER;
-                url = "jdbc:mysql://" + host + ":3306/" + tablespace;
-                break;
-            case POSTGRESQL:
-                driver = POSTGRESQL_DRIVER;
-                url = "jdbc:postgresql://" + host + ":5432/" + tablespace;
-                break;
-            default:
-                throw new UnsupportedOperationException();
-
-            }
-        }
-
-        static Database create(String dbProvider) {
-            return new Database(dbProvider);
-        }
-
-        public String getDatabaseProvider() {
-            return this.dbProvider;
-        }
-
-        public void initalize() {
-            try {
-                if (dbProvider == DERBY) {
-                    try {
-                        /**
-                         * Derby is a special case that, at the moment, does not support support "if exist".
-                         * The only option is to ignore SQLException from dropping stuff.
-                         */
-                        DdlExec.execute(new File(DB_SCRIPT_DIR, uninstallDdl), url, username,
-                                password, true);
-                    } catch (SQLException e) {
-                        // ignore, probably the first DROP TABLE of a non-existing table
-                    }
-                    DdlExec.execute(new File(DB_SCRIPT_DIR, installDdl), url, username, password,
-                            false);
-                } else {
-                    DdlExec.execute(new File(DB_SCRIPT_DIR, uninstallDdl), url, username, password,
-                            false);
-                    DdlExec.execute(new File(DB_SCRIPT_DIR, installDdl), url, username, password,
-                            false);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 }
