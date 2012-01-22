@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.config.internal.core.admin;
 
 import static org.deephacks.tools4j.config.internal.core.admin.SchemaValidator.validateSchema;
+import static org.deephacks.tools4j.config.model.Events.CFG101_SCHEMA_NOT_EXIST;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +54,6 @@ public class AdminCoreContext extends AdminContext {
         schemaManager = Lookup.get().lookup(SchemaManager.class);
         validationManager = Lookup.get().lookup(ValidationManager.class);
         conversion.register(new BeanToObjectConverter());
-
     }
 
     @Override
@@ -85,7 +85,7 @@ public class AdminCoreContext extends AdminContext {
     @Override
     public Bean get(BeanId beanId) {
         Map<String, Schema> schemas = schemaManager.getSchemas();
-        Bean bean = beanManager.get(beanId);
+        Bean bean = beanManager.getEager(beanId);
         bean.set(schemas.get(beanId.getSchemaName()));
         setSchema(schemaManager.getSchemas(), bean);
         setSingletonReferences(bean, schemas);
@@ -94,10 +94,11 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void create(Bean bean) {
+
         Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
         bean.set(schema);
         validateSchema(bean);
-        // ok to not have validation manager available
+        // skip validation if no manager is available
         if (validationManager != null) {
             initalizeReferences(bean);
             validationManager.validate(Arrays.asList(bean));
@@ -110,7 +111,7 @@ public class AdminCoreContext extends AdminContext {
         Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, beans);
         validateSchema(beans);
-        // ok to not have validation manager available
+        // skip validation if no manager is available
         if (validationManager != null) {
             initalizeReferences(beans);
             validationManager.validate(beans);
@@ -123,7 +124,7 @@ public class AdminCoreContext extends AdminContext {
         Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
         bean.set(schema);
         validateSchema(bean);
-        // ok to not have validation manager available
+        // skip validation if no manager is available
         if (validationManager != null) {
             initalizeReferences(bean);
             validationManager.validate(Arrays.asList(bean));
@@ -136,7 +137,7 @@ public class AdminCoreContext extends AdminContext {
         Map<String, Schema> schemas = schemaManager.getSchemas();
         setSchema(schemas, beans);
         validateSchema(beans);
-        // ok to not have validation manager available
+        // skip validation if no manager is available
         if (validationManager != null) {
             initalizeReferences(beans);
             validationManager.validate(beans);
@@ -146,57 +147,90 @@ public class AdminCoreContext extends AdminContext {
 
     @Override
     public void merge(Bean bean) {
-        Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
-        bean.set(schema);
+        setSchema(schemaManager.getSchemas(), bean);
         validateSchema(bean);
-        // ok to not have validation manager available
+        // skip validation if no manager is available
         if (validationManager != null) {
-            Bean source = beanManager.get(bean.getId());
-            if (source == null) {
-                source = bean;
-            } else {
-                setSchema(schemaManager.getSchemas(), source);
-                merge(source, bean);
-            }
-            validationManager.validate(Arrays.asList(source));
+            Map<BeanId, Bean> beansToValidate = beanManager.getBeanToValidate(bean);
+            setSchema(schemaManager.getSchemas(), beansToValidate);
+            List<Bean> refs = findReferences(bean.getId(), beansToValidate.values());
+            merge(refs, bean);
+            validationManager.validate(beansToValidate.values());
         }
         beanManager.merge(bean);
     }
 
-    private void merge(Bean source, Bean mergeBean) {
-        for (String name : source.getPropertyNames()) {
-            List<String> values = mergeBean.getValues(name);
-            if (values == null || values.size() == 0) {
-                continue;
-            }
-            source.setProperty(name, values);
+    /**
+     * Does a recursive search for all beans that reference a particular bean. 
+     */
+    private List<Bean> findReferences(BeanId id, Collection<Bean> searches) {
+        ArrayList<Bean> matches = new ArrayList<Bean>();
+        for (Bean search : searches) {
+            matches.addAll(findReferences(id, search));
         }
-        initalizeMergeReferences(source, mergeBean);
+        return matches;
+    }
+
+    private List<Bean> findReferences(BeanId id, Bean search) {
+        ArrayList<Bean> matches = new ArrayList<Bean>();
+        if (id.equals(search.getId())) {
+            matches.add(search);
+        }
+        for (BeanId ref : search.getReferences()) {
+            if (ref.equals(id)) {
+                matches.add(ref.getBean());
+            }
+            matches.addAll(findReferences(id, ref.getBean()));
+        }
+        return matches;
+    }
+
+    private void merge(List<Bean> sources, Bean mergeBean) {
+        HashMap<BeanId, Bean> cache = new HashMap<BeanId, Bean>();
+        for (Bean source : sources) {
+            for (String name : mergeBean.getPropertyNames()) {
+                List<String> values = mergeBean.getValues(name);
+                if (values == null || values.size() == 0) {
+                    continue;
+                }
+                source.setProperty(name, values);
+            }
+            for (String name : mergeBean.getReferenceNames()) {
+                List<BeanId> refs = mergeBean.getReference(name);
+                if (refs == null || refs.size() == 0) {
+                    source.setReferences(name, refs);
+                    continue;
+                }
+                for (BeanId beanId : refs) {
+                    Bean bean = cache.get(beanId);
+                    if (bean == null) {
+                        bean = beanManager.getLazy(beanId);
+                        setSchema(schemaManager.getSchemas(), bean);
+                        cache.put(beanId, bean);
+                    }
+                    beanId.setBean(bean);
+                }
+                source.setReferences(name, refs);
+            }
+
+        }
     }
 
     @Override
     public void merge(Collection<Bean> beans) {
-        ArrayList<Bean> merges = new ArrayList<Bean>();
-        for (Bean bean : beans) {
-            Schema schema = schemaManager.getSchema(bean.getId().getSchemaName());
-            bean.set(schema);
-            merges.add(bean);
-        }
-        validateSchema(merges);
+        setSchema(schemaManager.getSchemas(), beans);
+        validateSchema(beans);
         // ok to not have validation manager available
         if (validationManager != null) {
-            for (Bean bean : merges) {
-                Bean source = beanManager.get(bean.getId());
-                if (source == null) {
-                    source = bean;
-                } else {
-                    setSchema(schemaManager.getSchemas(), source);
-                    merge(source, bean);
-                }
-                validationManager.validate(Arrays.asList(source));
+            for (Bean bean : beans) {
+                Map<BeanId, Bean> beansToValidate = beanManager.getBeanToValidate(bean);
+                setSchema(schemaManager.getSchemas(), beansToValidate);
+                List<Bean> refs = findReferences(bean.getId(), beansToValidate.values());
+                merge(refs, bean);
+                validationManager.validate(beansToValidate.values());
             }
         }
-        beanManager.merge(merges);
+        beanManager.merge(beans);
     }
 
     @Override
@@ -209,21 +243,6 @@ public class AdminCoreContext extends AdminContext {
         beanManager.delete(name, instances);
     }
 
-    private void initalizeMergeReferences(Bean source, Bean target) {
-        for (String name : target.getReferenceNames()) {
-            List<BeanId> values = target.getReference(name);
-            if (values == null) {
-                continue;
-            }
-            for (BeanId beanId : values) {
-                Bean ref = beanManager.get(beanId);
-                beanId.setBean(ref);
-                setSchema(schemaManager.getSchemas(), beanId.getBean());
-            }
-            source.setReferences(name, values);
-        }
-    }
-
     /**
      * Used for setting or creating a single bean.
      */
@@ -234,7 +253,7 @@ public class AdminCoreContext extends AdminContext {
                 continue;
             }
             for (BeanId beanId : values) {
-                Bean ref = beanManager.get(beanId);
+                Bean ref = beanManager.getEager(beanId);
                 beanId.setBean(ref);
                 setSchema(schemaManager.getSchemas(), beanId.getBean());
             }
@@ -261,7 +280,7 @@ public class AdminCoreContext extends AdminContext {
                     // set of beans provided by the user.
                     Bean ref = map.get(beanId);
                     if (ref == null) {
-                        ref = beanManager.get(beanId);
+                        ref = beanManager.getEager(beanId);
                     }
                     beanId.setBean(ref);
                     setSchema(schemaManager.getSchemas(), beanId.getBean());
@@ -290,18 +309,21 @@ public class AdminCoreContext extends AdminContext {
     }
 
     private void setSchema(Map<String, Schema> schemas, Bean bean) {
+        Schema s = schemas.get(bean.getId().getSchemaName());
+        if (s == null) {
+            throw CFG101_SCHEMA_NOT_EXIST(bean.getId().getSchemaName());
+        }
+        bean.set(s);
+
+        if (bean.getReferences() == null) {
+            return;
+        }
         for (BeanId id : bean.getReferences()) {
             Bean ref = id.getBean();
             if (ref != null) {
                 setSchema(schemas, ref);
             }
         }
-        Schema s = schemas.get(bean.getId().getSchemaName());
-        if (s == null) {
-            throw new UnsupportedOperationException(
-                    "Schema must always be available for any beans. This is a programming error/bug.");
-        }
-        bean.set(s);
     }
 
     private static BeanManager lookupBeanManager() {

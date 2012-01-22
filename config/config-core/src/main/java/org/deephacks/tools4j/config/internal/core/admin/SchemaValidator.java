@@ -66,7 +66,7 @@ public class SchemaValidator {
         for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
             String value = validateSingle(bean, prop);
             if (value == null) {
-                return;
+                continue;
             }
 
             try {

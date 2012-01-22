@@ -93,8 +93,11 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             Collection<Object> c = newCollection(forName(prop.getCollectionType()));
             for (BeanId beanId : beans) {
                 Bean b = beanId.getBean();
-                Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
-                c.add(beanInstance);
+                if (b != null) {
+                    String type = b.getSchema().getType();
+                    Object beanInstance = conversion.convert(b, forName(type));
+                    c.add(beanInstance);
+                }
             }
             values.put(prop.getFieldName(), c);
         }
@@ -106,8 +109,10 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             Map<Object, Object> c = newMap(forName(prop.getMapType()));
             for (BeanId beanId : beans) {
                 Bean b = beanId.getBean();
-                Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
-                c.put(beanId.getInstanceId(), beanInstance);
+                if (b != null) {
+                    Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
+                    c.put(beanId.getInstanceId(), beanInstance);
+                }
             }
             values.put(prop.getFieldName(), c);
         }

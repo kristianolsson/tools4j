@@ -323,7 +323,10 @@ public class Bean implements Serializable {
         }
         ArrayList<BeanId> result = new ArrayList<BeanId>();
         for (List<BeanId> b : references.values()) {
-            result.addAll(b);
+            if (b != null) {
+                result.addAll(b);
+            }
+
         }
         return result;
     }

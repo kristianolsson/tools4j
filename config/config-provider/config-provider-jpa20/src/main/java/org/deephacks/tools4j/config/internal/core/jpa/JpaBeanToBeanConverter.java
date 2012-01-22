@@ -26,6 +26,7 @@ public class JpaBeanToBeanConverter implements Converter<JpaBean, Bean> {
         if (source == null) {
             return null;
         }
+
         BeanId id = BeanId.create(source.getPk().id, source.getPk().schemaName);
         Bean bean = Bean.create(id);
         for (JpaRef ref : source.getReferences()) {

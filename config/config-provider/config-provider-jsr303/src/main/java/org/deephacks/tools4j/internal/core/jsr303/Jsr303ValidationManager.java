@@ -34,11 +34,14 @@ import org.deephacks.tools4j.config.spi.ValidationManager;
 import org.deephacks.tools4j.support.ServiceProvider;
 import org.deephacks.tools4j.support.conversion.Conversion;
 import org.deephacks.tools4j.support.event.AbortRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ServiceProvider(service = ValidationManager.class)
 public class Jsr303ValidationManager extends ValidationManager {
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private Conversion conversion = Conversion.get();
+    private Logger logger = LoggerFactory.getLogger(Jsr303ValidationManager.class);
 
     @Override
     public void register(String schemaName, Class<?> clazz) throws AbortRuntimeException {
@@ -59,6 +62,7 @@ public class Jsr303ValidationManager extends ValidationManager {
             for (Bean bean : beans) {
                 Class genclazz = forName(bean.getSchema().getType());
                 Object beanToValidate = conversion.convert(bean, genclazz);
+                logger.info("Validating {}", beanToValidate);
                 Set<ConstraintViolation<Object>> violations = validator.validate(beanToValidate);
                 String msg = "";
                 for (ConstraintViolation<Object> v : violations) {

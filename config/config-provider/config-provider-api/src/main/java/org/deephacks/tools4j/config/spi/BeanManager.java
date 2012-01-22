@@ -176,7 +176,34 @@ public abstract class BeanManager implements Serializable {
      * recover from a certain event and must therefore abort execution, see 
      * {@link org.deephacks.tools4j.config.model.Events}. 
      */
-    public abstract Bean get(BeanId id) throws AbortRuntimeException;
+    public abstract Bean getEager(BeanId id) throws AbortRuntimeException;
+
+    /**
+     * <p>
+     * Get a specific instance of a particular schema type. 
+     * </p>
+     * <p>
+     * Beans will have their basic properties and all 
+     * references initialized, but not traversed and fetched eagerly.
+     * </p>
+     * @param id
+     * @return Bean
+     * @throws AbortRuntimeException
+     */
+    public abstract Bean getLazy(BeanId id) throws AbortRuntimeException;
+
+    /**
+     * <p>
+     * Bean Manager is responsible for fetching the beans that are to validated when changes
+     * are made to specific bean instance. The list should contain all the beans that are to 
+     * be validated. The bean manager is free to return all or a subset of beans. 
+     * </p>
+     *
+     * @param id targeted bean.
+     * @return Instances to validate.
+     * @throws AbortRuntimeException
+     */
+    public abstract Map<BeanId, Bean> getBeanToValidate(Bean bean) throws AbortRuntimeException;
 
     /**
      * Get a singleton instance for a particular schema.

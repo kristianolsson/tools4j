@@ -16,8 +16,9 @@ package org.deephacks.tools4j.config.internal.core.jpa;
 import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator.translateDelete;
 import static org.deephacks.tools4j.config.internal.core.jpa.ExceptionTranslator.translateMerge;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.deleteJpaBean;
-import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBean;
+import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findEagerJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findJpaBeans;
+import static org.deephacks.tools4j.config.internal.core.jpa.JpaBean.findLazyJpaBean;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaBeanSingleton.isJpaBeanSingleton;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperties;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperty;
@@ -37,8 +38,10 @@ import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.rol
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.deephacks.tools4j.config.model.Bean;
 import org.deephacks.tools4j.config.model.Bean.BeanId;
@@ -109,7 +112,7 @@ public class Jpa20BeanManager extends BeanManager {
     public void createSingleton(BeanId singleton) {
         try {
             begin();
-            JpaBean jpaBean = findJpaBean(singleton);
+            JpaBean jpaBean = findEagerJpaBean(singleton);
             if (jpaBean != null) {
                 // return silently.
                 return;
@@ -152,7 +155,7 @@ public class Jpa20BeanManager extends BeanManager {
     }
 
     private JpaBean createJpaBean(Bean bean) {
-        JpaBean jpaBean = findJpaBean(bean.getId());
+        JpaBean jpaBean = findEagerJpaBean(bean.getId());
         if (jpaBean != null) {
             throw CFG303_BEAN_ALREADY_EXIST(bean.getId());
         }
@@ -169,7 +172,7 @@ public class Jpa20BeanManager extends BeanManager {
                 continue;
             }
             for (BeanId id : refs) {
-                JpaBean target = findJpaBean(id);
+                JpaBean target = findEagerJpaBean(id);
                 if (target == null) {
                     throw CFG301_MISSING_RUNTIME_REF(bean.getId(), id);
                 }
@@ -257,15 +260,84 @@ public class Jpa20BeanManager extends BeanManager {
     }
 
     @Override
-    public Bean get(BeanId id) {
+    public Bean getEager(BeanId id) {
         try {
             begin();
-            JpaBean bean = findJpaBean(id);
+            JpaBean bean = findEagerJpaBean(id);
             if (bean == null) {
                 throw CFG304_BEAN_DOESNT_EXIST(id);
             }
             commit();
             return conversion.convert(bean, Bean.class);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public Bean getLazy(BeanId id) throws AbortRuntimeException {
+        try {
+            begin();
+            JpaBean bean = findLazyJpaBean(id);
+            if (bean == null) {
+                throw CFG304_BEAN_DOESNT_EXIST(id);
+            }
+            commit();
+            return conversion.convert(bean, Bean.class);
+        } catch (Throwable e) {
+            rollback();
+            throw e;
+        }
+    }
+
+    /**
+     * <p>
+     * Get a specific instance of a particular schema type with its basic properties initialized. 
+     * </p>
+     * 
+     * <p>
+     * The direct, but no further, successors that references this bean will also be 
+     * fetched and initalized with their direct, but no further, predecessors.
+     * </p>
+     * Fetching 1.1.2 in the example below will also fetch its successors 1.1.2.1, 1.1.2.2, but 
+     * not 1.1.2.1.1, 1.1.2.1.2. Also its predecessor 1.1 and its direct successors 1.1.1, 1.1.3, but not
+     * 1.1.3.1. 
+     * <pre>
+     *
+     * 1
+     * |-- 1.1
+     * |   |-- 1.1.1
+     * |   |-- 1.1.2
+     * |   |   |-- 1.1.2.1
+     * |   |   |   |-- 1.1.2.1.1
+     * |   |   |   `-- 1.1.2.1.2
+     * |   |   `-- 1.1.2.2
+     * |   `-- 1.1.3
+     * |       `-- 1.1.3.1
+     * |-- 1.2
+     * |   |-- 1.2.1
+     * |   |   |-- 1.2.1.1
+     * |   |   `-- 1.2.1.2
+     * |   `-- 1.2.1
+     * `-- 1.3
+     * `-- 1.4
+     *  </pre>
+     * @see <a href="http://en.wikipedia.org/wiki/Graph_%28mathematics%29#Directed_graph">Directed graph</a> 
+     * @param id targeted bean.
+     */
+
+    @Override
+    public Map<BeanId, Bean> getBeanToValidate(Bean bean) throws AbortRuntimeException {
+        try {
+            begin();
+            Set<JpaBean> beansToValidate = JpaBean.getBeanToValidate(bean);
+            commit();
+            Map<BeanId, Bean> beans = new HashMap<BeanId, Bean>();
+            for (Bean b : conversion.convert(beansToValidate, Bean.class)) {
+                beans.put(b.getId(), b);
+            }
+            return beans;
         } catch (Throwable e) {
             rollback();
             throw e;
@@ -320,7 +392,7 @@ public class Jpa20BeanManager extends BeanManager {
     }
 
     private void mergeJpaBean(Bean bean) {
-        JpaBean stored = findJpaBean(bean.getId());
+        JpaBean stored = findEagerJpaBean(bean.getId());
         if (stored == null) {
             throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
         }
@@ -337,7 +409,7 @@ public class Jpa20BeanManager extends BeanManager {
                 continue;
             }
             for (BeanId beanId : refs) {
-                JpaBean target = findJpaBean(beanId);
+                JpaBean target = findEagerJpaBean(beanId);
                 if (target == null) {
                     throw CFG301_MISSING_RUNTIME_REF(bean.getId(), beanId);
                 }
@@ -387,7 +459,7 @@ public class Jpa20BeanManager extends BeanManager {
     }
 
     private void setJpaBean(Bean bean) {
-        JpaBean stored = findJpaBean(bean.getId());
+        JpaBean stored = findEagerJpaBean(bean.getId());
         if (stored == null) {
             throw CFG304_BEAN_DOESNT_EXIST(bean.getId());
         }

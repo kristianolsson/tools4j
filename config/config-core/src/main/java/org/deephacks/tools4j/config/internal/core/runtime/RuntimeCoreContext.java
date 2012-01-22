@@ -88,7 +88,7 @@ public class RuntimeCoreContext extends RuntimeContext {
         Schema schema = conversion.convert(configurable, Schema.class);
         BeanId singleton = getSingletonId(schema, configurable);
         Map<String, Schema> schemas = schemaManager.getSchemas();
-        Bean bean = beanManager.get(singleton);
+        Bean bean = beanManager.getEager(singleton);
         bean.set(schema);
         setSingletonReferences(bean, schemas);
         return conversion.convert(bean, configurable);
@@ -111,7 +111,7 @@ public class RuntimeCoreContext extends RuntimeContext {
         Schema s = schemaManager.getSchema(clazz.getAnnotation(Config.class).name());
         Map<String, Schema> schemas = schemaManager.getSchemas();
         BeanId beanId = BeanId.create(id, s.getName());
-        Bean bean = beanManager.get(beanId);
+        Bean bean = beanManager.getEager(beanId);
         if (bean == null) {
             throw Events.CFG304_BEAN_DOESNT_EXIST(beanId);
         }

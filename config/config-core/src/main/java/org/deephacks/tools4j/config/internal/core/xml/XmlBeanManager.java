@@ -63,7 +63,7 @@ public class XmlBeanManager extends BeanManager {
     private static final long serialVersionUID = -4292817727054404604L;
 
     @Override
-    public Bean get(BeanId id) {
+    public Bean getEager(BeanId id) {
         List<Bean> all = readValues();
         Bean bean = getEagerly(id, all);
         if (bean == null) {
@@ -94,6 +94,27 @@ public class XmlBeanManager extends BeanManager {
             }
         }
         return result;
+    }
+
+    @Override
+    public Bean getLazy(BeanId id) throws AbortRuntimeException {
+        List<Bean> all = readValues();
+        Bean result = null;
+        for (Bean b : all) {
+            if (b.getId().equals(id)) {
+                result = b;
+                break;
+            }
+        }
+        if (result == null) {
+            throw CFG304_BEAN_DOESNT_EXIST(id);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<BeanId, Bean> getBeanToValidate(Bean bean) throws AbortRuntimeException {
+        return new HashMap<BeanId, Bean>();
     }
 
     @Override
@@ -464,4 +485,5 @@ public class XmlBeanManager extends BeanManager {
         }
         return false;
     }
+
 }

@@ -60,21 +60,28 @@ public class JpaBean implements Serializable {
     protected static final String FIND_BEAN_FROM_BEANID = "SELECT DISTINCT e FROM JpaBean e WHERE e.pk.id = ?1 AND e.pk.schemaName= ?2";
     protected static final String FIND_BEAN_FROM_BEANID_NAME = "FIND_BEAN_FROM_BEANID_NAME";
 
-    public static JpaBean findJpaBean(BeanId id) {
-        Query query = getEm().createNamedQuery(FIND_BEAN_FROM_BEANID_NAME);
-        query.setParameter(1, id.getInstanceId());
-        query.setParameter(2, id.getSchemaName());
-        JpaBean bean;
-        try {
-            bean = (JpaBean) query.getSingleResult();
-        } catch (NoResultException e) {
+    public static JpaBean findEagerJpaBean(BeanId id) {
+        JpaBean bean = getJpaBeanAndProperties(id);
+        if (bean == null) {
             return null;
         }
-        List<JpaProperty> props = JpaProperty.findProperties(bean.getId());
-        bean.properties.addAll(props);
         List<JpaRef> refs = JpaRef.findReferences(bean.getId());
         for (JpaRef jpaRef : refs) {
-            JpaBean target = findJpaBean(jpaRef.getTarget());
+            JpaBean target = findEagerJpaBean(jpaRef.getTarget());
+            jpaRef.setTargetBean(target);
+        }
+        bean.references.addAll(refs);
+        return bean;
+    }
+
+    public static JpaBean findLazyJpaBean(BeanId id) {
+        JpaBean bean = getJpaBeanAndProperties(id);
+        if (bean == null) {
+            return null;
+        }
+        List<JpaRef> refs = JpaRef.findReferences(bean.getId());
+        for (JpaRef jpaRef : refs) {
+            JpaBean target = getJpaBeanAndProperties(jpaRef.getTarget());
             jpaRef.setTargetBean(target);
         }
         bean.references.addAll(refs);
@@ -94,12 +101,59 @@ public class JpaBean implements Serializable {
             bean.properties.addAll(props);
             List<JpaRef> refs = JpaRef.findReferences(bean.getId());
             for (JpaRef jpaRef : refs) {
-                JpaBean target = findJpaBean(jpaRef.getTarget());
+                JpaBean target = findEagerJpaBean(jpaRef.getTarget());
                 jpaRef.setTargetBean(target);
             }
             bean.references.addAll(refs);
         }
         return beans;
+    }
+
+    /**
+     * Will return the target bean and its direct predecessors for validation
+     */
+    @SuppressWarnings("unchecked")
+    public static Set<JpaBean> getBeanToValidate(Bean targetBean) {
+        Set<JpaBean> beansToValidate = new HashSet<JpaBean>();
+        List<JpaRef> targetPredecessors = JpaRef.getDirectPredecessors(targetBean.getId());
+        // predecessors of target
+        for (JpaRef targetPredecessorRef : targetPredecessors) {
+            JpaBean targetPredecessor = getJpaBeanAndProperties(targetPredecessorRef.getSource());
+            initReferences(targetPredecessor, 2);
+            beansToValidate.add(targetPredecessor);
+        }
+        JpaBean target = getJpaBeanAndProperties(targetBean.getId());
+        initReferences(target, 2);
+        beansToValidate.add(target);
+        return beansToValidate;
+    }
+
+    private static void initReferences(JpaBean bean, int successors) {
+        if (--successors < 0) {
+            return;
+        }
+        List<JpaRef> refs = JpaRef.findReferences(bean.getId());
+        for (JpaRef ref : refs) {
+            JpaBean refBean = getJpaBeanAndProperties(ref.getTarget());
+            ref.setTargetBean(refBean);
+            bean.references.add(ref);
+            initReferences(refBean, successors);
+        }
+    }
+
+    private static JpaBean getJpaBeanAndProperties(BeanId id) {
+        Query query = getEm().createNamedQuery(FIND_BEAN_FROM_BEANID_NAME);
+        query.setParameter(1, id.getInstanceId());
+        query.setParameter(2, id.getSchemaName());
+        JpaBean bean;
+        try {
+            bean = (JpaBean) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+        List<JpaProperty> props = JpaProperty.findProperties(bean.getId());
+        bean.properties.addAll(props);
+        return bean;
     }
 
     protected static final String DELETE_BEAN_USING_BEANID = "DELETE FROM JpaBean e WHERE e.pk.id = ?1 AND e.pk.schemaName= ?2";

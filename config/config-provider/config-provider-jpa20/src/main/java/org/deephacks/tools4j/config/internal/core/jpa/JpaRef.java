@@ -40,7 +40,9 @@ import com.google.common.base.Objects;
                 query = JpaRef.DELETE_REF_USING_BEANID),
         @NamedQuery(name = JpaRef.DELETE_REF_USING_PROPNAME_NAME,
                 query = JpaRef.DELETE_REF_USING_PROPNAME),
-        @NamedQuery(name = JpaRef.FIND_REFS_FOR_BEAN_NAME, query = JpaRef.FIND_REFS_FOR_BEAN) })
+        @NamedQuery(name = JpaRef.FIND_REFS_FOR_BEAN_NAME, query = JpaRef.FIND_REFS_FOR_BEAN),
+        @NamedQuery(name = JpaRef.FIND_PREDECESSORS_FOR_BEAN_NAME,
+                query = JpaRef.FIND_PREDECESSORS_FOR_BEAN) })
 public class JpaRef implements Serializable {
 
     private static final long serialVersionUID = -3528959706883881047L;
@@ -49,16 +51,16 @@ public class JpaRef implements Serializable {
     @Column(name = "UUID")
     String id;
 
-    @Column(name = "FK_BEAN_ID", nullable = false)
+    @Column(name = "FK_SOURCE_BEAN_ID", nullable = false)
     protected String sourceId;
 
-    @Column(name = "FK_BEAN_SCHEMA_NAME", nullable = false)
+    @Column(name = "FK_SOURCE_BEAN_SCHEMA_NAME", nullable = false)
     protected String sourceSchemaName;
 
-    @Column(name = "FK_REF_BEAN_ID", nullable = false)
+    @Column(name = "FK_TARGET_BEAN_ID", nullable = false)
     protected String targetId;
 
-    @Column(name = "FK_REF_BEAN_SCHEMA_NAME", nullable = false)
+    @Column(name = "FK_TARGET_BEAN_SCHEMA_NAME", nullable = false)
     protected String targetSchemaName;
 
     @Column(name = "PROP_NAME")
@@ -93,6 +95,18 @@ public class JpaRef implements Serializable {
     @SuppressWarnings("unchecked")
     public static List<JpaRef> findReferences(BeanId id) {
         Query query = getEm().createNamedQuery(FIND_REFS_FOR_BEAN_NAME);
+        query.setParameter(1, id.getInstanceId());
+        query.setParameter(2, id.getSchemaName());
+        List<JpaRef> result = (List<JpaRef>) query.getResultList();
+        return result;
+    }
+
+    protected static final String FIND_PREDECESSORS_FOR_BEAN = "SELECT e FROM JpaRef e WHERE e.targetId= ?1 AND e.targetSchemaName= ?2";
+    protected static final String FIND_PREDECESSORS_FOR_BEAN_NAME = "FIND_PREDECESSORS_FOR_BEAN_NAME";
+
+    @SuppressWarnings("unchecked")
+    public static List<JpaRef> getDirectPredecessors(BeanId id) {
+        Query query = getEm().createNamedQuery(FIND_PREDECESSORS_FOR_BEAN_NAME);
         query.setParameter(1, id.getInstanceId());
         query.setParameter(2, id.getSchemaName());
         return (List<JpaRef>) query.getResultList();
@@ -144,6 +158,13 @@ public class JpaRef implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(JpaRef.class)
+                .add("source", sourceId + "@" + sourceSchemaName)
+                .add("target", targetId + "@" + targetSchemaName).toString();
     }
 
     public void setTargetBean(JpaBean target) {

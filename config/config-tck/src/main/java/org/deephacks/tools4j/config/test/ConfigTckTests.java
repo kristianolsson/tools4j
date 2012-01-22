@@ -17,6 +17,7 @@ import static org.deephacks.tools4j.config.model.Events.CFG101;
 import static org.deephacks.tools4j.config.model.Events.CFG105;
 import static org.deephacks.tools4j.config.model.Events.CFG106;
 import static org.deephacks.tools4j.config.model.Events.CFG110;
+import static org.deephacks.tools4j.config.model.Events.CFG111;
 import static org.deephacks.tools4j.config.model.Events.CFG301;
 import static org.deephacks.tools4j.config.model.Events.CFG302;
 import static org.deephacks.tools4j.config.model.Events.CFG304;
@@ -101,7 +102,7 @@ public abstract class ConfigTckTests extends ConfigDefaultSetup {
             admin.create(bean);
             fail("Not possible to set property names that does not exist in schema");
         } catch (AbortRuntimeException e) {
-            assertThat(e.getEvent().getCode(), is(CFG110));
+            assertThat(e.getEvent().getCode(), is(CFG111));
         }
         bean = Bean.create(c1.getId());
         bean.addProperty("non_existing", "bogus");

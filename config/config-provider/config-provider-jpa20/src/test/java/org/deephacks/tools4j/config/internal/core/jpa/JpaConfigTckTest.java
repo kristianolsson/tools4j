@@ -317,7 +317,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
      * Port configuration is not supported at the moment in order to have
      * simple and unified configuration for all databases. 
      */
-    private static class Database {
+    public static class Database {
         /**
          * Properties for test databases kept in tools4j for configuration. 
          */
@@ -342,7 +342,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
         private String installDdl;
         private String uninstallDdl;
 
-        private Database(String dbProvider) {
+        public Database(String dbProvider) {
             this.dbProvider = dbProvider;
             this.installDdl = MessageFormat.format(INSTALL_DDL, dbProvider);
             this.uninstallDdl = MessageFormat.format(UNINSTALL_DDL, dbProvider);

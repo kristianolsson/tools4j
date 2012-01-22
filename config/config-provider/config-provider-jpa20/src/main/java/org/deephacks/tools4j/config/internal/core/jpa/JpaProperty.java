@@ -14,6 +14,7 @@
 package org.deephacks.tools4j.config.internal.core.jpa;
 
 import static com.google.common.base.Objects.equal;
+import static com.google.common.base.Objects.toStringHelper;
 import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.getEm;
 
 import java.io.Serializable;
@@ -136,5 +137,11 @@ public class JpaProperty implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(uuid);
+    }
+
+    @Override
+    public String toString() {
+        return toStringHelper(JpaProperty.class).add("propertyName", getPropertyName())
+                .add("value", getValue()).toString();
     }
 }

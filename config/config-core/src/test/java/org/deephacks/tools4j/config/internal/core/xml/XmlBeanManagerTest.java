@@ -41,7 +41,7 @@ public class XmlBeanManagerTest {
         List<Bean> beans = generateBeans(2, 2);
         manager.create(beans);
         for (Bean b : beans) {
-            Bean r = manager.get(b.getId());
+            Bean r = manager.getEager(b.getId());
             assertThat(r, is(b));
         }
 
@@ -55,7 +55,7 @@ public class XmlBeanManagerTest {
         }
 
         for (Bean b : beans) {
-            Bean r = manager.get(b.getId());
+            Bean r = manager.getEager(b.getId());
             assertThat(r, is(b));
         }
     }
@@ -82,7 +82,7 @@ public class XmlBeanManagerTest {
         manager.create(grandparent);
 
         // query parent and see if bean reference got fetched.
-        Bean grandpa = manager.get(grandParentId);
+        Bean grandpa = manager.getEager(grandParentId);
 
         List<String> childs = grandpa.getReferenceNames();
         assertThat(childs.size(), is(1));
