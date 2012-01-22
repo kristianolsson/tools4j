@@ -17,6 +17,7 @@ import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Objects.toStringHelper;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaProperty.deleteProperties;
 import static org.deephacks.tools4j.config.internal.core.jpa.JpaRef.deleteReferences;
+import static org.deephacks.tools4j.config.model.Events.CFG304_BEAN_DOESNT_EXIST;
 import static org.deephacks.tools4j.support.web.jpa.ThreadLocalEntityManager.getEm;
 
 import java.io.Serializable;
@@ -123,6 +124,9 @@ public class JpaBean implements Serializable {
             beansToValidate.add(targetPredecessor);
         }
         JpaBean target = getJpaBeanAndProperties(targetBean.getId());
+        if (target == null) {
+            throw CFG304_BEAN_DOESNT_EXIST(targetBean.getId());
+        }
         initReferences(target, 2);
         beansToValidate.add(target);
         return beansToValidate;
@@ -135,6 +139,9 @@ public class JpaBean implements Serializable {
         List<JpaRef> refs = JpaRef.findReferences(bean.getId());
         for (JpaRef ref : refs) {
             JpaBean refBean = getJpaBeanAndProperties(ref.getTarget());
+            if (refBean == null) {
+                throw CFG304_BEAN_DOESNT_EXIST(ref.getTarget());
+            }
             ref.setTargetBean(refBean);
             bean.references.add(ref);
             initReferences(refBean, successors);

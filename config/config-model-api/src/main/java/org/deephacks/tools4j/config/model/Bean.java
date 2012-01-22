@@ -378,6 +378,14 @@ public class Bean implements Serializable {
         return refrences.get(0);
     }
 
+    /**
+     * Clears this bean from all properties and references.
+     */
+    public void clear() {
+        properties.clear();
+        references.clear();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
