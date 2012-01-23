@@ -12,7 +12,7 @@
   <name>Tools4j Config CLI Admin</name>
   <description>CLI for Tools4j Config Admin</description>
   <version>${version.tools4j.config}</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <dependencies>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
