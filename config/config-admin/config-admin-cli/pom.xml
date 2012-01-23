@@ -8,27 +8,31 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>config-admin-ear</artifactId>
-  <name>Tools4j Config Admin Ear</name>
-  <description>Ear of Tools4j Config Admin</description>
+  <artifactId>config-admin-cli</artifactId>
+  <name>Tools4j Config CLI Admin</name>
+  <description>CLI for Tools4j Config Admin</description>
   <version>${version.tools4j.config}</version>
-  <packaging>ear</packaging>
+  <packaging>war</packaging>
   <dependencies>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
-      <artifactId>support-jse</artifactId>
+      <artifactId>config-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
-      <artifactId>config-admin-api</artifactId>
+      <artifactId>config-provider-jpa20</artifactId>
     </dependency>
     <dependency>
       <groupId>org.deephacks.tools4j</groupId>
-      <artifactId>config-provider-api</artifactId>
+      <artifactId>config-provider-jsr303</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>support-test</artifactId>
     </dependency>
   </dependencies>
 </project>

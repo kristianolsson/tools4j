@@ -15,7 +15,6 @@
     <module>config-admin-api</module>
     <module>config-admin-jsf20</module>
     <module>config-admin-rest</module>
-    <module>config-admin-ear</module>
   </modules>
 
   <dependencies>
