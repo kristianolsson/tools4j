@@ -4,15 +4,63 @@
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.deephacks.tools4j</groupId>
-  <artifactId>root</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>config-admin-rcp-root</artifactId>
+  <version>1</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>config-admin-rcp-bundle</module>
     <module>config-admin-rcp-feature</module>
     <module>config-admin-rcp-product</module>
-    <module>config-admin-rcp-parent</module>
   </modules>
 
+  <properties>
+    <tycho-version>0.13.0</tycho-version>
+  </properties>
+  <repositories>
+    <!-- configure p2 repository to resolve against -->
+    <repository>
+      <id>indigo</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/releases/indigo</url>
+      <!-- file URL for faster and offline builds -->
+      <!-- <url>file:/${basedir}/../../helios-rcp/</url> -->
+    </repository>
+    <!-- SWTbot is not part of the helios update site -->
+    <repository>
+      <id>swtbot</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site/</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- enable tycho build extension -->
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+      </plugin>
+      <!-- enable source bundle generation -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

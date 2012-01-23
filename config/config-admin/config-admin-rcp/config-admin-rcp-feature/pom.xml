@@ -4,10 +4,9 @@
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>config-admin-rcp-parent</artifactId>
     <groupId>org.deephacks.tools4j</groupId>
-    <version>0.0.1</version>
-    <relativePath>../config-admin-rcp-parent/pom.xml</relativePath>
+    <artifactId>config-admin-rcp-root</artifactId>
+    <version>1</version>
   </parent>
   <groupId>org.deephacks.tools4j</groupId>
   <artifactId>config-admin-rcp-feature</artifactId>
