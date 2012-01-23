@@ -53,7 +53,17 @@ public class MarriageValidator implements ConstraintValidator<MarriageConstraint
             return false;
         }
         /**
-         * children must have same lastname as both partents
+         * female must have same lastname as male
+         */
+        if (!male.getLastName().equals(female.getLastName())) {
+            context.buildConstraintViolationWithTemplate(
+                    "female [" + female + "] lastname is not same as man [" + male + "]")
+                    .addConstraintViolation();
+            return false;
+        }
+
+        /**
+         * children must have same lastname as father
          */
         for (Person child : marriage.getChildren()) {
             if (!male.lastName.equals(child.lastName)) {
@@ -63,21 +73,6 @@ public class MarriageValidator implements ConstraintValidator<MarriageConstraint
 
                 return false;
             }
-            if (!female.lastName.equals(child.lastName)) {
-                context.buildConstraintViolationWithTemplate(
-                        "child [" + child + "] have lastname not matching mom ["
-                                + marriage.getFemale() + "]").addConstraintViolation();
-                return false;
-            }
-        }
-        /**
-         * female must have same lastname as male
-         */
-        if (!male.getLastName().equals(female.getLastName())) {
-            context.buildConstraintViolationWithTemplate(
-                    "female [" + female + "] lastname is not same as man [" + male + "]")
-                    .addConstraintViolation();
-            return false;
         }
         /**
          * children in marriage must also belong to male
