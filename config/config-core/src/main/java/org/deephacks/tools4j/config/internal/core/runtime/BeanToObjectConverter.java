@@ -13,6 +13,7 @@
  */
 package org.deephacks.tools4j.config.internal.core.runtime;
 
+import static org.deephacks.tools4j.support.reflections.Reflections.findFields;
 import static org.deephacks.tools4j.support.reflections.Reflections.forName;
 
 import java.lang.annotation.Annotation;
@@ -127,7 +128,8 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
     }
 
     private static String getIdField(Class<?> clazz) {
-        for (Field field : clazz.getDeclaredFields()) {
+        for (Field field : findFields(clazz)) {
+            field.setAccessible(true);
             Annotation annotation = field.getAnnotation(Id.class);
             if (annotation != null) {
                 return field.getName();
