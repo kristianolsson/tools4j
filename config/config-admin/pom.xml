@@ -13,7 +13,7 @@
 
   <modules>
     <module>config-admin-api</module>
-    <module>config-admin-gui</module>
+    <module>config-admin-jsf20</module>
     <module>config-admin-rest</module>
     <module>config-admin-ear</module>
   </modules>
