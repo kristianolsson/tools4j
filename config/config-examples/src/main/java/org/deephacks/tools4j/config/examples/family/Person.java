@@ -21,6 +21,12 @@ import javax.validation.constraints.NotNull;
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 
+/**
+ * A recursive example of a family tree. 
+ * 
+ * See the parent-child.png for an illustration of the potential realtionship 
+ * between marriage and persons.
+ */
 @Config(desc = "Users", name = "Person")
 public class Person extends AbstractPerson {
     @Id(desc = "id")

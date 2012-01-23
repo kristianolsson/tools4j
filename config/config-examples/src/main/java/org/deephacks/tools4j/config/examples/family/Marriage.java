@@ -22,6 +22,12 @@ import javax.validation.constraints.Size;
 import org.deephacks.tools4j.config.Config;
 import org.deephacks.tools4j.config.Id;
 
+/**
+ * A recursive example of a family tree. 
+ * 
+ * See the parent-child.png for an illustration of the potential realtionship 
+ * between marriage and persons.
+ */
 @Config(desc = "A marriage between two people.", name = "Marriage")
 @MarriageConstraint
 public class Marriage {

@@ -70,7 +70,6 @@ public class MarriageValidator implements ConstraintValidator<MarriageConstraint
                 context.buildConstraintViolationWithTemplate(
                         "child [" + child + "] have lastname not matching dad ["
                                 + marriage.getMale() + "]").addConstraintViolation();
-
                 return false;
             }
         }
