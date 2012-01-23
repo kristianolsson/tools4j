@@ -23,7 +23,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="config-admin-rcp-application"
+            application="config-admin-rcp-bundle.application"
             name="Config Admin RCP">
          <property
                name="appName"
