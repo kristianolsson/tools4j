@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>config-admin-rcp-parent</artifactId>
     <groupId>org.deephacks.tools4j</groupId>
-    <version>0.0.1</version>
-    <relativePath>../config-admin-rcp-parent/pom.xml</relativePath>
+    <artifactId>config-admin-rcp-root</artifactId>
+    <version>1</version>
   </parent>
   <groupId>org.deephacks.tools4j</groupId>
   <artifactId>config-admin-rcp-product</artifactId>
@@ -24,8 +23,8 @@
         <version>${tycho-version}</version>
         <executions>
           <execution>
-            <!-- install the product for all configured os/ws/arch environments 
-              using p2 director -->
+            <!-- install the product for all configured os/ws/arch environments
+                 using p2 director -->
             <id>materialize-products</id>
             <goals>
               <goal>materialize-products</goal>
@@ -62,11 +61,11 @@
             </goals>
             <configuration>
               <outputDirectory>${project.build.directory}/products/${product-id}/icons/</outputDirectory>
-		          <nonFilteredFileExtensions>
-		            <nonFilteredFileExtension>ico</nonFilteredFileExtension>
-		            <nonFilteredFileExtension>xpm</nonFilteredFileExtension>
-		          </nonFilteredFileExtensions>
-	        		<resources>
+              <nonFilteredFileExtensions>
+                <nonFilteredFileExtension>ico</nonFilteredFileExtension>
+                <nonFilteredFileExtension>xpm</nonFilteredFileExtension>
+              </nonFilteredFileExtensions>
+              <resources>
                 <resource>
                   <directory>icons</directory>
                 </resource>
