@@ -26,91 +26,83 @@ public class MarriageValidator implements ConstraintValidator<MarriageConstraint
 
     @Override
     public boolean isValid(Marriage marriage, ConstraintValidatorContext context) {
+        /**
+         * marriage must consist of a couple
+         */
         if (marriage.getCouple() == null || marriage.getCouple().size() != 2) {
             context.buildConstraintViolationWithTemplate("marriage must be between two pepole")
                     .addConstraintViolation();
             return false;
         }
+        /**
+         * one male required in marriage
+         */
         Person male = marriage.getMale();
         if (male == null) {
             context.buildConstraintViolationWithTemplate("no male in marriage")
                     .addConstraintViolation();
             return false;
         }
+        /**
+         * one female required in marriage
+         */
         Person female = marriage.getFemale();
         if (female == null) {
             context.buildConstraintViolationWithTemplate("no female in marriage")
                     .addConstraintViolation();
             return false;
         }
-
-        if (!validwifeLastname(marriage, context)) {
-            return false;
-        }
-        if (!validChildrenLastname(marriage, context)) {
-            return false;
-        }
-        if (!consistentChildren(marriage, context)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean validwifeLastname(Marriage m, ConstraintValidatorContext context) {
-        if (!m.getMale().getLastName().equals(m.getFemale().getLastName())) {
-            context.buildConstraintViolationWithTemplate(
-                    "female [" + m.getFemale() + "] lastname is not same as man [" + m.getMale()
-                            + "]").addConstraintViolation();
-
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validChildrenLastname(Marriage marriage, ConstraintValidatorContext context) {
+        /**
+         * children must have same lastname as both partents
+         */
         for (Person child : marriage.getChildren()) {
-            if (!validChildLastname(marriage.getMale(), child)) {
+            if (!male.lastName.equals(child.lastName)) {
                 context.buildConstraintViolationWithTemplate(
                         "child [" + child + "] have lastname not matching dad ["
                                 + marriage.getMale() + "]").addConstraintViolation();
 
                 return false;
             }
-            if (!validChildLastname(marriage.getFemale(), child)) {
+            if (!female.lastName.equals(child.lastName)) {
                 context.buildConstraintViolationWithTemplate(
                         "child [" + child + "] have lastname not matching mom ["
                                 + marriage.getFemale() + "]").addConstraintViolation();
                 return false;
             }
         }
+        /**
+         * female must have same lastname as male
+         */
+        if (!male.getLastName().equals(female.getLastName())) {
+            context.buildConstraintViolationWithTemplate(
+                    "female [" + female + "] lastname is not same as man [" + male + "]")
+                    .addConstraintViolation();
+            return false;
+        }
+        /**
+         * children in marriage must also belong to male
+         */
+        if (!consistentChildren(male, marriage.getChildren())) {
+            context.buildConstraintViolationWithTemplate(
+                    "Male [" + male + "] does not have same children as marriage.")
+                    .addConstraintViolation();
+            return false;
+        }
+        /**
+         * children in marriage must also belong to female
+         */
+        if (!consistentChildren(female, marriage.getChildren())) {
+            context.buildConstraintViolationWithTemplate(
+                    "Female [" + female + "] does not have same children as marriage.")
+                    .addConstraintViolation();
+            return false;
+        }
+
         return true;
     }
 
-    private boolean validChildLastname(Person parent, Person child) {
-        if (!parent.lastName.equals(child.lastName)) {
-            return false;
-        }
-        return true;
-
-    }
-
-    private boolean consistentChildren(Marriage m, ConstraintValidatorContext context) {
-        List<Person> marriageChildren = m.getChildren();
-        List<Person> personChildren = m.getMale().getChildren();
-
-        if (!personChildren.containsAll(marriageChildren)) {
-            context.buildConstraintViolationWithTemplate(
-                    "Male [" + m.getMale() + "] does not have same children as marriage.")
-                    .addConstraintViolation();
-
-            return false;
-        }
-        personChildren = m.getFemale().getChildren();
-        if (!personChildren.containsAll(marriageChildren)) {
-            context.buildConstraintViolationWithTemplate(
-                    "Female [" + m.getFemale() + "] does not have same children as marriage.")
-                    .addConstraintViolation();
+    public boolean consistentChildren(Person p, List<Person> marriageChildren) {
+        if (!p.getChildren().containsAll(marriageChildren)) {
             return false;
         }
         return true;
