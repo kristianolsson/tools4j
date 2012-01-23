@@ -7,7 +7,7 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="tychodemo.Application">
+               class="org.deephacks.tools4j.config.admin.rcp.Application">
          </run>
       </application>
    </extension>
@@ -15,8 +15,8 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="RCP Perspective"
-            class="tychodemo.Perspective"
-            id="tychodemo.perspective">
+            class="org.deephacks.tools4j.config.admin.rcp.Perspective"
+            id="config-admin-rcp.perspective">
       </perspective>
    </extension>
    <extension

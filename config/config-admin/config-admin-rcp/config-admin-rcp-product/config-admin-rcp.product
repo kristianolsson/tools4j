@@ -15,7 +15,7 @@
    <windowImages i16="icons/alt_window_16.gif" i32="icons/alt_window_32.gif"/>
 
    <splash
-      location="tychodemo.bundle"
+      location="config-admin-rcp-bundle"
       startupProgressRect="0,280,455,15"
       startupMessageRect="7,220,441,20"
       startupForegroundColor="FFFFFF" />

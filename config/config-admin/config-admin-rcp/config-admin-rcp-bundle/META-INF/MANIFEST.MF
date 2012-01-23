@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: config-admin-rcp-bundle
 Bundle-SymbolicName: config-admin-rcp-bundle;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: tychodemo.Activator
+Bundle-Activator: org.deephacks.tools4j.config.admin.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy

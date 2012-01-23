@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.deephacks.tools4j.config.admin.rcp"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "config-admin-rcp";
 
     // The shared instance
     private static Activator plugin;
@@ -27,7 +27,6 @@ public class Activator extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        System.out.println("Hello");
         plugin = this;
     }
 
