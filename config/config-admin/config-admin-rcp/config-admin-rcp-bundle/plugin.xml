@@ -4,20 +4,13 @@
 
    <extension
          id="application"
+         name="application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
                class="org.deephacks.tools4j.config.admin.rcp.Application">
          </run>
       </application>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            name="RCP Perspective"
-            class="org.deephacks.tools4j.config.admin.rcp.Perspective"
-            id="config-admin-rcp.perspective">
-      </perspective>
    </extension>
    <extension
          id="product"
@@ -47,5 +40,35 @@
             </property>
       </product>
   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="File">
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>  
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.deephacks.tools4j.config.admin.rcp.treeview.TreeAdminView"
+            id="org.deephacks.tools4j.config.admin.rcp.treeview"
+            name="Tree Admin View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.deephacks.tools4j.config.admin.rcp.PerspectiveFactory"
+            id="config.admin.rcp.perspective"
+            name="config.admin.rcp.perspective">
+      </perspective>
+   </extension>
 
 </plugin>
