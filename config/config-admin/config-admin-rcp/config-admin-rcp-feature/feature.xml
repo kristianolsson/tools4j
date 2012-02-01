@@ -2,7 +2,7 @@
 <feature
       id="config-admin-rcp-feature"
       label="configadmindemofeature"
-      version="1.0.0">
+      version="0.0.1">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,10 +17,10 @@
    </license>
 
    <plugin
-         id="config-admin-rcp-bundle"
+         id="config-admin-rcp-plugin"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="0.0.1"
          unpack="false"/>
 
 </feature>

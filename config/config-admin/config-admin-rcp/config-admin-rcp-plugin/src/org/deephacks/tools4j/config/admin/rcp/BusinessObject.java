@@ -13,6 +13,7 @@
  */
 package org.deephacks.tools4j.config.admin.rcp;
 
+import org.deephacks.tools4j.config.osgi.Deephacks;
 import org.eclipse.core.runtime.IAdaptable;
 
 public class BusinessObject implements IAdaptable {
@@ -21,10 +22,9 @@ public class BusinessObject implements IAdaptable {
     private static int i = 0;
 
     public BusinessObject() {
-        id = "BusinessObject" + ++i;
+        id = new Deephacks().execute() + ++i;
     }
 
-    @Override
     public Object getAdapter(Class arg0) {
         return null;
     }

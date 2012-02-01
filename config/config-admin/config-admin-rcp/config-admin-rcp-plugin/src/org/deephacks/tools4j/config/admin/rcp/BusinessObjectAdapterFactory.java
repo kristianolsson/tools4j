@@ -39,14 +39,12 @@ public class BusinessObjectAdapterFactory implements IAdapterFactory {
         }
     };
 
-    @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof BusinessObject)
             return groupAdapter;
         return null;
     }
 
-    @Override
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class };
     }

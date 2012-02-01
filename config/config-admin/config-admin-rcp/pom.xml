@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <parent>
+    <groupId>org.deephacks.tools4j</groupId>
+    <artifactId>config-admin-root</artifactId>
+    <version>1</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.deephacks.tools4j</groupId>
   <artifactId>config-admin-rcp-root</artifactId>
@@ -9,9 +15,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>config-admin-rcp-bundle</module>
+    <module>config-admin-rcp-plugin</module>
     <module>config-admin-rcp-feature</module>
     <module>config-admin-rcp-product</module>
+<!--    <module>config-admin-rcp-osgi</module> -->
   </modules>
 
   <properties>
@@ -25,12 +32,6 @@
       <url>http://download.eclipse.org/releases/indigo</url>
       <!-- file URL for faster and offline builds -->
       <!-- <url>file:/${basedir}/../../helios-rcp/</url> -->
-    </repository>
-    <!-- SWTbot is not part of the helios update site -->
-    <repository>
-      <id>swtbot</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site/</url>
     </repository>
   </repositories>
   <build>
@@ -46,6 +47,10 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+          <resolver>p2</resolver>
+        </configuration>
       </plugin>
       <!-- enable source bundle generation -->
       <plugin>
@@ -63,4 +68,12 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.deephacks.tools4j</groupId>
+      <artifactId>config-admin-rcp-osgi</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+  </dependencies>
+
 </project>

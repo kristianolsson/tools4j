@@ -10,7 +10,7 @@ import org.eclipse.ui.PlatformUI;
  * This class controls all aspects of the application's execution
  */
 public class Application implements IApplication {
-    public static final String PLUGIN_ID = "config-admin-rcp-bundle";
+    public static final String PLUGIN_ID = "config-admin-rcp-plugin";
 
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
@@ -27,6 +27,7 @@ public class Application implements IApplication {
         } finally {
             display.dispose();
         }
+
     }
 
     /* (non-Javadoc)

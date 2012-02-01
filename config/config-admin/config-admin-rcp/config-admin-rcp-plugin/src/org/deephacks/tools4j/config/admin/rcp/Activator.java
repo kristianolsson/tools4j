@@ -1,5 +1,6 @@
 package org.deephacks.tools4j.config.admin.rcp;
 
+import org.deephacks.tools4j.config.osgi.Deephacks;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -28,6 +29,8 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        Deephacks test = new Deephacks();
+        test.execute();
     }
 
     /*

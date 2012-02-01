@@ -10,6 +10,6 @@
   </parent>
   <groupId>org.deephacks.tools4j</groupId>
   <artifactId>config-admin-rcp-feature</artifactId>
-  <version>1.0.0</version>
+  <version>0.0.1</version>
   <packaging>eclipse-feature</packaging>
 </project>

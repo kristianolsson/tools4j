@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: config-admin-rcp-bundle
-Bundle-SymbolicName: config-admin-rcp-bundle;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Name: config-admin-rcp-plugin
+Bundle-SymbolicName: config-admin-rcp-plugin;singleton:=true
+Bundle-Version: 0.0.1
 Bundle-Activator: org.deephacks.tools4j.config.admin.rcp.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.deephacks.tools4j.config-admin-rcp-osgi;bundle-version="0.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .

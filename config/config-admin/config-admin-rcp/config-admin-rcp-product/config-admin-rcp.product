@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Config Admin RCP" uid="config-admin-rcp-product" id="config-admin-rcp-product" application="config-admin-rcp-bundle.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
-
+<product name="Config Admin RCP" uid="config-admin-rcp-product" id="config-admin-rcp-product" application="config-admin-rcp-plugin.application" version="0.0.1" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -19,27 +18,24 @@
       startupProgressRect="0,280,455,15"
       startupMessageRect="7,220,441,20"
       startupForegroundColor="FFFFFF" />
-      
    <launcher name="config-admin-rcp">
-      <solaris/>
       <linux icon="icons/alt_launcher.xpm"/>
+      <solaris/>
       <win useIco="true">
          <ico path="icons/alt_launcher.ico"/>
          <bmp/>
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="config-admin-rcp-feature" version="1.0.0"/>
-      <feature id="org.eclipse.rcp" />
+      <feature id="org.eclipse.rcp"/>
+      <feature id="config-admin-rcp-feature" version="0.0.1"/>
    </features>
 
    <configurations>
