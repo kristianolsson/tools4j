@@ -47,35 +47,39 @@ public class SchemaValidator {
     public static void validateSchema(Bean bean) {
         ClassRepository repos = new ClassRepository();
         Schema schema = bean.getSchema();
+        validateId(bean);
+        validatePropertyNames(bean, schema);
+        validateReferences(bean, schema);
+        validateProperties(bean, repos, schema);
+        validatePropertyList(bean, repos, schema);
+        validatePropertyReferences(bean, schema);
+        validatePropertyRefList(schema);
+        validatePropertyRefMap(schema);
+    }
 
+    private static void validateId(Bean bean) {
         if (bean.getId().getInstanceId() == null || "".equals(bean.getId().getInstanceId())) {
             throw Events.CFG107_MISSING_ID();
         }
-        Set<String> schemaPropertyNames = schema.getPropertyNames();
-        for (String name : bean.getPropertyNames()) {
-            if (!schemaPropertyNames.contains(name)) {
-                throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
-            }
-        }
-        Set<String> schemaReferenceNames = schema.getReferenceNames();
-        for (String name : bean.getReferenceNames()) {
-            if (!schemaReferenceNames.contains(name)) {
-                throw Events.CFG111_REF_NOT_EXIST_IN_SCHEMA(name);
-            }
-        }
-        for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
-            String value = validateSingle(bean, prop);
-            if (value == null) {
-                continue;
-            }
+    }
 
-            try {
-                conversion.convert(value, repos.loadClass(prop.getType()));
-            } catch (Exception e) {
-                throw Events.CFG105_WRONG_PROPERTY_TYPE(bean.getId(), prop.getName(),
-                        prop.getType(), value);
-            }
+    private static void validatePropertyRefMap(Schema schema) {
+        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
         }
+    }
+
+    private static void validatePropertyRefList(Schema schema) {
+        for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
+        }
+    }
+
+    private static void validatePropertyReferences(Bean bean, Schema schema) {
+        for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
+            validateSingle(bean, prop);
+        }
+    }
+
+    private static void validatePropertyList(Bean bean, ClassRepository repos, Schema schema) {
         for (SchemaPropertyList prop : schema.get(SchemaPropertyList.class)) {
             List<String> values = bean.getValues(prop.getName());
             if (values == null) {
@@ -90,14 +94,40 @@ public class SchemaValidator {
                 }
             }
         }
-        for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
-            validateSingle(bean, prop);
-        }
-        for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
-        }
-        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
-        }
+    }
 
+    private static void validateProperties(Bean bean, ClassRepository repos, Schema schema) {
+        for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
+            String value = validateSingle(bean, prop);
+            if (value == null) {
+                continue;
+            }
+
+            try {
+                conversion.convert(value, repos.loadClass(prop.getType()));
+            } catch (Exception e) {
+                throw Events.CFG105_WRONG_PROPERTY_TYPE(bean.getId(), prop.getName(),
+                        prop.getType(), value);
+            }
+        }
+    }
+
+    private static void validateReferences(Bean bean, Schema schema) {
+        Set<String> schemaReferenceNames = schema.getReferenceNames();
+        for (String name : bean.getReferenceNames()) {
+            if (!schemaReferenceNames.contains(name)) {
+                throw Events.CFG111_REF_NOT_EXIST_IN_SCHEMA(name);
+            }
+        }
+    }
+
+    private static void validatePropertyNames(Bean bean, Schema schema) {
+        Set<String> schemaPropertyNames = schema.getPropertyNames();
+        for (String name : bean.getPropertyNames()) {
+            if (!schemaPropertyNames.contains(name)) {
+                throw Events.CFG110_PROP_NOT_EXIST_IN_SCHEMA(name);
+            }
+        }
     }
 
     private static String validateSingle(Bean bean, AbstractSchemaProperty prop) {
