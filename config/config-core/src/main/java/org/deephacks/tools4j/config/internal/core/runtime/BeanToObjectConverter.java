@@ -50,42 +50,40 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
         BeanInstance<?> instance = BeanInstance.create(specificType);
         Schema schema = source.getSchema();
         Map<String, Object> values = new HashMap<String, Object>();
-        for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
-            String value = source.getSingleValue(prop.getName());
-            String field = prop.getFieldName();
-            Object converted = conversion.convert(value, forName(prop.getType()));
-            values.put(field, converted);
+        convertProperty(source, schema, values);
+        convertPropertyList(source, schema, values);
+        convertPropertyRef(source, schema, values);
+        convertPropertyRefList(source, schema, values);
+        convertPropertyRefMap(source, schema, values);
+        if (!schema.getId().isSingleton()) {
+            // do not try to inject singleton id: the field is static final
+            values.put(getIdField(specificType), source.getId().getInstanceId());
         }
-        for (SchemaPropertyList prop : schema.get(SchemaPropertyList.class)) {
-            List<String> vals = source.getValues(prop.getName());
-            String field = prop.getFieldName();
+        instance.injectFieldsAnnotatedWith(Config.class).withValues(values);
+        instance.injectFieldsAnnotatedWith(Id.class).withValues(values);
+        return instance.get();
 
-            if (vals == null) {
+    }
+
+    private void convertPropertyRefMap(Bean source, Schema schema, Map<String, Object> values) {
+        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
+            List<BeanId> beans = source.getReference(prop.getName());
+            if (beans == null) {
                 continue;
             }
-            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
-            for (String val : vals) {
-                Object converted = conversion.convert(val, forName(prop.getType()));
-                c.add(converted);
+            Map<Object, Object> c = newMap(forName(prop.getMapType()));
+            for (BeanId beanId : beans) {
+                Bean b = beanId.getBean();
+                if (b != null) {
+                    Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
+                    c.put(beanId.getInstanceId(), beanInstance);
+                }
             }
-
-            values.put(field, c);
+            values.put(prop.getFieldName(), c);
         }
-        for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
-            BeanId id = source.getFirstReference(prop.getName());
-            if (id == null) {
-                continue;
-            }
-            Bean ref = id.getBean();
-            if (ref == null) {
-                continue;
-            }
-            Schema refSchema = ref.getSchema();
-            SchemaPropertyRef schemaRef = schema.get(SchemaPropertyRef.class, prop.getName());
-            Object beanInstance = conversion.convert(ref, forName(refSchema.getType()));
-            values.put(schemaRef.getFieldName(), beanInstance);
+    }
 
-        }
+    private void convertPropertyRefList(Bean source, Schema schema, Map<String, Object> values) {
         for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
             List<BeanId> beans = source.getReference(prop.getName());
             if (beans == null) {
@@ -102,29 +100,51 @@ public class BeanToObjectConverter implements Converter<Bean, Object> {
             }
             values.put(prop.getFieldName(), c);
         }
-        for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
-            List<BeanId> beans = source.getReference(prop.getName());
-            if (beans == null) {
+    }
+
+    private void convertPropertyRef(Bean source, Schema schema, Map<String, Object> values) {
+        for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
+            BeanId id = source.getFirstReference(prop.getName());
+            if (id == null) {
                 continue;
             }
-            Map<Object, Object> c = newMap(forName(prop.getMapType()));
-            for (BeanId beanId : beans) {
-                Bean b = beanId.getBean();
-                if (b != null) {
-                    Object beanInstance = conversion.convert(b, forName(b.getSchema().getType()));
-                    c.put(beanId.getInstanceId(), beanInstance);
-                }
+            Bean ref = id.getBean();
+            if (ref == null) {
+                continue;
             }
-            values.put(prop.getFieldName(), c);
-        }
-        if (!schema.getId().isSingleton()) {
-            // do not try to inject singleton id: the field is static final
-            values.put(getIdField(specificType), source.getId().getInstanceId());
-        }
-        instance.injectFieldsAnnotatedWith(Config.class).withValues(values);
-        instance.injectFieldsAnnotatedWith(Id.class).withValues(values);
-        return instance.get();
+            Schema refSchema = ref.getSchema();
+            SchemaPropertyRef schemaRef = schema.get(SchemaPropertyRef.class, prop.getName());
+            Object beanInstance = conversion.convert(ref, forName(refSchema.getType()));
+            values.put(schemaRef.getFieldName(), beanInstance);
 
+        }
+    }
+
+    private void convertPropertyList(Bean source, Schema schema, Map<String, Object> values) {
+        for (SchemaPropertyList prop : schema.get(SchemaPropertyList.class)) {
+            List<String> vals = source.getValues(prop.getName());
+            String field = prop.getFieldName();
+
+            if (vals == null) {
+                continue;
+            }
+            Collection<Object> c = newCollection(forName(prop.getCollectionType()));
+            for (String val : vals) {
+                Object converted = conversion.convert(val, forName(prop.getType()));
+                c.add(converted);
+            }
+
+            values.put(field, c);
+        }
+    }
+
+    private void convertProperty(Bean source, Schema schema, Map<String, Object> values) {
+        for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
+            String value = source.getSingleValue(prop.getName());
+            String field = prop.getFieldName();
+            Object converted = conversion.convert(value, forName(prop.getType()));
+            values.put(field, converted);
+        }
     }
 
     private static String getIdField(Class<?> clazz) {
