@@ -60,8 +60,8 @@
       <version>1.0.0-cr-2</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <groupId>com.googlecode.guava-osgi</groupId>
+      <artifactId>guava-osgi</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -66,8 +66,8 @@
       <artifactId>config-runtime-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <groupId>com.googlecode.guava-osgi</groupId>
+      <artifactId>guava-osgi</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
