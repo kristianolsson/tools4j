@@ -26,7 +26,7 @@
   </modules>
 
   <properties>
-    <version.tools4j.config>0.0.x</version.tools4j.config>
+    <version.tools4j.config>0.0.0.x</version.tools4j.config>
   </properties>
 
   <licenses>
@@ -54,25 +54,25 @@
         <groupId>org.deephacks.tools4j</groupId>
         <artifactId>support-jse</artifactId>
         <scope>compile</scope>
-        <version>0.0.x</version>
+        <version>0.0.0.x</version>
       </dependency>
       <dependency>
         <groupId>org.deephacks.tools4j</groupId>
         <artifactId>support-web</artifactId>
         <scope>compile</scope>
-        <version>0.0.x</version>
+        <version>0.0.0.x</version>
       </dependency>
       <dependency>
         <groupId>org.deephacks.tools4j</groupId>
         <artifactId>support-jee</artifactId>
         <scope>compile</scope>
-        <version>0.0.x</version>
+        <version>0.0.0.x</version>
       </dependency>
       <dependency>
         <groupId>org.deephacks.tools4j</groupId>
         <artifactId>support-test</artifactId>
         <scope>compile</scope>
-        <version>0.0.x</version>
+        <version>0.0.0.x</version>
       </dependency>
       <dependency>
         <groupId>org.deephacks.tools4j</groupId>
