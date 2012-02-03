@@ -114,7 +114,7 @@ public class JpaConfigTckTest extends ConfigTckTests {
     @Parameters
     public static Collection<Object[]> data() {
         Collection<Object[]> parameters = new ArrayList<Object[]>();
-        List<String> dbProviders = Arrays.asList(POSTGRESQL);
+        List<String> dbProviders = Arrays.asList(DERBY);
         List<String> jpaProviders = Arrays.asList(HIBERNATE, ECLIPSELINK);
         List<List<String>> list = new ArrayList<List<String>>();
         list.add(dbProviders);
