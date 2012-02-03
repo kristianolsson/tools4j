@@ -45,16 +45,14 @@ public class SchemaValidator {
      * Validate that the value of the bean is according to schema. 
      */
     public static void validateSchema(Bean bean) {
-        ClassRepository repos = new ClassRepository();
-        Schema schema = bean.getSchema();
         validateId(bean);
-        validatePropertyNames(bean, schema);
-        validateReferences(bean, schema);
-        validateProperties(bean, repos, schema);
-        validatePropertyList(bean, repos, schema);
-        validatePropertyReferences(bean, schema);
-        validatePropertyRefList(schema);
-        validatePropertyRefMap(schema);
+        validatePropertyNames(bean);
+        validateReferences(bean);
+        validateProperties(bean);
+        validatePropertyList(bean);
+        validatePropertyReferences(bean);
+        validatePropertyRefList(bean);
+        validatePropertyRefMap(bean);
     }
 
     private static void validateId(Bean bean) {
@@ -63,23 +61,28 @@ public class SchemaValidator {
         }
     }
 
-    private static void validatePropertyRefMap(Schema schema) {
+    private static void validatePropertyRefMap(Bean bean) {
+        Schema schema = bean.getSchema();
         for (SchemaPropertyRefMap prop : schema.get(SchemaPropertyRefMap.class)) {
         }
     }
 
-    private static void validatePropertyRefList(Schema schema) {
+    private static void validatePropertyRefList(Bean bean) {
+        Schema schema = bean.getSchema();
         for (SchemaPropertyRefList prop : schema.get(SchemaPropertyRefList.class)) {
         }
     }
 
-    private static void validatePropertyReferences(Bean bean, Schema schema) {
+    private static void validatePropertyReferences(Bean bean) {
+        Schema schema = bean.getSchema();
         for (SchemaPropertyRef prop : schema.get(SchemaPropertyRef.class)) {
             validateSingle(bean, prop);
         }
     }
 
-    private static void validatePropertyList(Bean bean, ClassRepository repos, Schema schema) {
+    private static void validatePropertyList(Bean bean) {
+        Schema schema = bean.getSchema();
+        ClassRepository repos = new ClassRepository();
         for (SchemaPropertyList prop : schema.get(SchemaPropertyList.class)) {
             List<String> values = bean.getValues(prop.getName());
             if (values == null) {
@@ -96,7 +99,9 @@ public class SchemaValidator {
         }
     }
 
-    private static void validateProperties(Bean bean, ClassRepository repos, Schema schema) {
+    private static void validateProperties(Bean bean) {
+        Schema schema = bean.getSchema();
+        ClassRepository repos = new ClassRepository();
         for (SchemaProperty prop : schema.get(SchemaProperty.class)) {
             String value = validateSingle(bean, prop);
             if (value == null) {
@@ -112,7 +117,8 @@ public class SchemaValidator {
         }
     }
 
-    private static void validateReferences(Bean bean, Schema schema) {
+    private static void validateReferences(Bean bean) {
+        Schema schema = bean.getSchema();
         Set<String> schemaReferenceNames = schema.getReferenceNames();
         for (String name : bean.getReferenceNames()) {
             if (!schemaReferenceNames.contains(name)) {
@@ -121,7 +127,8 @@ public class SchemaValidator {
         }
     }
 
-    private static void validatePropertyNames(Bean bean, Schema schema) {
+    private static void validatePropertyNames(Bean bean) {
+        Schema schema = bean.getSchema();
         Set<String> schemaPropertyNames = schema.getPropertyNames();
         for (String name : bean.getPropertyNames()) {
             if (!schemaPropertyNames.contains(name)) {
