@@ -25,7 +25,6 @@
             <Import-Package>
               com.google.guava
             </Import-Package>
-            <Bundle-Version>${project.version}</Bundle-Version>
           </instructions>
         </configuration>
         <executions>
