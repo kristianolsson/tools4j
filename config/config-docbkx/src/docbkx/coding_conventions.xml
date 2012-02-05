@@ -111,14 +111,14 @@ org.deephacks.&lt;projectname&gt;.admin.internal</programlisting></para>
       </listitem>
       <listitem>
         <para><emphasis role="bold">Organize constants</emphasis></para>
-        <para>Do not declare  constants in arbitrary classes. Keep constants in one Constants file per package and use the Constants from other classes where needed. This give a quicker  and organized overview of   constants.</para>
-        <para><programlisting>package org.deephacks.openconfig.spi;
+        <para>Do not declare constants in arbitrary classes. Keep constants in one Constants file per package and use the Constants from other classes where needed. This give a quicker and organized overview of constants.</para>
+        <para><programlisting>package org.deephacks.tools4j.config.spi;
 
 final class Constants {
     static final String EXAMPLE_A = ..;
     static final String EXAMPLE_B = .. ;
 }</programlisting></para>
-        <para><programlisting>package org.deephacks.openconfig.internal.core;
+        <para><programlisting>package org.deephacks.tools4j.config.internal.core;
 
 final class Constants {
     static final String EXAMPLE_A = ..;
@@ -290,15 +290,15 @@ final class Constants {
         <para>Clients should be able to  adapt configuration sensibly to all their different test, stage or production runtime environments(s). </para>
         <para>Configuration values are enforced in the following order.</para>
         <orderedlist>
-          <listitem>System property<para>System properties take precedence using <ulink url="http://download.oracle.com/javase/6/docs/api/java/lang/System.html#setProperty(java.lang.String,%20java.lang.String)">System.getProperty</ulink> in the the following format:</para><para><programlisting>org.deephacks.&lt;projectname&gt;.&lt;packagename&gt;[.*].&lt;propertyname&gt;</programlisting></para><para>For example:</para><para><programlisting>org.deephacks.openconfig.api.cache-timeout
-org.deephacks.openconfig.spi.validation.provider</programlisting></para></listitem>
+          <listitem>System property<para>System properties take precedence using <ulink url="http://download.oracle.com/javase/6/docs/api/java/lang/System.html#setProperty(java.lang.String,%20java.lang.String)">System.getProperty</ulink> in the the following format:</para><para><programlisting>org.deephacks.tools4j.&lt;projectname&gt;.&lt;packagename&gt;[.*].&lt;propertyname&gt;</programlisting></para><para>For example:</para><para><programlisting>org.deephacks.tools4j.config.api.cache-timeout
+org.deephacks.tools4j.config.spi.validation.provider</programlisting></para></listitem>
           <listitem>
             <para>Configuration file</para>
             <para>Configuration files must be available on class path using following filename format:</para>
-            <para><programlisting>org.deephacks.&lt;projectname&gt;.&lt;packagename&gt;[.*].properties</programlisting></para>
+            <para><programlisting>org.deephacks.tools4j.&lt;projectname&gt;.&lt;packagename&gt;[.*].properties</programlisting></para>
             <para>For example:</para>
-            <para><programlisting>org.deephacks.openconfig.api.properties
-org.deephacks.openconfig.spi.validation.properties</programlisting></para>
+            <para><programlisting>org.deephacks.tools4j.config.api.properties
+org.deephacks.tools4j.config.spi.validation.properties</programlisting></para>
             <para>File contents is parsed using the <ulink url="http://download.oracle.com/javase/6/docs/api/java/util/Properties.html">java.util.Properties</ulink> format.</para>
           </listitem>
           <listitem>
@@ -316,7 +316,7 @@ org.deephacks.openconfig.spi.validation.properties</programlisting></para>
   </section>
   <section>
     <title>Third party library dependencies</title>
-    <para>There is a chance that external clients loads same library dependency with a different version (for a different purpose) in same class loader as the application. The external client will likely prefer their version of this dependency which may cause incompatibilities internally for Open Config. </para>
+    <para>There is a chance that external clients loads same library dependency with a different version (for a different purpose) in same class loader as the application. The external client will likely prefer their version of this dependency which may cause incompatibilities internally for Tools4j Config. </para>
     <para>Third party library dependencies should therefore be clearly documented and  kept at minimum to avoid these problems. </para>
     <para>This rule does not apply for tests. </para>
     <para>Current third party library dependencies.</para>

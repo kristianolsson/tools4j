@@ -110,11 +110,11 @@
       <section>
         <title>Obtaining Sources</title>
         <para>Source code  is hosted in GitHub and can be obtained from the command line</para>
-        <para><programlisting>[~] $ git clone git@github.com:deephacks/open-config.git open-config</programlisting></para>
+        <para><programlisting>[~] $ git clone git://github.com/deephacks/tools4j.git tools4j</programlisting></para>
       </section>
       <section id="setting_up_eclipse">
         <title>Setting up an Eclipse workspace</title>
-        <para><emphasis role="bold">Generate eclipse projects using Maven</emphasis><programlisting>[~/open-config] $ mvn clean install eclipse:eclipse</programlisting></para>
+        <para><emphasis role="bold">Generate eclipse projects using Maven</emphasis><programlisting>[~/tools4j] $ mvn clean install eclipse:eclipse</programlisting></para>
         <para><emphasis role="bold">Import eclipse projects</emphasis></para>
         <para><emphasis role="bold">File</emphasis> &gt; <emphasis role="bold">Import</emphasis> &gt; <emphasis role="bold">Git</emphasis> &gt; <emphasis role="bold">Projects from Git</emphasis> &gt; <emphasis role="bold">Add</emphasis> ... Browse for git repository &gt; <emphasis role="bold">Import existing projects</emphasis></para>
         <para><emphasis role="bold">Configuring Code Templates, Code Formatter and Code Cleanup</emphasis>
@@ -136,14 +136,14 @@
       </section>
       <section>
         <title>Building and Testing</title>
-        <para>TODO<programlisting>[~/open-config] $ mvn clean install</programlisting></para>
+        <para>TODO<programlisting>[~/tools4j] $ mvn clean install</programlisting></para>
       </section>
     </section>
     <section>
       <title>Documentation</title>
       <para>Use consistent terminology throughout documentation. Do not use several terms for describing the same thing.  Try to be as clear as possible by avoiding terms and phrases that carry ambiguity.</para>
       <para>DocBook is used as primary source for high level documentation and can be generated in HTML and PDF format by executing the following commands</para>
-      <programlisting>[~/open-config/docbkx] $ mvn docbkx:generate-pdf docbkx:generate-html</programlisting>
+      <programlisting>[~/tools4j/config/config-docbkx] $ mvn docbkx:generate-pdf docbkx:generate-html</programlisting>
     </section>
     <section>
       <title>Patch submission guidelines</title>
