@@ -63,7 +63,7 @@
     <!-- test -->
     <version.logback-classic>0.9.30</version.logback-classic>
     <version.log4j>1.2.16</version.log4j>
-    <version.junit>4.10</version.junit>
+    <version.junit>4.13.1</version.junit>
     <version.mockito-all>1.8.5</version.mockito-all>
     <version.unitils-core>3.1</version.unitils-core>
   </properties>
